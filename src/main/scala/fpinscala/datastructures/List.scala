@@ -59,7 +59,14 @@ object List: // `List` companion object. Contains functions for creating and wor
       case Nil => Cons(h, Nil)
       case x => Cons(h, x)
 
-  def drop[A](l: List[A], n: Int): List[A] = ???
+  def drop[A](l: List[A], n: Int): List[A] =
+    def loop[A](l: List[A], n: Int): List[A] =
+      l match
+        case Nil => Nil
+        case Cons(h, t) if n == 1 => t
+        case Cons(h, t) => Cons(h, loop(t, n - 1))
+
+    loop(l, n)
 
   def dropWhile[A](l: List[A], f: A => Boolean): List[A] = ???
 
