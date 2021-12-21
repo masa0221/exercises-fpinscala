@@ -28,7 +28,9 @@ object List: // `List` companion object. Contains functions for creating and wor
     case Nil => 42
     case Cons(x, Cons(y, Cons(3, Cons(4, _)))) => x + y
     case Cons(h, t) => h + sum(t)
-    case _ => 101
+    // Unreachable case except for null (if this is intentional, consider writing case null => instead).
+    // case _ => 101
+    case null => 101
 
   def append[A](a1: List[A], a2: List[A]): List[A] =
     a1 match
