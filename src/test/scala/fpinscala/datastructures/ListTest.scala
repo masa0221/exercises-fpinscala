@@ -47,8 +47,14 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
   }
 
   "dropWhile" - {
-    "no implemented" in {
-      1 `shouldBe` 1
+    "条件に一致する値だけ削除できること" in {
+      List.dropWhile(listInt, v => v == 1) `shouldBe` List(2, 3)
+      List.dropWhile(listDouble, v => v == 2.0) `shouldBe` List(1.0, 3.0)
+      List.dropWhile(listString, v => v == "three") `shouldBe` List("one", "two")
+    }
+
+    "条件に一致しない場合は変化がないこと" in {
+      List.dropWhile(listInt, v => v == 4) `shouldBe` List(1, 2, 3)
     }
   }
 
