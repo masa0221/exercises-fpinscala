@@ -58,4 +58,16 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "init" - {
+    "末尾を除いたリストが取得できること" in {
+      List.init(listInt) `shouldBe` List(1, 2)
+      List.init(listDouble) `shouldBe` List(1.0, 2.0)
+      List.init(listString) `shouldBe` List("one", "two")
+    }
+
+    "リストが空でも正常に動くこと" in {
+      List.init(List()) `shouldBe` List()
+    }
+  }
+
 end ListSuite
