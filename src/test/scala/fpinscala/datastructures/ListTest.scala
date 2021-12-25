@@ -69,5 +69,16 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
       List.init(List()) `shouldBe` List()
     }
   }
+  
+  "length" - {
+    "リストが空の時は0を返すこと" in {
+      List.length(List()) `shouldBe` 0
+    }
+
+    "リストに一つ以上値がある場合は正しい値を返すこと" in {
+      List.length(List(1)) `shouldBe` 1
+      List.length(List(1, 2, 3)) `shouldBe` 3
+    }
+  }
 
 end ListSuite
