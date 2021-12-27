@@ -81,4 +81,11 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "foldLeft" - {
+    "foldLeftが意図通りに動くこと" in {
+      List.foldLeft(List(1, 2, 3, 4, 5), 0, _ + _) `shouldBe` 15
+      List.foldLeft(List(1, 2, 3, 4, 5), 1, _ * _) `shouldBe` 120
+    }
+  }
+
 end ListSuite
