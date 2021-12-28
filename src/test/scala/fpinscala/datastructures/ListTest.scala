@@ -88,4 +88,27 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "sumViaFoldLeft" - {
+    "リストの合計が出せること" in {
+      List.foldLeft(List(1, 2, 3, 4, 5), 0, _ + _) `shouldBe` 15
+    }
+  }
+
+  "productViaFoldLeft" - {
+    "リストの積が出せること" in {
+      List.foldLeft(List(1, 2, 3, 4, 5), 1, _ * _) `shouldBe` 120
+    }
+  }
+
+  "lengthViaFoldLeft" - {
+    "リストが空の時は0を返すこと" in {
+      List.length(List()) `shouldBe` 0
+    }
+
+    "リストに一つ以上値がある場合は正しい値を返すこと" in {
+      List.length(List(1)) `shouldBe` 1
+      List.length(List(1, 2, 3)) `shouldBe` 3
+    }
+  }
+
 end ListSuite
