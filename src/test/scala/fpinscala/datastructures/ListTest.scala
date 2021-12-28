@@ -111,4 +111,14 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "reverse" - {
+    "逆順のリストが取得できること" in {
+      List.reverse(List(1, 2, 3, 4, 5)) `shouldBe` List(5, 4, 3, 2, 1)
+    }
+
+    "リストが空でも正常に動くこと" in {
+      List.reverse(List()) `shouldBe` List()
+    }
+  }
+
 end ListSuite
