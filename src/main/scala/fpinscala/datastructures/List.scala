@@ -112,6 +112,13 @@ object List: // `List` companion object. Contains functions for creating and wor
     // foldLeft(Nil, Cons(5, Cons(4, Cons(3, Cons(2, Cons(1, List()))))))
     foldLeft(l, List[A](), (acc, h) => Cons(h, acc))
 
+  def foldRightViaFoldLeft[A,B](as: List[A], acc: B, f: (A, B) => B): B =
+    foldLeft(reverse(as), acc, (b, a) => f(a, b))
+
+  def foldLeftViaFoldRight[A,B](l: List[A], acc: B, f: (B, A) => B): B =
+    // 要確認
+    foldRight(l, (b:B) => b, (a, g) => b => g(f(b, a)))(acc)
+
   def appendViaFoldRight[A](l: List[A], r: List[A]): List[A] = ???
 
   def concat[A](l: List[List[A]]): List[A] = ???

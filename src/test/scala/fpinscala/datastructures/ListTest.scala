@@ -121,4 +121,16 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "foldRightViaFoldLeft" - {
+    "リストの合計が出せること" in {
+      List.foldRightViaFoldLeft(List(1, 2, 3, 4, 5), 0, _ + _) `shouldBe` 15
+    }
+  }
+
+  "foldLeftViaFoldRight" - {
+    "リストの合計が出せること" in {
+      List.foldLeftViaFoldRight(List(1, 2, 3, 4, 5), 0, _ + _) `shouldBe` 15
+    }
+  }
+
 end ListSuite
