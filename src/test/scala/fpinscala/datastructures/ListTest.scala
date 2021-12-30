@@ -133,4 +133,10 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "appendViaFoldRight" - {
+    "リストとリストを結合できること" in {
+      List.appendViaFoldRight(List(1, 2, 3) , List(4, 5, 6)) `shouldBe` List(1, 2, 3, 4, 5, 6)
+    }
+  }
+
 end ListSuite
