@@ -24,8 +24,13 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
 
     "先頭に要素を追加できること" in {
       List.setHead(listInt, 0) `shouldBe` List(0, 1, 2, 3)
-      List.setHead(listDouble, 0) `shouldBe` List(0, 1.0 ,2.0, 3.0)
-      List.setHead(listString, "zero") `shouldBe` List("zero", "one", "two", "three")
+      List.setHead(listDouble, 0) `shouldBe` List(0, 1.0, 2.0, 3.0)
+      List.setHead(listString, "zero") `shouldBe` List(
+        "zero",
+        "one",
+        "two",
+        "three"
+      )
     }
   }
 
@@ -50,7 +55,10 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
     "条件に一致する値だけ削除できること" in {
       List.dropWhile(listInt, v => v == 1) `shouldBe` List(2, 3)
       List.dropWhile(listDouble, v => v == 2.0) `shouldBe` List(1.0, 3.0)
-      List.dropWhile(listString, v => v == "three") `shouldBe` List("one", "two")
+      List.dropWhile(listString, v => v == "three") `shouldBe` List(
+        "one",
+        "two"
+      )
     }
 
     "条件に一致しない場合は変化がないこと" in {
@@ -69,7 +77,7 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
       List.init(List()) `shouldBe` List()
     }
   }
-  
+
   "length" - {
     "リストが空の時は0を返すこと" in {
       List.length(List()) `shouldBe` 0
@@ -135,7 +143,8 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
 
   "appendViaFoldRight" - {
     "リストとリストを結合できること" in {
-      List.appendViaFoldRight(List(1, 2, 3) , List(4, 5, 6)) `shouldBe` List(1, 2, 3, 4, 5, 6)
+      List.appendViaFoldRight(List(1, 2, 3), List(4, 5, 6))
+      `shouldBe` List (1, 2, 3, 4, 5, 6)
     }
   }
 
