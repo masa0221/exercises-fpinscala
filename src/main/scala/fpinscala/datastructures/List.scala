@@ -132,7 +132,9 @@ object List: // `List` companion object. Contains functions for creating and wor
   def appendViaFoldRight[A](l: List[A], r: List[A]): List[A] =
     foldRight(l, r, (a, b) => Cons(a, b))
 
-  def concat[A](l: List[List[A]]): List[A] = ???
+  def concat[A](l: List[List[A]]): List[A] =
+    // append(Cons(1, Cons(2, Cons(3, Nil))), Cons(4, Cons(5, Cons(6, Nil))))
+    foldRight(l, Nil:List[A], List.append)
 
   def incrementEach(l: List[Int]): List[Int] = ???
 
