@@ -155,4 +155,10 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "incrementEach" - {
+    "リストの値が1ずつ増えること" in {
+      List.incrementEach(List(1, 2, 3, 4, 5)) `shouldBe` List(2, 3, 4, 5, 6)
+    }
+  }
+
 end ListSuite
