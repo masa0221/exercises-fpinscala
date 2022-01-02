@@ -161,4 +161,11 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "doubleToString" - {
+    "リストの値が文字列になること" in {
+      List.doubleToString(List(1.0, 2.0, 3.0, 4.0, 5.0)) `shouldBe`
+        List("1.0", "2.0", "3.0", "4.0", "5.0")
+    }
+  }
+
 end ListSuite
