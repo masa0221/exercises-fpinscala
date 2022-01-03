@@ -168,4 +168,11 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "map" - {
+    "リストの値を一つずつ処理できること" in {
+      List.map(List(1, 2, 3, 4, 5))(a => a * a) `shouldBe`
+        List(1, 4, 9, 16, 25)
+    }
+  }
+
 end ListSuite
