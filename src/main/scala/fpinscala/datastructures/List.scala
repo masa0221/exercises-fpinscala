@@ -153,6 +153,9 @@ object List: // `List` companion object. Contains functions for creating and wor
           if (f(x)) Cons(x, loop(xs, acc, f)) else loop(xs, acc, f)
     loop(as, Nil: List[A], f)
 
+  def filterViaFlatMap[A](as: List[A], f: A => Boolean): List[A] =
+    flatMap(as, a => if (f(a)) List(a) else Nil: List[A])
+
   def flatMap[A, B](as: List[A], f: A => List[B]): List[B] =
     foldRight(as, Nil: List[B], (a, b) => append(f(a), b))
 

@@ -182,6 +182,13 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "filterViaFlatMap" - {
+    "リストをフィルターできること" in {
+      List.filterViaFlatMap(List(1, 2, 3, 4, 5), _ % 2 == 0) `shouldBe`
+        List(2, 4)
+    }
+  }
+
   "flatMap" - {
     "リストをflatMapで処理できること" in {
       List.flatMap(List(1, 2, 3, 4, 5), a => List(a.toString)) `shouldBe`
