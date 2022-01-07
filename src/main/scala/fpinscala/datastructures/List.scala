@@ -159,7 +159,16 @@ object List: // `List` companion object. Contains functions for creating and wor
   def flatMap[A, B](as: List[A], f: A => List[B]): List[B] =
     foldRight(as, Nil: List[B], (a, b) => append(f(a), b))
 
-  def addPairwise(a: List[Int], b: List[Int]): List[Int] = ???
+  def addPairwise(a: List[Int], b: List[Int]): List[Int] =
+    // TODO: 動くけどなんかいまいちだ...
+    def loop(a: List[Int], b: List[Int], acc: List[Int]): List[Int] =
+      a match
+        case Cons(ah, at) =>
+          b match
+            case Cons(bh, bt)   => loop(at, bt, Cons(ah + bh, acc))
+            case Nil: List[Int] => acc
+        case Nil: List[Int] => acc
+    loop(reverse(a), reverse(b), Nil: List[Int])
 
   // def zipWith - TODO determine signature
 

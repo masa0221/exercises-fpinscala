@@ -197,4 +197,11 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
         List(1, 1, 2, 2, 3, 3)
     }
   }
+
+  "addPairwise" - {
+    "リスト同士の値がたされること" in {
+      List.addPairwise(List(1, 2, 3), List(4, 5, 6)) `shouldBe`
+        List(5, 7, 9)
+    }
+  }
 end ListSuite
