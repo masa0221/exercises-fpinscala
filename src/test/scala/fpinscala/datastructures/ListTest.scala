@@ -199,9 +199,26 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
   }
 
   "addPairwise" - {
-    "リスト同士の値がたされること" in {
+    "リスト同士の値の和のリストになること" in {
       List.addPairwise(List(1, 2, 3), List(4, 5, 6)) `shouldBe`
         List(5, 7, 9)
+    }
+  }
+
+  "zipWith" - {
+    "リスト同士の値の和のリストになること" in {
+      List.zipWith(List(1, 2, 3), List(4, 5, 6), _ + _) `shouldBe`
+        List(5, 7, 9)
+    }
+
+    "リスト同士の値の積のリストになること" in {
+      List.zipWith(List(1, 2, 3), List(4, 5, 6), _ * _) `shouldBe`
+        List(4, 10, 18)
+    }
+
+    "リストの値が文字でも動くこと" in {
+      List.zipWith(List("l", "s"), List("i", "t"), _ + _) `shouldBe`
+        List("li", "st")
     }
   }
 end ListSuite

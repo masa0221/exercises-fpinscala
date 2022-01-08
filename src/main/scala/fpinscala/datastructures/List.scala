@@ -164,6 +164,10 @@ object List: // `List` companion object. Contains functions for creating and wor
     case (_, Nil)                     => Nil
     case (Cons(h1, t1), Cons(h2, t2)) => Cons(h1 + h2, addPairwise(t1, t2))
 
-  // def zipWith - TODO determine signature
+  def zipWith[A, B](a: List[A], b: List[A], f: (A, A) => B): List[B] =
+    (a, b) match
+      case (Nil, _)                     => Nil
+      case (_, Nil)                     => Nil
+      case (Cons(h1, t1), Cons(h2, t2)) => Cons(f(h1, h2), zipWith(t1, t2, f))
 
   def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = ???
