@@ -220,5 +220,10 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
       List.zipWith(List("l", "s"), List("i", "t"), _ + _) `shouldBe`
         List("li", "st")
     }
+
+    "リストの値が異なる型でも動くこと" in {
+      List.zipWith(List(1, 2, 3), List("4", "5", "6"), _ + _.toInt) `shouldBe`
+        List(5, 7, 9)
+    }
   }
 end ListSuite
