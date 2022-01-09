@@ -178,13 +178,9 @@ object List: // `List` companion object. Contains functions for creating and wor
       case (Cons(h1, t1), Cons(h2, t2)) =>
         if (h1 == h2) startsWith(t1, t2) else false
 
-  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean =
-    (sup, sub) match
-      case (Nil, _) => false
-      case (_, Nil) => false
-      case (Cons(h1, t1), Cons(h2, t2)) =>
-        if (h1 == h2) t2 match
-          case Nil => true
-          case _   => hasSubsequence(t1, t2)
-        else
-          hasSubsequence(t1, sub)
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = sup match
+    case Nil                       => sub == Nil
+    case _ if startsWith(sup, sub) => true
+    case Cons(h, t)                => hasSubsequence(t, sub)
+
+end List

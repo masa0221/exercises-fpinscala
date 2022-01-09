@@ -4,7 +4,7 @@ import fpinscala.datastructures.List
 import org.scalatest.freespec.AnyFreeSpecLike
 import org.scalatest.matchers.should.Matchers
 
-class ListSuite extends AnyFreeSpecLike with Matchers:
+class ListTest extends AnyFreeSpecLike with Matchers:
   val listInt = List(1, 2, 3)
   val listDouble = List(1.0, 2.0, 3.0)
   val listString = List("one", "two", "three")
@@ -267,4 +267,4 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
       List.hasSubsequence(list, List(5, 4, 3, 2, 1)) `shouldBe` false
     }
   }
-end ListSuite
+end ListTest
