@@ -226,4 +226,23 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
         List(5, 7, 9)
     }
   }
+
+  "hasSubsequence" - {
+    "リストの中にサブシーケンスがある場合はtrueになること" in {
+      val list = List(1, 2, 3, 4, 5)
+      List.hasSubsequence(list, List(1, 2, 3, 4, 5)) `shouldBe` true
+      List.hasSubsequence(list, List(1)) `shouldBe` true
+      List.hasSubsequence(list, List(2, 3)) `shouldBe` true
+      List.hasSubsequence(list, List(2, 3, 4)) `shouldBe` true
+      List.hasSubsequence(list, List(3, 4)) `shouldBe` true
+      List.hasSubsequence(list, List(4, 5)) `shouldBe` true
+      List.hasSubsequence(list, List(5)) `shouldBe` true
+    }
+
+    "リストの中にサブシーケンスがない場合はfalseになること" in {
+      val list = List(1, 2, 3, 4, 5)
+      List.hasSubsequence(list, List(0, 1)) `shouldBe` false
+      List.hasSubsequence(list, List(5, 4, 3, 2, 1)) `shouldBe` false
+    }
+  }
 end ListSuite
