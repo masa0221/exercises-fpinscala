@@ -227,6 +227,28 @@ class ListSuite extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "startsWith" - {
+    "指定した値が空ならtrueになること" in {
+      val list = List(1, 2, 3, 4, 5)
+      List.startsWith(list, List()) `shouldBe` true
+    }
+
+    "リストの先頭が指定した値ならtrueになること" in {
+      val list = List(1, 2, 3, 4, 5)
+      List.startsWith(list, List(1, 2, 3, 4, 5)) `shouldBe` true
+      List.startsWith(list, List(1)) `shouldBe` true
+    }
+
+    "リストの先頭が指定した値でなければfalseになること" in {
+      val list = List(1, 2, 3, 4, 5)
+      List.startsWith(list, List(2, 3)) `shouldBe` false
+      List.startsWith(list, List(2, 3, 4)) `shouldBe` false
+      List.startsWith(list, List(3, 4)) `shouldBe` false
+      List.startsWith(list, List(4, 5)) `shouldBe` false
+      List.startsWith(list, List(5)) `shouldBe` false
+    }
+  }
+
   "hasSubsequence" - {
     "リストの中にサブシーケンスがある場合はtrueになること" in {
       val list = List(1, 2, 3, 4, 5)

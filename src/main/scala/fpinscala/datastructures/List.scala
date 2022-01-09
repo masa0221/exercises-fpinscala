@@ -170,6 +170,14 @@ object List: // `List` companion object. Contains functions for creating and wor
       case (_, Nil)                     => Nil
       case (Cons(h1, t1), Cons(h2, t2)) => Cons(f(h1, h2), zipWith(t1, t2, f))
 
+  // xs.startsWith(Nil) を true とする
+  def startsWith[A](l: List[A], prefix: List[A]): Boolean =
+    (l, prefix) match
+      case (_, Nil) => true
+      case (Nil, _) => false
+      case (Cons(h1, t1), Cons(h2, t2)) =>
+        if (h1 == h2) startsWith(t1, t2) else false
+
   def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean =
     (sup, sub) match
       case (Nil, _) => false
