@@ -28,6 +28,11 @@ object Tree:
 
   extension (t: Tree[Int]) def firstPositive: Option[Int] = ???
 
-  extension (t: Tree[Int]) def maximum: Int = ???
+  extension (t: Tree[Int])
+    def maximum: Int =
+      def go(t: Tree[Int], acc: Int): Int = t match
+        case Leaf(v)      => acc.max(v)
+        case Branch(l, r) => go(l, acc).max(go(r, acc))
+      go(t, 0)
 
   extension (t: Tree[Int]) def maximumViaFold: Int = ???
