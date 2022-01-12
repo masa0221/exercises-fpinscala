@@ -43,4 +43,18 @@ class TreeTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "map" - {
+    "mapが機能すること" in {
+      val leaf1 = Tree.Leaf(1)
+      val leaf2 = Tree.Leaf(2)
+      val leaf3 = Tree.Leaf(3)
+      val branch1 = Tree.Branch(leaf1, leaf2)
+      val branch2 = Tree.Branch(branch1, leaf3)
+      branch2.map(_ * 10) `shouldBe` Tree.Branch(
+        Tree.Branch(Tree.Leaf(10), Tree.Leaf(20)),
+        Tree.Leaf(30)
+      )
+    }
+  }
+
 end TreeTest

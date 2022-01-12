@@ -14,7 +14,9 @@ enum Tree[+A]:
       case Branch(l, r) => go(l, acc + 1).max(go(r, acc + 1))
     go(this, 0)
 
-  def map[B](f: A => B): Tree[B] = ???
+  def map[B](f: A => B): Tree[B] = this match
+    case Leaf(v)      => Leaf(f(v))
+    case Branch(l, r) => Branch(l.map(f), r.map(f))
 
   def fold[B](f: A => B, g: (B, B) => B): B = ???
 
