@@ -18,7 +18,9 @@ enum Tree[+A]:
     case Leaf(v)      => Leaf(f(v))
     case Branch(l, r) => Branch(l.map(f), r.map(f))
 
-  def fold[B](f: A => B, g: (B, B) => B): B = ???
+  def fold[B](f: A => B, g: (B, B) => B): B = this match
+    case Leaf(a)      => f(a)
+    case Branch(l, r) => g(l.fold(f, g), r.fold(f, g))
 
   def sizeViaFold: Int = ???
 

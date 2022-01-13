@@ -57,4 +57,15 @@ class TreeTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "fold" - {
+    "foldが機能すること" in {
+      val leaf1 = Tree.Leaf(1)
+      val leaf2 = Tree.Leaf(2)
+      val leaf3 = Tree.Leaf(3)
+      val branch1 = Tree.Branch(leaf1, leaf2)
+      val branch2 = Tree.Branch(branch1, leaf3)
+      branch2.fold(a => a, (l, r) => l + r) `shouldBe` 6
+    }
+  }
+
 end TreeTest
