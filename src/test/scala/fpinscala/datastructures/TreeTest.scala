@@ -78,6 +78,18 @@ class TreeTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "maximumViaFold" - {
+    "最大値を取得できること" in {
+      val leaf1 = Tree.Leaf(1)
+      val leaf2 = Tree.Leaf(2)
+      val leaf3 = Tree.Leaf(3)
+      val branch1 = Tree.Branch(leaf1, leaf2)
+      val branch2 = Tree.Branch(leaf3, leaf2)
+      Tree.Branch(branch1, leaf3).maximumViaFold `shouldBe` 3
+      Tree.Branch(branch2, leaf1).maximumViaFold `shouldBe` 3
+    }
+  }
+
   "depthViaFold" - {
     "リストの最大の深さが取得できること" in {
       val leaf1 = Tree.Leaf(1) // 1

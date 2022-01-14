@@ -46,4 +46,6 @@ object Tree:
         case Branch(l, r) => go(l, acc).max(go(r, acc))
       go(t, 0)
 
-  extension (t: Tree[Int]) def maximumViaFold: Int = ???
+  extension (t: Tree[Int])
+    def maximumViaFold: Int =
+      t.fold(a => a, (l, r) => l.max(r))
