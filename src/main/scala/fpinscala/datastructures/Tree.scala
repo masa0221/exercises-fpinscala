@@ -25,7 +25,8 @@ enum Tree[+A]:
   def sizeViaFold: Int =
     fold(_ => 1, (l, r) => 1 + l + r)
 
-  def depthViaFold: Int = ???
+  def depthViaFold: Int =
+    fold(_ => 1, (l, r) => (l + 1).max(r + 1))
 
   def mapViaFold[B](f: A => B): Tree[B] = ???
 
