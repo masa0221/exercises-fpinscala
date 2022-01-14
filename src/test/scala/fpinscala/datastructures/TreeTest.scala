@@ -68,4 +68,15 @@ class TreeTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "sizeViaFold" - {
+    "ノードを数えることができること" in {
+      val leaf1 = Tree.Leaf(1)
+      val leaf2 = Tree.Leaf(2)
+      val leaf3 = Tree.Leaf(3)
+      val branch = Tree.Branch(leaf1, leaf2)
+      Tree.Branch(branch, leaf3).sizeViaFold `shouldBe` 5
+    }
+  }
+
+
 end TreeTest

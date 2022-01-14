@@ -22,7 +22,8 @@ enum Tree[+A]:
     case Leaf(a)      => f(a)
     case Branch(l, r) => g(l.fold(f, g), r.fold(f, g))
 
-  def sizeViaFold: Int = ???
+  def sizeViaFold: Int =
+    fold(_ => 1, (l, r) => 1 + l + r)
 
   def depthViaFold: Int = ???
 
