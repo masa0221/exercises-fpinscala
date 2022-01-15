@@ -41,4 +41,18 @@ class OptionTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "filter" - {
+    "Noneの場合はNoneになること" in {
+      None.filter(a => true) `shouldBe` None
+    }
+    "Someの場合" - {
+      "条件が一致した時はSomeになること" in {
+        Some(4).filter(_ == 4) `shouldBe` Some(4)
+      }
+      "条件が一致しない時はSomeになること" in {
+        Some(4).filter(_ == 5) `shouldBe` None
+      }
+    }
+  }
+
 end OptionTest

@@ -21,7 +21,10 @@ enum Option[+A]:
   def orElse[B >: A](ob: => Option[B]): Option[B] =
     this.map(a => Some(a)).getOrElse(ob)
 
-  def filter(f: A => Boolean): Option[A] = ???
+  def filter(f: A => Boolean): Option[A] =
+    this.map(f) match
+      case None | Some(false) => None
+      case _                  => this
 
 object Option:
 
