@@ -23,4 +23,13 @@ class OptionTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "flatMap" - {
+    "Noneの場合は引数の値が取得できること" in {
+      None.flatMap(a => a) `shouldBe` None
+    }
+    "Someの場合はSomeが持っている値が取得できること" in {
+      Some(2).flatMap(a => Some(a * 100)) `shouldBe` Some(200)
+    }
+  }
+
 end OptionTest
