@@ -18,7 +18,8 @@ enum Option[+A]:
   def flatMap[B](f: A => Option[B]): Option[B] =
     this.map(f).getOrElse(None)
 
-  def orElse[B >: A](ob: => Option[B]): Option[B] = ???
+  def orElse[B >: A](ob: => Option[B]): Option[B] =
+    this.map(a => Some(a)).getOrElse(ob)
 
   def filter(f: A => Boolean): Option[A] = ???
 

@@ -32,4 +32,13 @@ class OptionTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "orElse" - {
+    "Noneの場合は引数の値が取得できること" in {
+      None.orElse(Some(3)) `shouldBe` Some(3)
+    }
+    "Someの場合はSomeが持っている値が取得できること" in {
+      Some(4).orElse(Some(5)) `shouldBe` Some(4)
+    }
+  }
+
 end OptionTest
