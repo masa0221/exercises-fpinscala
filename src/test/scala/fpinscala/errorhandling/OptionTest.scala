@@ -55,4 +55,13 @@ class OptionTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "variance" - {
+    "値がない場合はNoneを返すこと" in {
+      Option.variance(Seq()) `shouldBe` None
+    }
+    "分散の計算が正常に行えること" in {
+      Option.variance(Seq(4, 1, 3, 6, 4, 3)) `shouldBe` Some(2.25)
+    }
+  }
+
 end OptionTest

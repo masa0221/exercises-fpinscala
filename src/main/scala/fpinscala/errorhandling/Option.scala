@@ -50,7 +50,12 @@ object Option:
     if xs.isEmpty then None
     else Some(xs.sum / xs.length)
 
-  def variance(xs: Seq[Double]): Option[Double] = ???
+  def variance(xs: Seq[Double]): Option[Double] =
+    val n = xs.length
+    val m = xs.sum / n
+    xs.flatMap(x => Seq(math.pow(x - m, 2))).sum match
+      case 0 => None
+      case x => Some(x / n)
 
   def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = ???
 
