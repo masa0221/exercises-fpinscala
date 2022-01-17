@@ -64,4 +64,16 @@ class OptionTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "map2" - {
+    "aがNoneの場合はNoneを返すこと" in {
+      Option.map2(None, Some(1))((a, b) => "failed") `shouldBe` None
+    }
+    "bがNoneの場合はNoneを返すこと" in {
+      Option.map2(Some(1), None)((a, b) => "failed") `shouldBe` None
+    }
+    "aとb両方Someの場合は関数の結果が返されること返すこと" in {
+      Option.map2(Some(1), Some(2))((a, b) => a + b) `shouldBe` Some(3)
+    }
+  }
+
 end OptionTest
