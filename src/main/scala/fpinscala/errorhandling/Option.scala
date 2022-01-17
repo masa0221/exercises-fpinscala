@@ -54,10 +54,7 @@ object Option:
     mean(xs).flatMap(m => mean(xs.map(x => math.pow(x - m, 2))))
 
   def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
-    (a, b) match
-      case (None, _)          => None
-      case (_, None)          => None
-      case (Some(a), Some(b)) => Some(f(a, b))
+    a.flatMap(a1 => b.flatMap(b1 => Some(f(a1, b1))))
 
   def sequence[A](as: List[Option[A]]): Option[List[A]] = ???
 
