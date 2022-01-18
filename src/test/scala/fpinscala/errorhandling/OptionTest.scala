@@ -76,4 +76,13 @@ class OptionTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "sequence" - {
+    "リストの値が全てSomeの場合は結合されること" in {
+      Option.sequence(List(Some(1), Some(2), Some(3))) `shouldBe` Some(List(1,2,3))
+    }
+    "リストの中に一つでもNoneがある場合は結果がNoneになること" in {
+      Option.sequence(List(Some(1), None, Some(3))) `shouldBe` None
+    }
+  }
+
 end OptionTest
