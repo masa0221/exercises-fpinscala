@@ -85,4 +85,13 @@ class OptionTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "traverse" - {
+    "リストの値が全てSomeの場合は結合されること" in {
+      Option.traverse(List(1, 2, 3))(a => Some(a.toString)) `shouldBe` Some(List("1", "2", "3"))
+    }
+    "リストの中に一つでもNoneがある場合は結果がNoneになること" in {
+      Option.traverse(List(0, 1, 2, 3))(a => if (a == 0) None else Some(a.toString)) `shouldBe` None
+    }
+  }
+
 end OptionTest
