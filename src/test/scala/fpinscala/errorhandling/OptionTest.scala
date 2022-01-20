@@ -78,7 +78,9 @@ class OptionTest extends AnyFreeSpecLike with Matchers:
 
   "sequence" - {
     "リストの値が全てSomeの場合は結合されること" in {
-      Option.sequence(List(Some(1), Some(2), Some(3))) `shouldBe` Some(List(1,2,3))
+      Option.sequence(List(Some(1), Some(2), Some(3))) `shouldBe` Some(
+        List(1, 2, 3)
+      )
     }
     "リストの中に一つでもNoneがある場合は結果がNoneになること" in {
       Option.sequence(List(Some(1), None, Some(3))) `shouldBe` None
@@ -87,10 +89,14 @@ class OptionTest extends AnyFreeSpecLike with Matchers:
 
   "traverse" - {
     "リストの値が全てSomeの場合は結合されること" in {
-      Option.traverse(List(1, 2, 3))(a => Some(a.toString)) `shouldBe` Some(List("1", "2", "3"))
+      Option.traverse(List(1, 2, 3))(a => Some(a.toString)) `shouldBe` Some(
+        List("1", "2", "3")
+      )
     }
     "リストの中に一つでもNoneがある場合は結果がNoneになること" in {
-      Option.traverse(List(0, 1, 2, 3))(a => if (a == 0) None else Some(a.toString)) `shouldBe` None
+      Option.traverse(List(0, 1, 2, 3))(a =>
+        if (a == 0) None else Some(a.toString)
+      ) `shouldBe` None
     }
   }
 

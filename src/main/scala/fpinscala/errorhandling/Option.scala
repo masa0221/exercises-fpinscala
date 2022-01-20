@@ -58,7 +58,9 @@ object Option:
 
   // TODO: 要復習
   def sequence[A](as: List[Option[A]]): Option[List[A]] = as match
-    case Nil => Some(Nil)
-    case h :: t => h.flatMap(hh => sequence(t).map(hh ::  _))
+    case Nil    => Some(Nil)
+    case h :: t => h.flatMap(hh => sequence(t).map(hh :: _))
 
-  def traverse[A, B](as: List[A])(f: A => Option[B]): Option[List[B]] = ???
+  def traverse[A, B](as: List[A])(f: A => Option[B]): Option[List[B]] = as match
+    case Nil    => Some(Nil)
+    case h :: t => traverse(t)(f).flatMap(listb => f(h).map(a => a :: listb))
