@@ -28,15 +28,18 @@ object Either:
     es match
       case Nil => Right(Nil)
       case h :: t =>
-        f(h).flatMap(b => traverse(t)(f).flatMap(bb => Right(b :: bb)))
+        for {
+          b <- f(h)
+          bb <- traverse(t)(f)
+        } yield b :: bb
 
   def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = es match
-    case Nil    => Right(Nil)
-    case h :: t => h.flatMap(a => sequence(t).flatMap(tt => Right(a :: tt)))
-
-  //   h match
-  // case Left(e) => Left(e)
-  // case Right(a) => a :: sequence(t)
+    case Nil => Right(Nil)
+    case h :: t =>
+      for {
+        a <- h
+        aa <- sequence(t)
+      } yield a :: aa
 
   def mean(xs: IndexedSeq[Double]): Either[String, Double] =
     if xs.isEmpty then Left("mean of empty list!")
