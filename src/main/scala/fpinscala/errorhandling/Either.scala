@@ -27,7 +27,13 @@ object Either:
   def traverse[E, A, B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] =
     ???
 
-  def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = ???
+  def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = es match
+    case Nil    => Right(Nil)
+    case h :: t => h.flatMap(a => sequence(t).flatMap(tt => Right(a :: tt)))
+
+  //   h match
+  // case Left(e) => Left(e)
+  // case Right(a) => a :: sequence(t)
 
   def mean(xs: IndexedSeq[Double]): Either[String, Double] =
     if xs.isEmpty then Left("mean of empty list!")
