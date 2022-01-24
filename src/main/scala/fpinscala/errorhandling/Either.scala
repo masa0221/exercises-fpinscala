@@ -57,7 +57,11 @@ object Either:
       a: Either[List[E], A],
       b: Either[List[E], B],
       f: (A, B) => C
-  ): Either[List[E], C] = ???
+  ): Either[List[E], C] = (a, b) match
+    case (Right(a), Right(b)) => Right(f(a, b))
+    case (Left(ea), Left(eb)) => Left(ea ::: eb)
+    case (Left(ea), _)        => Left(ea)
+    case (_, Left(eb))        => Left(eb)
 
   def traverseAll[E, A, B](
       es: List[A],

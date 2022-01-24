@@ -72,13 +72,25 @@ class EitherTest extends AnyFreeSpecLike with Matchers:
 
   "map2All" - {
     "1つ目だけLeftの場合は一つ目だけのエラーがリストで返されること" in {
-      Either.map2All(Left(List("error1")), Right(1), (a, b) => "no implemnts") `shouldBe` Left(List("error1"))
+      Either.map2All(
+        Left(List("error1")),
+        Right(1),
+        (a, b) => "no implemnts"
+      ) `shouldBe` Left(List("error1"))
     }
     "2つ目だけLeftの場合は一つ目だけのエラーがリストで返されること" in {
-      Either.map2All(Right(1), Left(List("error2")), (a, b) => "no implemnts") `shouldBe` Left(List("error2"))
+      Either.map2All(
+        Right(1),
+        Left(List("error2")),
+        (a, b) => "no implemnts"
+      ) `shouldBe` Left(List("error2"))
     }
     "両方の値がLeftの場合は両方のエラーがリストで返されること" in {
-      Either.map2All(Left(List("error1")), Left(List("error2")), (a, b) => "no implemnts") `shouldBe` Left(List("error1", "error2"))
+      Either.map2All(
+        Left(List("error1")),
+        Left(List("error2")),
+        (a, b) => "no implemnts"
+      ) `shouldBe` Left(List("error1", "error2"))
     }
     "両方Rightの場合は関数が適用された結果が返されること" in {
       Either.map2All(Right(1), Right(1), _ + _) `shouldBe` Right(2)
