@@ -97,4 +97,23 @@ class EitherTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "traverseAll" - {
+    "リストの値が全てRightの場合は結合されること" in {
+      Either.traverseAll(
+        List(1, 2, 3),
+        a => Right(a.toString)
+      ) `shouldBe` Right(
+        List("1", "2", "3")
+      )
+    }
+    "リストの中にLeftになる内容がある場合は結果がLeftになること" in {
+      Either.traverseAll(
+        List(1, 2, 3),
+        a =>
+          if (a % 2 != 0) Left(List("error: value => " + a))
+          else Right(a.toString)
+      ) `shouldBe` Left(List("error: value => 1", "error: value => 3"))
+    }
+  }
+
 end EitherTest
