@@ -116,4 +116,17 @@ class EitherTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "sequenceAll" - {
+    "リストの中にLeftがある場合は、Leftの値のリストを返すこと" in {
+      Either.sequenceAll(
+        List(Right("ok"), Left(List("error1")), Left(List("error2")))
+      ) `shouldBe` Left(List("error1", "error2"))
+    }
+    "リストの中が全てRightの場合は、Right型になり、値はListになること" in {
+      Either.sequenceAll(
+        List(Right("ok1"), Right("ok2"), Right("ok3"))
+      ) `shouldBe` Right(List("ok1", "ok2", "ok3"))
+    }
+  }
+
 end EitherTest
