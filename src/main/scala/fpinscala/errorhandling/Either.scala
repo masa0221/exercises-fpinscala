@@ -66,7 +66,9 @@ object Either:
   def traverseAll[E, A, B](
       es: List[A],
       f: A => Either[List[E], B]
-  ): Either[List[E], List[B]] = ???
+  ): Either[List[E], List[B]] = es match
+    case Nil    => Right(Nil)
+    case h :: t => map2All(f(h), traverseAll(t, f), (_ :: _))
 
   def sequenceAll[E, A](
       es: List[Either[List[E], A]]
