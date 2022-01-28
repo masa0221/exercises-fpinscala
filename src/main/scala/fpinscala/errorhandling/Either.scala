@@ -73,12 +73,5 @@ object Either:
   def sequenceAll[E, A](
       es: List[Either[List[E], A]]
   ): Either[List[E], List[A]] = es match
-    case Nil => Right(Nil)
-    case h :: t =>
-      h match
-        case Left(e) =>
-          sequenceAll(t) match
-            case Left(ee) => Left(e ::: ee)
-            case _        => Left(e)
-        case Right(a) =>
-          h.flatMap(a => sequenceAll(t).flatMap(aa => Right(a :: aa)))
+    case Nil    => Right(Nil)
+    case h :: t => map2All(h, sequenceAll(t), _ :: _)
