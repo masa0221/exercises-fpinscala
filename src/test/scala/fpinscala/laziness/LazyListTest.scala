@@ -5,9 +5,9 @@ import org.scalatest.freespec.AnyFreeSpecLike
 import org.scalatest.matchers.should.Matchers
 
 class LazyListTest extends AnyFreeSpecLike with Matchers:
-  "unimplemnts" - {
-    "test case" in {
-      true `shouldBe` true
+  "toList" - {
+    "値が展開されたListを取得できること" in {
+      LazyList(1,2,3,4,5).toList `shouldBe` List(1,2,3,4,5)
     }
   }
 
