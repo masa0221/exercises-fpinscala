@@ -4,7 +4,9 @@ enum LazyList[+A]:
   case Empty
   case Cons(h: () => A, t: () => LazyList[A])
 
-  def toList: List[A] = ???
+  def toList: List[A] = this match
+    case Empty      => Nil
+    case Cons(h, t) => h() :: t().toList
 
   def foldRight[B](
       z: => B
