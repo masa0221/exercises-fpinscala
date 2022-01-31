@@ -11,4 +11,16 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "take" - {
+    "指定した数だけリストの先頭から取得できること" in {
+      LazyList(1, 2, 3, 4, 5).take(3) `shouldBe` LazyList(1, 2, 3)
+    }
+  }
+
+  "drop" - {
+    "指定した数だけリストの先頭から取得できること" in {
+      LazyList(1, 2, 3, 4, 5).drop(3) `shouldBe` LazyList(4, 5)
+    }
+  }
+
 end LazyListTest
