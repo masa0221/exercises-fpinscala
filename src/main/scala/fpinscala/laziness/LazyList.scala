@@ -38,7 +38,12 @@ enum LazyList[+A]:
         if (cnt <= 0) Empty else LazyList.cons(h(), go(t(), cnt - 1))
     go(this, n)
 
-  def drop(n: Int): LazyList[A] = ???
+  def drop(n: Int): LazyList[A] =
+    def go(l: LazyList[A], cnt: Int): LazyList[A] = l match
+      case Empty => Empty
+      case Cons(h, t) =>
+        if (cnt <= 0) l else go(t(), cnt - 1)
+    go(this, n)
 
   def takeWhile(p: A => Boolean): LazyList[A] = ???
 
