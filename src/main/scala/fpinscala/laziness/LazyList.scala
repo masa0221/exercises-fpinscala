@@ -45,7 +45,12 @@ enum LazyList[+A]:
         if (cnt <= 0) l else go(t(), cnt - 1)
     go(this, n)
 
-  def takeWhile(p: A => Boolean): LazyList[A] = ???
+  def takeWhile(p: A => Boolean): LazyList[A] =
+    def go(l: LazyList[A]): LazyList[A] = l match
+      case Empty => Empty
+      case Cons(h, t) =>
+        if (p(h())) LazyList.cons(h(), go(t())) else go(t())
+    go(this)
 
   def forAll(p: A => Boolean): Boolean = ???
 
