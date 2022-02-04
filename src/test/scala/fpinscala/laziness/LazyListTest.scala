@@ -29,4 +29,12 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "forAll" - {
+    "指定した関数が一つでもfalseになる値を持っている場合はfalse" in {
+      LazyList(1, 2, 3, 4, 5).forAll(_ == 3) `shouldBe` false
+    }
+    "指定した関数が全てtrueになる場合はtrue" in {
+      LazyList(1, 2, 3, 4, 5).forAll(_ < 6) `shouldBe` true
+    }
+  }
 end LazyListTest
