@@ -52,7 +52,8 @@ enum LazyList[+A]:
         if (p(h())) LazyList.cons(h(), go(t())) else go(t())
     go(this)
 
-  def forAll(p: A => Boolean): Boolean = ???
+  def forAll(p: A => Boolean): Boolean =
+    foldRight(true)((a, b) => p(a) && b)
 
   def headOption: Option[A] = ???
 
