@@ -37,4 +37,13 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
       LazyList(1, 2, 3, 4, 5).forAll(_ < 6) `shouldBe` true
     }
   }
+
+  "takeWhileViaFoldRight" - {
+    "指定した関数がtrueの値だけのリストになっていること" in {
+      LazyList(1, 2, 3, 4, 5)
+        .takeWhileViaFoldRight(_ % 2 == 0)
+        .toList `shouldBe` List(2, 4)
+    }
+  }
+
 end LazyListTest
