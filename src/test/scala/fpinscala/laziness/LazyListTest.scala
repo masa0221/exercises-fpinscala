@@ -46,4 +46,13 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "headOption" - {
+    "空のリストの場合はNoneになること" in {
+      LazyList().headOption `shouldBe` None
+    }
+    "リストがある場合はリスト先頭の値がSomeで取得できること" in {
+      LazyList(1, 2, 3, 4, 5).headOption `shouldBe` Some(1)
+    }
+  }
+
 end LazyListTest
