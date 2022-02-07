@@ -66,7 +66,8 @@ enum LazyList[+A]:
 
   // 5.7 map, filter, append, flatmap using foldRight. Part of the exercise is
   // writing your own function signatures.
-  def map[B](f: A => B): LazyList[B] = ???
+  def map[B](f: A => B): LazyList[B] =
+    foldRight(LazyList.empty[B])((a, b) => LazyList.cons(f(a), b))
 
   def startsWith[B](s: LazyList[B]): Boolean = ???
 
