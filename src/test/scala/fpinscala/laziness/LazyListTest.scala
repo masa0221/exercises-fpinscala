@@ -55,4 +55,28 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "map" - {
+    "リストに対して関数が適用されていること" in {
+      LazyList(1, 2, 3, 4, 5).map(_ * 2).toList `shouldBe` List(2, 4, 6, 8, 10)
+    }
+  }
+
+  "filter" - {
+    "no implements" in {
+      true `shouldBe` true
+    }
+  }
+
+  "append" - {
+    "no implements" in {
+      true `shouldBe` true
+    }
+  }
+
+  "flatMap" - {
+    "no implements" in {
+      true `shouldBe` true
+    }
+  }
+
 end LazyListTest
