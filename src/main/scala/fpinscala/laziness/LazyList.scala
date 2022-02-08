@@ -69,6 +69,8 @@ enum LazyList[+A]:
   def map[B](f: A => B): LazyList[B] =
     foldRight(LazyList.empty[B])((a, b) => LazyList.cons(f(a), b))
 
+  def filter(f: A => Boolean): LazyList[A] = ???
+
   def startsWith[B](s: LazyList[B]): Boolean = ???
 
 object LazyList:
