@@ -74,6 +74,8 @@ enum LazyList[+A]:
       if (f(h)) Cons(() => h, () => t.filter(f)) else t.filter(f)
     )
 
+  def append[A](as: LazyList[A]): LazyList[A] = ???
+
   def startsWith[B](s: LazyList[B]): Boolean = ???
 
 object LazyList:

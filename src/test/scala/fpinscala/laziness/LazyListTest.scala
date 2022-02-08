@@ -68,8 +68,10 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
   }
 
   "append" - {
-    "no implements" in {
-      true `shouldBe` true
+    "指定したリストを末尾に追加できること" in {
+      LazyList(1, 2, 3, 4, 5)
+        .append(LazyList(6, 7, 8, 9, 10))
+        .toList `shouldBe` List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
     }
   }
 
