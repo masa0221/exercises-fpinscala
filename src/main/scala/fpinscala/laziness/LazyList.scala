@@ -76,6 +76,8 @@ enum LazyList[+A]:
 
   def append[A](as: LazyList[A]): LazyList[A] = ???
 
+  def flatMap[B](f: A => LazyList[B]): LazyList[B] = ???
+
   def startsWith[B](s: LazyList[B]): Boolean = ???
 
 object LazyList:

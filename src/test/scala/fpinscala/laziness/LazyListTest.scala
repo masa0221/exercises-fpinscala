@@ -77,7 +77,9 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
 
   "flatMap" - {
     "no implements" in {
-      true `shouldBe` true
+      LazyList(1, 2, 3, 4, 5)
+        .flatMap(a => LazyList(a, a + 1))
+        .toList `shouldBe` List(1, 2, 2, 3, 3, 4, 4, 5, 5, 6)
     }
   }
 
