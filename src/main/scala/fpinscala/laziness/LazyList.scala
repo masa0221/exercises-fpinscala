@@ -74,9 +74,11 @@ enum LazyList[+A]:
       if (f(h)) Cons(() => h, () => t.filter(f)) else t.filter(f)
     )
 
-  def append[A](as: LazyList[A]): LazyList[A] = ???
+  def append[B >: A](as: => LazyList[B]): LazyList[B] =
+    foldRight(as)((h, t) => Cons(() => h, () => t))
 
-  def flatMap[B](f: A => LazyList[B]): LazyList[B] = ???
+  def flatMap[B](f: A => LazyList[B]): LazyList[B] =
+    foldRight(LazyList.empty[B])((a, b) => f(a).append(b))
 
   def startsWith[B](s: LazyList[B]): Boolean = ???
 
