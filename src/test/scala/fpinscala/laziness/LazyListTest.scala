@@ -88,4 +88,10 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
       LazyList.continually(1).take(3).toList `shouldBe` List(1, 1, 1)
     }
   }
+
+  "from" - {
+    "指定した値から1ずつ値が加算される無限ストリームを操作できること" in {
+      LazyList.from(2).take(5).toList `shouldBe` List(2, 3, 4, 5, 6)
+    }
+  }
 end LazyListTest
