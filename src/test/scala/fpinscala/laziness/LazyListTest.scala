@@ -83,4 +83,9 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "continually" - {
+    "無限ストリームを操作できること" in {
+      LazyList.continually(1).take(3).toList `shouldBe` List(1, 1, 1)
+    }
+  }
 end LazyListTest
