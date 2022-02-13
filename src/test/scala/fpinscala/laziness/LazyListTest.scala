@@ -98,8 +98,8 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
   "unfold" - {
     "unfoldを使ってフィボナッチ数列ができること" in {
       val actual = LazyList.unfold((0, 1)) {
-        case (a, b) if (a + b <= 13) => Some((b, (b, a + b)))
-        case _                       => None
+        case (a, b) if b <= 13 => Some((b, (b, a + b)))
+        case _                 => None
       }
       actual.toList `shouldBe` List(1, 1, 2, 3, 5, 8, 13)
     }
