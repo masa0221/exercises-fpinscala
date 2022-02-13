@@ -100,4 +100,7 @@ object LazyList:
 
   def from(n: Int): LazyList[Int] = LazyList.cons(n, from(n + 1))
 
-  def unfold[A, S](state: S)(f: S => Option[(A, S)]): LazyList[A] = ???
+  def unfold[A, S](state: S)(f: S => Option[(A, S)]): LazyList[A] =
+    f(state) match
+      case None    => LazyList.empty[A]
+      case Some(v) => LazyList.cons(v._1, unfold(v._2)(f))
