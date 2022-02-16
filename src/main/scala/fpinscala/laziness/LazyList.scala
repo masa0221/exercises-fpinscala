@@ -94,12 +94,14 @@ object LazyList:
     if as.isEmpty then empty
     else cons(as.head, apply(as.tail*))
 
-  val ones: LazyList[Int] = LazyList.cons(1, ones)
+  // val ones: LazyList[Int] = LazyList.cons(1, ones)
+  val ones: LazyList[Int] = unfold(1)(s => Some((1, s)))
 
-  def continually[A](a: A): LazyList[A] = LazyList.cons(a, continually(a))
+  // def continually[A](a: A): LazyList[A] = LazyList.cons(a, continually(a))
+  def continually[A](a: A): LazyList[A] = unfold(a)(s => Some((a, s)))
 
   // def from(n: Int): LazyList[Int] = LazyList.cons(n, from(n + 1))
-  def from(n: Int): LazyList[Int] = unfold(n)(n => Some((n, n + 1)))
+  def from(n: Int): LazyList[Int] = unfold(n)(s => Some((s, s + 1)))
 
   def unfold[A, S](state: S)(f: S => Option[(A, S)]): LazyList[A] =
     f(state) match
