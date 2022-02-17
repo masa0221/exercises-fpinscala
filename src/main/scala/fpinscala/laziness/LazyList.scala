@@ -1,6 +1,8 @@
 package fpinscala.laziness
 
 enum LazyList[+A]:
+  import LazyList.*
+
   case Empty
   case Cons(h: () => A, t: () => LazyList[A])
 
@@ -67,7 +69,11 @@ enum LazyList[+A]:
   // 5.7 map, filter, append, flatmap using foldRight. Part of the exercise is
   // writing your own function signatures.
   def map[B](f: A => B): LazyList[B] =
-    foldRight(LazyList.empty[B])((a, b) => LazyList.cons(f(a), b))
+    // foldRight(LazyList.empty[B])((a, b) => LazyList.cons(f(a), b))
+    unfold(this) {
+      case Empty      => None
+      case Cons(h, t) => Some((f(h()), t()))
+    }
 
   def filter(f: A => Boolean): LazyList[A] =
     foldRight(LazyList.empty[A])((h, t) =>
