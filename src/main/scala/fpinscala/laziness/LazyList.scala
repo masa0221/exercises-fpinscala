@@ -34,11 +34,16 @@ enum LazyList[+A]:
     case Cons(h, t) => if (f(h())) Some(h()) else t().find(f)
 
   def take(n: Int): LazyList[A] =
-    def go(acc: LazyList[A], cnt: Int): LazyList[A] = acc match
-      case Empty => Empty
+    // def go(acc: LazyList[A], cnt: Int): LazyList[A] = acc match
+    //   case Empty => Empty
+    //   case Cons(h, t) =>
+    //     if (cnt <= 0) Empty else LazyList.cons(h(), go(t(), cnt - 1))
+    // go(this, n)
+    unfold(this) {
+      case Empty => None
       case Cons(h, t) =>
-        if (cnt <= 0) Empty else LazyList.cons(h(), go(t(), cnt - 1))
-    go(this, n)
+        if (n <= 0) None else Some(h(), t().take(n - 1))
+    }
 
   def drop(n: Int): LazyList[A] =
     def go(l: LazyList[A], cnt: Int): LazyList[A] = l match
