@@ -53,11 +53,18 @@ enum LazyList[+A]:
     go(this, n)
 
   def takeWhile(p: A => Boolean): LazyList[A] =
-    def go(l: LazyList[A]): LazyList[A] = l match
-      case Empty => Empty
-      case Cons(h, t) =>
-        if (p(h())) LazyList.cons(h(), go(t())) else go(t())
-    go(this)
+    // def go(l: LazyList[A]): LazyList[A] = l match
+    //   case Empty => Empty
+    //   case Cons(h, t) =>
+    //     if (p(h())) LazyList.cons(h(), go(t())) else go(t())
+    // go(this)
+    def f: LazyList[A] => Option[(A, LazyList[A])] = s =>
+      s match {
+        case Empty => None
+        case Cons(h, t) =>
+          if (p(h())) Some((h(), t().takeWhile(p))) else f(t())
+      }
+    unfold(this)(f)
 
   def forAll(p: A => Boolean): Boolean =
     foldRight(true)((a, b) => p(a) && b)
