@@ -111,6 +111,18 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
         .zipWith(LazyList(1, 2, 3, 4, 5), (a, b) => a + b)
         .toList `shouldBe` List(2, 4, 6, 8, 10)
     }
+    "指定したリストの長さに合わせたリストになること" - {
+      "元のリストが少ない場合" in {
+        LazyList(1, 2, 3)
+          .zipWith(LazyList(1, 2, 3, 4, 5), (a, b) => a + b)
+          .toList `shouldBe` List(2, 4, 6)
+      }
+      "指定したリストが少ない場合" in {
+        LazyList(1, 2, 3, 4, 5)
+          .zipWith(LazyList(1, 2, 3), (a, b) => a + b)
+          .toList `shouldBe` List(2, 4, 6)
+      }
+    }
   }
 
   "zipAll" - {

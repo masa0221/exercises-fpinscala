@@ -100,7 +100,18 @@ enum LazyList[+A]:
 
   def startsWith[B](s: LazyList[B]): Boolean = ???
 
-  def zipWith[B, C](that: LazyList[B], f: (A, B) => C): LazyList[C] = ???
+  def zipWith[B, C](that: LazyList[B], f: (A, B) => C): LazyList[C] =
+    unfold((this, that)) {
+      case (_, Empty) => None
+      case (Empty, _) => None
+      case (Cons(h1, t1), Cons(h2, t2)) =>
+        Some(
+          (
+            f(h1(), h2()),
+            (t1(), t2())
+          )
+        )
+    }
 
   def zipAll[B](that: LazyList[B]): LazyList[(Option[A], Option[B])] = ???
 
