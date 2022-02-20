@@ -104,4 +104,44 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
       actual.toList `shouldBe` List(1, 1, 2, 3, 5, 8, 13)
     }
   }
+
+  "zipWith" - {
+    "指定した関数が適応された値のリストになること" in {
+      LazyList(1, 2, 3, 4, 5)
+        .zipWith(LazyList(1, 2, 3, 4, 5), (a, b) => a + b)
+        .toList `shouldBe` List(2, 4, 6, 8, 10)
+    }
+  }
+
+  "zipAll" - {
+    "元のリストより指定したリストが多い場合は、指定したリストの数に合わせたタプルのリストになること" in {
+      LazyList(1, 2, 3).zipAll(LazyList(1, 2, 3, 4, 5)).toList `shouldBe` List(
+        (Some(1), Some(1)),
+        (Some(2), Some(2)),
+        (Some(3), Some(3)),
+        (None, Some(4)),
+        (None, Some(5))
+      )
+    }
+    "元のリストより指定したリストが少ない場合は、元のリストの数に合わせたタプルのリストになること" in {
+      LazyList(1, 2, 3, 4, 5).zipAll(LazyList(1, 2, 3)).toList `shouldBe` List(
+        (Some(1), Some(1)),
+        (Some(2), Some(2)),
+        (Some(3), Some(3)),
+        (Some(4), None),
+        (Some(5), None)
+      )
+    }
+    "元のリストと指定したリストが同じ数の場合は、値が全てSomeのタプルのリストになること" in {
+      LazyList(1, 2, 3, 4, 5)
+        .zipAll(LazyList(1, 2, 3, 4, 5))
+        .toList `shouldBe` List(
+        (Some(1), Some(1)),
+        (Some(2), Some(2)),
+        (Some(3), Some(3)),
+        (Some(4), Some(4)),
+        (Some(5), Some(5))
+      )
+    }
+  }
 end LazyListTest

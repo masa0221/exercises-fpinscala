@@ -100,6 +100,10 @@ enum LazyList[+A]:
 
   def startsWith[B](s: LazyList[B]): Boolean = ???
 
+  def zipWith[B, C](that: LazyList[B], f: (A, B) => C): LazyList[C] = ???
+
+  def zipAll[B](that: LazyList[B]): LazyList[(Option[A], Option[B])] = ???
+
 object LazyList:
   def cons[A](hd: => A, tl: => LazyList[A]): LazyList[A] =
     lazy val head = hd
