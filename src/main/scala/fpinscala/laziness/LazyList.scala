@@ -113,7 +113,31 @@ enum LazyList[+A]:
         )
     }
 
-  def zipAll[B](that: LazyList[B]): LazyList[(Option[A], Option[B])] = ???
+  def zipAll[B](that: LazyList[B]): LazyList[(Option[A], Option[B])] =
+    unfold((this, that)) {
+      case (Empty, Empty) => None
+      case (Cons(h, t), Empty) =>
+        Some(
+          (
+            (Some(h()), None),
+            (t(), Empty)
+          )
+        )
+      case (Empty, Cons(h, t)) =>
+        Some(
+          (
+            (None, Some(h())),
+            (Empty, t())
+          )
+        )
+      case (Cons(h1, t1), Cons(h2, t2)) =>
+        Some(
+          (
+            ((Some(h1()), Some(h2()))),
+            (t1(), t2())
+          )
+        )
+    }
 
 object LazyList:
   def cons[A](hd: => A, tl: => LazyList[A]): LazyList[A] =
