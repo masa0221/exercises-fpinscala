@@ -156,4 +156,13 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
       )
     }
   }
+
+  "startsWith" - {
+    "指定した値がリストの接頭辞と一致する場合はtrue" in {
+      LazyList(1, 2, 3, 4, 5).startsWith(LazyList(1, 2)) `shouldBe` true
+    }
+    "指定した値がリストの接頭辞と一致しない場合はfalse" in {
+      LazyList(1, 2, 3, 4, 5).startsWith(LazyList(5, 2)) `shouldBe` false
+    }
+  }
 end LazyListTest
