@@ -98,7 +98,8 @@ enum LazyList[+A]:
   def flatMap[B](f: A => LazyList[B]): LazyList[B] =
     foldRight(LazyList.empty[B])((a, b) => f(a).append(b))
 
-  def startsWith[B](s: LazyList[B]): Boolean = ???
+  def startsWith[B](s: LazyList[B]): Boolean =
+    this.zipWith(s, (a, b) => a == b).forAll(_ == true)
 
   def zipWith[B, C](that: LazyList[B], f: (A, B) => C): LazyList[C] =
     unfold((this, that)) {
