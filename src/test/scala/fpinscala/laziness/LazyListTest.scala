@@ -165,4 +165,16 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
       LazyList(1, 2, 3, 4, 5).startsWith(LazyList(5, 2)) `shouldBe` false
     }
   }
+
+  "tails" - {
+    "LazyListの接尾辞が取得できること" in {
+      LazyList(1, 2, 3, 4, 5).tails.toList.map(_.toList) `shouldBe` List(
+        List(2, 3, 4, 5),
+        List(3, 4, 5),
+        List(4, 5),
+        List(5),
+        List()
+      )
+    }
+  }
 end LazyListTest
