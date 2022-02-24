@@ -177,4 +177,10 @@ class LazyListTest extends AnyFreeSpecLike with Matchers:
       )
     }
   }
+
+  "scanRight" - {
+    "リストの値に関数を適応できていること" in {
+      LazyList(1, 2, 3).scanRight(0)(_ + _).toList `shouldBe` List(6, 5, 3, 0)
+    }
+  }
 end LazyListTest

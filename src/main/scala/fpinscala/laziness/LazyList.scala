@@ -145,6 +145,8 @@ enum LazyList[+A]:
     case Cons(h, t) => Some(t(), t())
   }
 
+  def scanRight[B >: A, C](z: B)(f: (A, B) => C): LazyList[C] = ???
+
 object LazyList:
   def cons[A](hd: => A, tl: => LazyList[A]): LazyList[A] =
     lazy val head = hd
