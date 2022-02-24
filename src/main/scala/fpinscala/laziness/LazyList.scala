@@ -145,7 +145,15 @@ enum LazyList[+A]:
     case Cons(h, t) => Some(t(), t())
   }
 
-  def scanRight[B >: A, C](z: B)(f: (A, B) => C): LazyList[C] = ???
+  def scanRight[B](z: B)(f: (A, => B) => B): LazyList[B] =
+    // @see https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/laziness/16.answer.md
+    // @TODO 要復習
+    foldRight((z, LazyList(z)))((a, b) => {
+      lazy val b1 = b
+      val b2 = f(a, b1._1)
+      (b2, cons(b2, b1._2))
+    })._2
+  
 
 object LazyList:
   def cons[A](hd: => A, tl: => LazyList[A]): LazyList[A] =
