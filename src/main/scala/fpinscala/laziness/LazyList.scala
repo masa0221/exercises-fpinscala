@@ -153,7 +153,6 @@ enum LazyList[+A]:
       val b2 = f(a, b1._1)
       (b2, cons(b2, b1._2))
     })._2
-  
 
 object LazyList:
   def cons[A](hd: => A, tl: => LazyList[A]): LazyList[A] =

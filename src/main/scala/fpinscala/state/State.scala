@@ -33,7 +33,15 @@ object RNG:
       (f(a), rng2)
     }
 
-  def nonNegativeInt(rng: RNG): (Int, RNG) = ???
+  def nonNegativeInt(rng: RNG): (Int, RNG) =
+    // scala> Int.MaxValue
+    // val res0: Int = 2147483647
+    // scala> Int.MinValue
+    // val res1: Int = -2147483648
+    // 0 ~ 2147483647 を返すようにするには-2147483648の値だけ絶対値にしても対応できない
+    val (n, rng2) = rng.nextInt
+    val res = if (n < 0) (n + 1) * -1 else n
+    (res, rng2)
 
   def double(rng: RNG): (Double, RNG) = ???
 
