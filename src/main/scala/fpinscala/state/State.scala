@@ -43,7 +43,20 @@ object RNG:
     val res = if (n < 0) (n + 1) * -1 else n
     (res, rng2)
 
-  def double(rng: RNG): (Double, RNG) = ???
+  def double(rng: RNG): (Double, RNG) =
+    val (n, rng2) = nonNegativeInt(rng)
+    // こんなことをすると出力までにめっちゃ時間かかる
+    // val dn = n.toDouble
+    // if (dn >= 0 && dn < 1) (dn, rng2) else double(rng2)
+    //
+    // 模範解答
+    // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/state/02.answer.md
+    // scala> Int.MaxValue / Int.MaxValue.toDouble
+    // val res3: Double = 1.0
+    // scala> Int.MaxValue / (Int.MaxValue.toDouble + 1)
+    // val res4: Double = 0.9999999995343387
+    // +1 しているのは上記のようにInt.MaxValueが出た時の対処(1.0を含めたくないため)
+    ((n / (Int.MaxValue.toDouble + 1)), rng2)
 
   def intDouble(rng: RNG): ((Int, Double), RNG) = ???
 

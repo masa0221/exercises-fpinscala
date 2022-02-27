@@ -11,7 +11,14 @@ class StateTest extends AnyFreeSpecLike with Matchers:
       // scala> fpinscala.state.RNG.Simple(1).nextInt
       // val res0: (Int, fpinscala.state.RNG) = (384748,Simple(25214903928))
       val (expected, rng) = RNG.nonNegativeInt(RNG.Simple(1))
-      expected `shouldBe` 384748
+      expected should equal(384748)
+    }
+  }
+
+  "double" - {
+    "0から1未満までの値になること" in {
+      val (expected, rng) = RNG.double(RNG.Simple(1))
+      expected should (be >= 0.0 and be < 1.0)
     }
   }
 end StateTest
