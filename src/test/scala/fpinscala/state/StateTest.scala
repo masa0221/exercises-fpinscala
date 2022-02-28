@@ -29,4 +29,12 @@ class StateTest extends AnyFreeSpecLike with Matchers:
       expectedDouble should (be >= 0.0 and be < 1.0)
     }
   }
+
+  "doubleInt" - {
+    "double とint のタプルが取得できること" in {
+      val ((expectedDouble, expectedInt), rng) = RNG.doubleInt(RNG.Simple(1))
+      expectedDouble should (be >= 0.0 and be < 1.0)
+      expectedInt should equal(384748)
+    }
+  }
 end StateTest

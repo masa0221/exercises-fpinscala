@@ -63,7 +63,10 @@ object RNG:
     val (dn, rng3) = double(rng2)
     ((in, dn), rng3)
 
-  def doubleInt(rng: RNG): ((Double, Int), RNG) = ???
+  def doubleInt(rng: RNG): ((Double, Int), RNG) =
+    val (dn, rng2) = double(rng)
+    val (in, rng3) = nonNegativeInt(rng)
+    ((dn, in), rng3)
 
   def double3(rng: RNG): ((Double, Double, Double), RNG) = ???
 
