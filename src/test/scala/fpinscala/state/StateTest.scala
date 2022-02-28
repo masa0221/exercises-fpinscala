@@ -37,4 +37,13 @@ class StateTest extends AnyFreeSpecLike with Matchers:
       expectedInt should equal(384748)
     }
   }
+
+  "double3" - {
+    "double 3つのタプルが取得できること" in {
+      val ((d1, d2, d3), rng) = RNG.double3(RNG.Simple(1))
+      d1 should (be >= 0.0 and be < 1.0)
+      d2 should (be >= 0.0 and be < 1.0)
+      d3 should (be >= 0.0 and be < 1.0)
+    }
+  }
 end StateTest
