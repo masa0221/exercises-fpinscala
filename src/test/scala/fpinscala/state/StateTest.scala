@@ -46,4 +46,14 @@ class StateTest extends AnyFreeSpecLike with Matchers:
       d3 should (be >= 0.0 and be < 1.0)
     }
   }
+
+  "ints" - {
+    "ランダムな値のリストを取得できること" in {
+      val (expected, rng) = RNG.ints(5)(RNG.Simple(1))
+      expected.length should equal(5)
+      expected should equal(
+        List(384748, 1151252338, 549383846, 1612966641, 883454041)
+      )
+    }
+  }
 end StateTest
