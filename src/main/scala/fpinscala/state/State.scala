@@ -58,6 +58,9 @@ object RNG:
     // +1 しているのは上記のようにInt.MaxValueが出た時の対処(1.0を含めたくないため)
     ((n / (Int.MaxValue.toDouble + 1)), rng2)
 
+  def doubleViaMap: Rand[Double] =
+    map(nonNegativeInt)(n => n / (Int.MaxValue.toDouble + 1))
+
   def intDouble(rng: RNG): ((Int, Double), RNG) =
     val (in, rng2) = nonNegativeInt(rng)
     val (dn, rng3) = double(rng2)

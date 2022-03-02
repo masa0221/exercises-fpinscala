@@ -56,4 +56,12 @@ class StateTest extends AnyFreeSpecLike with Matchers:
       )
     }
   }
+
+  "doubleViaMap" - {
+    "0から1未満までの値になること" in {
+      val (expected, rng) = RNG.doubleViaMap(RNG.Simple(1))
+      expected should (be >= 0.0 and be < 1.0)
+    }
+  }
+
 end StateTest
