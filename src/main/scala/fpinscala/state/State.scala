@@ -94,7 +94,18 @@ object RNG:
       (f(a, b), rngb)
     }
 
-  def sequence[A](rs: List[Rand[A]]): Rand[List[A]] = ???
+  def sequence[A](rs: List[Rand[A]]): Rand[List[A]] =
+    def go(rs: List[Rand[A]], rng: RNG): (List[A], RNG) =
+      rs match
+        case Nil => (Nil, rng)
+        case h :: t => {
+          val (a, rng2) = h(rng)
+          val (as, rng3) = go(t, rng2)
+          (a :: as, rng3)
+        }
+    rng => {
+      go(rs, rng)
+    }
 
   def flatMap[A, B](r: Rand[A])(f: A => Rand[B]): Rand[B] = ???
 

@@ -73,4 +73,20 @@ class StateTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "sequence" - {
+    "指定したRandのリストが結合されたRandを取得できること" in {
+      val rs = List(
+        RNG.nonNegativeInt,
+        RNG.nonNegativeInt,
+        RNG.nonNegativeInt,
+        RNG.nonNegativeInt,
+        RNG.nonNegativeInt
+      )
+      val (expected, rng2) = RNG.sequence(rs)(RNG.Simple(1))
+      expected should equal(
+        List(384748, 1151252338, 549383846, 1612966641, 883454041)
+      )
+    }
+  }
+
 end StateTest
