@@ -74,7 +74,7 @@ class StateTest extends AnyFreeSpecLike with Matchers:
   }
 
   "sequence" - {
-    "指定したRandのリストが結合されたRandを取得できること" in {
+    "指定した関数のリストの結果がリストになって取得できること" in {
       val rs = List(
         RNG.nonNegativeInt,
         RNG.nonNegativeInt,
