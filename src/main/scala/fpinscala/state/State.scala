@@ -95,17 +95,22 @@ object RNG:
     }
 
   def sequence[A](rs: List[Rand[A]]): Rand[List[A]] =
-    def go(rs: List[Rand[A]], rng: RNG): (List[A], RNG) =
-      rs match
-        case Nil => (Nil, rng)
-        case h :: t => {
-          val (a, rng2) = h(rng)
-          val (as, rng3) = go(t, rng2)
-          (a :: as, rng3)
-        }
-    rng => {
-      go(rs, rng)
-    }
+    // わいの実装・・・
+    // def go(rs: List[Rand[A]], rng: RNG): (List[A], RNG) =
+    //   rs match
+    //     case Nil => (Nil, rng)
+    //     case h :: t => {
+    //       val (a, rng2) = h(rng)
+    //       val (as, rng3) = go(t, rng2)
+    //       (a :: as, rng3)
+    //     }
+    // rng => {
+    //   go(rs, rng)
+    // }
+    // 答えみた実装
+    // TODO: 見直し
+    // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/state/07.answer.md
+    rs.foldRight(unit(List[A]()))((f, acc) => map2(f, acc)(_ :: _))
 
   def flatMap[A, B](r: Rand[A])(f: A => Rand[B]): Rand[B] = ???
 
