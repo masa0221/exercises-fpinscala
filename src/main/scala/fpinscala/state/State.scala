@@ -86,6 +86,9 @@ object RNG:
       (Nil, rng)
     }
 
+  def intsViaSequence(count: Int)(rng: RNG): (List[Int], RNG) =
+    sequence(List.fill(count)(nonNegativeInt))(rng)
+
   def map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
     // RNG => (A, RNG)
     rng => {
