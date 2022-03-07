@@ -115,7 +115,11 @@ object RNG:
     // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/state/07.answer.md
     rs.foldRight(unit(List[A]()))((f, acc) => map2(f, acc)(_ :: _))
 
-  def flatMap[A, B](r: Rand[A])(f: A => Rand[B]): Rand[B] = ???
+  def flatMap[A, B](r: Rand[A])(f: A => Rand[B]): Rand[B] =
+    rng => {
+      val (a, rng2) = r(rng)
+      f(a)(rng2)
+    }
 
 opaque type State[S, +A] = S => (A, S)
 
