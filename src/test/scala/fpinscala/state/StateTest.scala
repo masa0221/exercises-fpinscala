@@ -99,4 +99,11 @@ class StateTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "flatMap" - {
+    "flatMapの実装が動くこと" in {
+      val (expected, rng) =
+        RNG.flatMap(RNG.nonNegativeInt)(a => RNG.unit(a + 1))(RNG.Simple(1))
+      expected should equal(384749)
+    }
+  }
 end StateTest
