@@ -121,6 +121,8 @@ object RNG:
       f(a)(rng2)
     }
 
+  def nonNegativeLessThan(n: Int): Rand[Int] = ???
+
 opaque type State[S, +A] = S => (A, S)
 
 object State:
