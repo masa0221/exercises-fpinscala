@@ -108,7 +108,9 @@ class StateTest extends AnyFreeSpecLike with Matchers:
   }
 
   "nonNegativeLessThan" - {
-    val (expected, rng) = RNG.nonNegativeLessThan(2)(RNG.Simple(1))
-    expected should equal(1)
+    "指定した値以下の数値になること" in {
+      val (expected, rng) = RNG.nonNegativeLessThan(1)(RNG.Simple(1))
+      expected should equal(0)
+    }
   }
 end StateTest
