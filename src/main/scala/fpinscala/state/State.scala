@@ -33,6 +33,8 @@ object RNG:
       (f(a), rng2)
     }
 
+  def mapViaFlatMap[A, B](s: Rand[A])(f: A => B): Rand[B] = ???
+
   def nonNegativeInt(rng: RNG): (Int, RNG) =
     // scala> Int.MaxValue
     // val res0: Int = 2147483647
@@ -96,6 +98,10 @@ object RNG:
       val (b, rngb) = rb(rnga)
       (f(a, b), rngb)
     }
+
+  def map2ViaFlatMap[A, B, C](ra: Rand[A], rb: Rand[B])(
+      f: (A, B) => C
+  ): Rand[C] = ???
 
   def sequence[A](rs: List[Rand[A]]): Rand[List[A]] =
     // わいの実装・・・

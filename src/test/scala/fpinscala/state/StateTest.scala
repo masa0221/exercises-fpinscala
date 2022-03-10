@@ -113,4 +113,24 @@ class StateTest extends AnyFreeSpecLike with Matchers:
       expected should equal(0)
     }
   }
+
+  "mapViaFlatMap" - {
+    "二つのRandの結果に対して関数を適用できること" in {
+      val (expected, rng) =
+        RNG.mapViaFlatMap(RNG.nonNegativeInt)(_ + 1)(RNG.Simple(1))
+      expected should equal(384748)
+    }
+  }
+
+  "map2ViaFlatMap" - {
+    "二つのRandの結果に対して関数を適用できること" in {
+      val (expected, rng) =
+        RNG.map2ViaFlatMap(RNG.nonNegativeInt, RNG.nonNegativeInt)(_ + _)(
+          RNG.Simple(1)
+        )
+      // 1151637086 = 384748 + 1151252338
+      expected should equal(1151637086)
+    }
+  }
+
 end StateTest
