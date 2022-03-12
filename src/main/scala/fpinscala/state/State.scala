@@ -140,16 +140,21 @@ object State:
   extension [S, A](underlying: State[S, A])
     def run(s: S): (A, S) = underlying(s)
 
-    def map[B](f: A => B): State[S, B] =
-      ???
+    def map[B](f: A => B): State[S, B] = flatMap(a => unit(f(a)))
 
     def map2[B, C](sb: State[S, B])(f: (A, B) => C): State[S, C] =
-      ???
+      flatMap(a => sb.flatMap(b => unit(f(a, b))))
 
     def flatMap[B](f: A => State[S, B]): State[S, B] =
-      ???
+      s => {
+        val (a, s2) = run(s)
+        f(a)(s2)
+      }
 
   def apply[S, A](f: S => (A, S)): State[S, A] = f
+
+  def unit[S, A](a: A): State[S, A] =
+    State(s => (a, s))
 
 enum Input:
   case Coin, Turn
