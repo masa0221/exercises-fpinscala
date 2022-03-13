@@ -163,4 +163,25 @@ class StateTest extends AnyFreeSpecLike with Matchers:
       }
     }
   }
+
+  "Candy" - {
+    import Input.*
+    "入力した操作に従って正常に出力されること" in {
+      val machine = Machine(locked = true, candies = 5, coins = 10)
+      val inputList = List(
+        Coin, // candies: 5, coins: 11 (locked = false)
+        Turn, // candies: 4, coins: 11 (locked = true)
+        Coin, // candies: 4, coins: 12 (locked = false)
+        Turn, // candies: 3, coins: 12 (locked = true)
+        Turn, // candies: 3, coins: 12 (locked = true)  // 何も起こらない
+        Coin, // candies: 3, coins: 13 (locked = false)
+        Coin, // candies: 3, coins: 13 (locked = false) // 何も起こらない
+        Turn, // candies: 2, coins: 13 (locked = true)
+        Coin, // candies: 2, coins: 14 (locked = false)
+        Turn // candies: 1, coins: 14 (locked = true)
+      )
+      val (machine2, expected) = Candy.simulateMachine(inputList).run(machine)
+      expected should be equals ((14, 1))
+    }
+  }
 end StateTest
