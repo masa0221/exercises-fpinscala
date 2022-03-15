@@ -162,4 +162,6 @@ enum Input:
 case class Machine(locked: Boolean, candies: Int, coins: Int)
 
 object Candy:
-  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = ???
+    // TODO: 分からんのでこれ見ながら明日やる
+    // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/state/11.answer.md
+    def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = ???
