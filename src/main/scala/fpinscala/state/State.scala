@@ -156,6 +156,7 @@ object State:
   def unit[S, A](a: A): State[S, A] =
     State(s => (a, s))
 
+
 enum Input:
   case Coin, Turn
 
@@ -166,9 +167,6 @@ object Candy:
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/state/11.answer.md
   // 全体的にわからんので何がわからないのかメモる
 
-  // TODO: 以下の書き方じゃ無いのはナゼだろう？
-  // def update(): (s: Machine) = s => {} だとダメらしい
-  // Declaration of method update not allowed here: only classes can have declared but undefined members
   def update = (i: Input) => (s: Machine) =>
     (i, s) match {
       case (_, Machine(_, 0, _)) => s
@@ -179,6 +177,11 @@ object Candy:
       case (Turn, Machine(false, candy, coin)) =>
         Machine(true, candy - 1, coin)
     }
+
+  // TODO: 分からん
+  def sequence[S, A](rs: List[State[S, A]]): State[S, List[A]] = ???
+    // rs.foldRight(State.unit(List[A]()))((f, acc) => acc.flatMap(f
+
 
   def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = for {
     // TODO: sequence が無いってエラーが出る。他の関数も何もわからんｗ
