@@ -151,10 +151,23 @@ object State:
         f(a)(s2)
       }
 
+    def sequence(rs: List[State[S, A]]): State[S, List[A]] =
+      rs.foldRight(State.unit(List[A]()))((f, acc) => f.map2(acc)(_ :: _))
+
   def apply[S, A](f: S => (A, S)): State[S, A] = f
 
   def unit[S, A](a: A): State[S, A] =
     State(s => (a, s))
+
+  def get[S]: State[S, S] = State(s => (s, s))
+
+  def set[S](s: S): State[S, Unit] = State(_ => ((), s))
+
+  def modify[S](f: S => S): State[S, Unit] = for {
+    s <- get
+    _ <- set(f(s))
+  } yield ()
+
 
 
 enum Input:
@@ -164,6 +177,7 @@ case class Machine(locked: Boolean, candies: Int, coins: Int)
 
 object Candy:
   import Input.*
+  import State.*
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/state/11.answer.md
   // 全体的にわからんので何がわからないのかメモる
 
@@ -178,13 +192,8 @@ object Candy:
         Machine(true, candy - 1, coin)
     }
 
-  // TODO: 分からん
-  def sequence[S, A](rs: List[State[S, A]]): State[S, List[A]] = ???
-    // rs.foldRight(State.unit(List[A]()))((f, acc) => acc.flatMap(f
-
-
   def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = for {
-    // TODO: sequence が無いってエラーが出る。他の関数も何もわからんｗ
-    _ <- sequence(inputs.map(modify[Machine] _ compose update))
+    // TODO: compose がわからん
+    _ <- sequence(inputs.map(a => modify[Machine](a compose update)))
     s <- get
   } yield (s.coins, s.candies)
