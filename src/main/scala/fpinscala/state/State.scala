@@ -151,7 +151,6 @@ object State:
         f(a)(s2)
       }
 
-
   def apply[S, A](f: S => (A, S)): State[S, A] = f
 
   def unit[S, A](a: A): State[S, A] =
@@ -178,7 +177,6 @@ object Candy:
   import Input.*
   import State.*
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/state/11.answer.md
-  // 全体的にわからんので何がわからないのかメモる
 
   def update = (i: Input) =>
     (s: Machine) =>
@@ -193,7 +191,9 @@ object Candy:
       }
 
   def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = for {
-    // TODO: compose で実装する
-    _ <- sequence(inputs.map(update).map(modify[Machine]))
+    // _ <- sequence(inputs.map(update).map(modify[Machine]))
+    // _ <- sequence(inputs.map(modify[Machine] compose update))
+    // andThenの方が直感的に見やすい
+    _ <- sequence(inputs.map(update andThen modify[Machine]))
     s <- get
   } yield (s.coins, s.candies)
