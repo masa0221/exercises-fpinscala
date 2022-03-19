@@ -180,19 +180,21 @@ class StateTest extends AnyFreeSpecLike with Matchers:
         Coin, // candies: 2, coins: 14 (locked = false)
         Turn // candies: 1, coins: 14 (locked = true)
       )
-      val ((coins, candies), machine2) = Candy.simulateMachine(inputList).run(machine)
-      coins should equal (14)
-      candies should equal (1)
+      val ((coins, candies), machine2) =
+        Candy.simulateMachine(inputList).run(machine)
+      coins should equal(14)
+      candies should equal(1)
     }
     "売り切れた自動販売機は入力を全て無視すること" in {
       val machine = Machine(locked = true, candies = 0, coins = 1)
       val inputList = List(
         Turn, // candies: 0, coins: 1 (locked = true) // 何も起こらない
-        Coin, // candies: 0, coins: 1 (locked = true) // 何も起こらない
+        Coin // candies: 0, coins: 1 (locked = true) // 何も起こらない
       )
-      val ((coins, candies), machine2) = Candy.simulateMachine(inputList).run(machine)
-      coins should equal (1)
-      candies should equal (0)
+      val ((coins, candies), machine2) =
+        Candy.simulateMachine(inputList).run(machine)
+      coins should equal(1)
+      candies should equal(0)
     }
   }
 end StateTest

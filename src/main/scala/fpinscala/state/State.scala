@@ -151,13 +151,14 @@ object State:
         f(a)(s2)
       }
 
-    def sequence(rs: List[State[S, A]]): State[S, List[A]] =
-      rs.foldRight(State.unit(List[A]()))((f, acc) => f.map2(acc)(_ :: _))
 
   def apply[S, A](f: S => (A, S)): State[S, A] = f
 
   def unit[S, A](a: A): State[S, A] =
     State(s => (a, s))
+
+  def sequence[S, A](rs: List[State[S, A]]): State[S, List[A]] =
+    rs.foldRight(unit[S, List[A]](List()))((f, acc) => f.map2(acc)(_ :: _))
 
   def get[S]: State[S, S] = State(s => (s, s))
 
@@ -167,8 +168,6 @@ object State:
     s <- get
     _ <- set(f(s))
   } yield ()
-
-
 
 enum Input:
   case Coin, Turn
@@ -181,19 +180,20 @@ object Candy:
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/state/11.answer.md
   // 全体的にわからんので何がわからないのかメモる
 
-  def update = (i: Input) => (s: Machine) =>
-    (i, s) match {
-      case (_, Machine(_, 0, _)) => s
-      case (Coin, Machine(false, _, _)) => s
-      case (Turn, Machine(true, _, _)) => s
-      case (Coin, Machine(true, candy, coin)) =>
-        Machine(false, candy, coin + 1)
-      case (Turn, Machine(false, candy, coin)) =>
-        Machine(true, candy - 1, coin)
-    }
+  def update = (i: Input) =>
+    (s: Machine) =>
+      (i, s) match {
+        case (_, Machine(_, 0, _))        => s
+        case (Coin, Machine(false, _, _)) => s
+        case (Turn, Machine(true, _, _))  => s
+        case (Coin, Machine(true, candy, coin)) =>
+          Machine(false, candy, coin + 1)
+        case (Turn, Machine(false, candy, coin)) =>
+          Machine(true, candy - 1, coin)
+      }
 
   def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = for {
-    // TODO: compose がわからん
-    _ <- sequence(inputs.map(a => modify[Machine](a compose update)))
+    // TODO: compose で実装する
+    _ <- sequence(inputs.map(update).map(modify[Machine]))
     s <- get
   } yield (s.coins, s.candies)
