@@ -8,7 +8,10 @@ object MyPar:
     MyPar(() => value)
 
   def get[A](a: MyPar[A]): A = a.value()
+end MyPar
 
+object MyExamples:
+  import MyPar.*
   // def sum(ints: Seq[Int]): Int =
   //   ints.foldLeft(0)((a, b) => a + b)
 
@@ -21,9 +24,4 @@ object MyPar:
       val sumL: MyPar[Int] = MyPar.unit(sum(l))
       val sumR: MyPar[Int] = MyPar.unit(sum(r))
       MyPar.get(sumL) + MyPar.get(sumR)
-
-end MyPar
-
-object MyExamples:
-  import MyPar.*
 end MyExamples
