@@ -9,7 +9,9 @@ object MyPar:
 
   def get[A](a: MyPar[A]): A = a.value()
 
-  def map2[A, B, C](a: MyPar[A], b: MyPar[B])(f: (A, B) => C): MyPar[C] = ???
+  def map2[A, B, C](a: MyPar[A], b: MyPar[B])(f: (A, B) => C): MyPar[C] =
+    unit(f(get(a), get(b)))
+
 end MyPar
 
 object MyExamples:
@@ -19,8 +21,7 @@ object MyExamples:
 
   // IndexedSeq: Vector などのスーパークラス
   def sum(ints: IndexedSeq[Int]): MyPar[Int] =
-    if (ints.size <= 1)
-      MyPar.unit(ints.headOption.getOrElse(0))
+    if (ints.size <= 1) MyPar.unit(ints.headOption.getOrElse(0))
     else
       // 半部に分けて計算させる
       val (l, r) = ints.splitAt(ints.length / 2)
