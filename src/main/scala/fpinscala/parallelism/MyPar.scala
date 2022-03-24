@@ -12,6 +12,8 @@ object MyPar:
   def map2[A, B, C](a: MyPar[A], b: MyPar[B])(f: (A, B) => C): MyPar[C] =
     unit(f(get(a), get(b)))
 
+  def fork[A](a: => MyPar[A]): MyPar[A] = ???
+
 end MyPar
 
 object MyExamples:
@@ -28,5 +30,5 @@ object MyExamples:
       // val sumL: MyPar[Int] = MyPar.unit(sum(l))
       // val sumR: MyPar[Int] = MyPar.unit(sum(r))
       // MyPar.get(sumL) + MyPar.get(sumR)
-      MyPar.map2(sum(l), sum(r))(_ + _)
+      MyPar.map2(MyPar.fork(sum(l)), MyPar.fork(sum(r)))(_ + _)
 end MyExamples
