@@ -9,7 +9,7 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
     "sum" - {
       "リストの合計を取得できること" in {
         val myPar = MyExamples.sum(IndexedSeq(1, 2, 3, 4, 5))
-        MyPar.get(myPar) should equal(15)
+        MyPar.run(myPar) should equal(15)
       }
     }
   }

@@ -7,15 +7,15 @@ object MyPar:
 
   def lazyUnit[A](a: => A): MyPar[A] = fork(unit(a))
 
-  def get[A](a: MyPar[A]): A = a.value()
-
   def map2[A, B, C](a: MyPar[A], b: MyPar[B])(f: (A, B) => C): MyPar[C] =
-    unit(f(get(a), get(b)))
+    unit(f(run(a), run(b)))
 
   def fork[A](a: => MyPar[A]): MyPar[A] =
     // TODO: forkの実装がわからん
     lazy val value = a
-    MyPar(() => get(value))
+    MyPar(() => run(value))
+
+  def run[A](a: MyPar[A]): A = a.value()
 
 end MyPar
 
