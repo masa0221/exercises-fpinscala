@@ -3,16 +3,19 @@ package fpinscala.parallelism
 case class MyPar[A](value: () => A)
 
 object MyPar:
-  def unit[A](a: => A): MyPar[A] =
-    lazy val value = a
-    MyPar(() => value)
+  def unit[A](a: A): MyPar[A] = MyPar(() => a)
+
+  def lazyUnit[A](a: => A): MyPar[A] = fork(unit(a))
 
   def get[A](a: MyPar[A]): A = a.value()
 
   def map2[A, B, C](a: MyPar[A], b: MyPar[B])(f: (A, B) => C): MyPar[C] =
     unit(f(get(a), get(b)))
 
-  def fork[A](a: => MyPar[A]): MyPar[A] = ???
+  def fork[A](a: => MyPar[A]): MyPar[A] =
+    // TODO: forkの実装がわからん
+    lazy val value = a
+    MyPar(() => get(value))
 
 end MyPar
 
