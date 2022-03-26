@@ -8,7 +8,7 @@ object MyPar:
   def lazyUnit[A](a: => A): MyPar[A] = fork(unit(a))
 
   def map2[A, B, C](a: MyPar[A], b: MyPar[B])(f: (A, B) => C): MyPar[C] =
-    unit(f(run(a), run(b)))
+    lazyUnit(f(run(a), run(b)))
 
   def fork[A](a: => MyPar[A]): MyPar[A] =
     // TODO: forkの実装がわからん
