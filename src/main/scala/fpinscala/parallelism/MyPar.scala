@@ -10,11 +10,41 @@ case class MyPar[A](value: () => A)
 object MyPar:
   type MyPar[A] = ExecutorService => UnitFuture[A]
 
+
+
   case class UnitFuture[A](value: A) extends Future[A] {
+    extension [A](pa: MyPar[A]) def map2Timeouts[B,C](pb: MyPar[B])(f: (A, B) => C): MyPar[C] =
+      es => new Future[C]:
+        private val futureA = pa(es)
+        private val futureB = pb(es)
+        // @see http://www.ne.jp/asahi/hishidama/home/tech/java/thread.html#h2_volatile
+        // "volatileを付けると、「あるスレッドで更新された値が別スレッドで読み込まれる」ことが保証される。" 
+        @volatile private var cache: Option[C] = None
+
+        def isDone = cache.isDefined
+        // TODO: Overloaded or recursive method get needs return type 
+        def get() = get(Long.MaxValue, TimeUnit.NANOSECONDS)
+
+        def get(timeout: Long, units: TimeUnit) =
+          val timeoutNanos = TimeUnit.NANOSECONDS.convert(timeout, units)
+          val started = System.nanoTime
+          val a = futureA.get(timeoutNanos, TimeUnit.NANOSECONDS)
+          val elapsed = System.nanoTime - started
+          val b = futureB.get(timeoutNanos - elapsed, TimeUnit.NANOSECONDS)
+          val c = f(a, b)
+          cache = Some(c)
+          c
+
+        def isCaancelled = futureA.isCaancelled || futureB.isCaancelled
+        def cancel(evenIfRunning: Boolean) =
+          futureA.cancel(evenIfRunning) || futureB.cancel(evenIfRunning)
+
     def isDone = true
     def get(timeout: Long, units: TimeUnit) = value
     def isCaancelled = false
     def cancel(evenIfRunning: Boolean): Boolean = false
+
+
   }
 
   def unit[A](a: A): MyPar[A] = (es: ExecutorService) => UnitFuture(a)
