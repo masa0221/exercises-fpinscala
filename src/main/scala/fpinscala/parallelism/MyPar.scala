@@ -5,49 +5,42 @@ import scala.concurrent.Future
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.Callable
 
-case class MyPar[A](value: () => A)
-
 object MyPar:
-  type MyPar[A] = ExecutorService => UnitFuture[A]
-
-
-
-  case class UnitFuture[A](value: A) extends Future[A] {
-    extension [A](pa: MyPar[A]) def map2Timeouts[B,C](pb: MyPar[B])(f: (A, B) => C): MyPar[C] =
-      es => new Future[C]:
-        private val futureA = pa(es)
-        private val futureB = pb(es)
-        // @see http://www.ne.jp/asahi/hishidama/home/tech/java/thread.html#h2_volatile
-        // "volatileを付けると、「あるスレッドで更新された値が別スレッドで読み込まれる」ことが保証される。" 
-        @volatile private var cache: Option[C] = None
-
-        def isDone = cache.isDefined
-        // TODO: Overloaded or recursive method get needs return type 
-        def get() = get(Long.MaxValue, TimeUnit.NANOSECONDS)
-
-        def get(timeout: Long, units: TimeUnit) =
-          val timeoutNanos = TimeUnit.NANOSECONDS.convert(timeout, units)
-          val started = System.nanoTime
-          val a = futureA.get(timeoutNanos, TimeUnit.NANOSECONDS)
-          val elapsed = System.nanoTime - started
-          val b = futureB.get(timeoutNanos - elapsed, TimeUnit.NANOSECONDS)
-          val c = f(a, b)
-          cache = Some(c)
-          c
-
-        def isCaancelled = futureA.isCaancelled || futureB.isCaancelled
-        def cancel(evenIfRunning: Boolean) =
-          futureA.cancel(evenIfRunning) || futureB.cancel(evenIfRunning)
-
-    def isDone = true
-    def get(timeout: Long, units: TimeUnit) = value
-    def isCaancelled = false
-    def cancel(evenIfRunning: Boolean): Boolean = false
-
-
-  }
+  // opaque オリジナルのタイプを定義できるやーつ
+  opaque type MyPar[A] = ExecutorService => UnitFuture[A]
 
   def unit[A](a: A): MyPar[A] = (es: ExecutorService) => UnitFuture(a)
+
+  private case class UnitFuture[A](get: A) extends Future[A]:
+    def isDone = true
+    def get(timeout: Long, units: TimeUnit): A = get
+    def isCancelled = false
+    def cancel(evenIfRunning: Boolean): Boolean = false
+
+  extension [A](pa: MyPar[A]) def map2Timeouts[B, C](pb: MyPar[B])(f: (A, B) => C): MyPar[C] =
+    es => new Future[C]:
+      private val futureA = pa(es)
+      private val futureB = pb(es)
+      // @see http://www.ne.jp/asahi/hishidama/home/tech/java/thread.html#h2_volatile
+      // "volatileを付けると、「あるスレッドで更新された値が別スレッドで読み込まれる」ことが保証される。" 
+      @volatile private var cache: Option[C] = None
+
+      def isDone = cache.isDefined
+      def get(): A = get(Long.MaxValue, TimeUnit.NANOSECONDS)
+
+      def get(timeout: Long, units: TimeUnit): A =
+        val timeoutNanos = TimeUnit.NANOSECONDS.convert(timeout, units)
+        val started = System.nanoTime
+        val a = futureA.get(timeoutNanos, TimeUnit.NANOSECONDS)
+        val elapsed = System.nanoTime - started
+        val b = futureB.get(timeoutNanos - elapsed, TimeUnit.NANOSECONDS)
+        val c = f(a, b)
+        cache = Some(c)
+        c
+
+      def isCancelled = futureA.isCancelled || futureB.isCancelled
+      def cancel(evenIfRunning: Boolean): Boolean =
+        futureA.cancel(evenIfRunning) || futureB.cancel(evenIfRunning)
 
   def lazyUnit[A](a: => A): MyPar[A] = fork(unit(a))
 
@@ -60,26 +53,27 @@ object MyPar:
 
   def fork[A](a: => MyPar[A]): MyPar[A] =
     es => es.submit(new Callable[A] {
-      def call = a(es).get(1, TimeUnit.SECONDS)
+      def call = a(es).get
     })
 
   def run[A](s: ExecutorService)(a: MyPar[A]): Future[A] = a(s)
 
 end MyPar
 
-object MyExamples:
-  import MyPar.*
-  // def sum(ints: Seq[Int]): Int =
-  //   ints.foldLeft(0)((a, b) => a + b)
+// 動くまで一旦コメントアウト
+// object MyExamples:
+//   import MyPar.*
+//   // def sum(ints: Seq[Int]): Int =
+//   //   ints.foldLeft(0)((a, b) => a + b)
 
-  // IndexedSeq: Vector などのスーパークラス
-  def sum(ints: IndexedSeq[Int]): MyPar[Int] =
-    if (ints.size <= 1) MyPar.unit(ints.headOption.getOrElse(0))
-    else
-      // 半部に分けて計算させる
-      val (l, r) = ints.splitAt(ints.length / 2)
-      // val sumL: MyPar[Int] = MyPar.unit(sum(l))
-      // val sumR: MyPar[Int] = MyPar.unit(sum(r))
-      // MyPar.get(sumL) + MyPar.get(sumR)
-      MyPar.map2(MyPar.fork(sum(l)), MyPar.fork(sum(r)))(_ + _)
-end MyExamples
+//   // IndexedSeq: Vector などのスーパークラス
+//   def sum(ints: IndexedSeq[Int]): MyPar[Int] =
+//     if (ints.size <= 1) MyPar.unit(ints.headOption.getOrElse(0))
+//     else
+//       // 半部に分けて計算させる
+//       val (l, r) = ints.splitAt(ints.length / 2)
+//       // val sumL: MyPar[Int] = MyPar.unit(sum(l))
+//       // val sumR: MyPar[Int] = MyPar.unit(sum(r))
+//       // MyPar.get(sumL) + MyPar.get(sumR)
+//       MyPar.map2(MyPar.fork(sum(l)), MyPar.fork(sum(r)))(_ + _)
+// end MyExamples
