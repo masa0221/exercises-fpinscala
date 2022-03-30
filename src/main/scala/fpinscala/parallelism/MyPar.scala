@@ -19,28 +19,32 @@ object MyPar:
 
   extension [A](pa: MyPar[A]) def map2Timeouts[B, C](pb: MyPar[B])(f: (A, B) => C): MyPar[C] =
     es => new Future[C]:
-      private val futureA = pa(es)
-      private val futureB = pb(es)
-      // @see http://www.ne.jp/asahi/hishidama/home/tech/java/thread.html#h2_volatile
-      // "volatileを付けると、「あるスレッドで更新された値が別スレッドで読み込まれる」ことが保証される。" 
-      @volatile private var cache: Option[C] = None
+        private val futureA = pa(es)
+        private val futureB = pb(es)
+        // @see http://www.ne.jp/asahi/hishidama/home/tech/java/thread.html#h2_volatile
+        // "volatileを付けると、「あるスレッドで更新された値が別スレッドで読み込まれる」ことが保証される。" 
+        @volatile private var cache: Option[C] = None
 
-      def isDone = cache.isDefined
-      def get(): A = get(Long.MaxValue, TimeUnit.NANOSECONDS)
+        def isDone = cache.isDefined
+        // TODO: 型のエラー出るので後で確認する
+        def get(): C = get(Long.MaxValue, TimeUnit.NANOSECONDS)
 
-      def get(timeout: Long, units: TimeUnit): A =
-        val timeoutNanos = TimeUnit.NANOSECONDS.convert(timeout, units)
-        val started = System.nanoTime
-        val a = futureA.get(timeoutNanos, TimeUnit.NANOSECONDS)
-        val elapsed = System.nanoTime - started
-        val b = futureB.get(timeoutNanos - elapsed, TimeUnit.NANOSECONDS)
-        val c = f(a, b)
-        cache = Some(c)
-        c
+        def get(timeout: Long, units: TimeUnit): C =
+          val timeoutNanos = TimeUnit.NANOSECONDS.convert(timeout, units)
+          val started = System.nanoTime
+          val a = futureA.get(timeoutNanos, TimeUnit.NANOSECONDS)
+          val elapsed = System.nanoTime - started
+          val b = futureB.get(timeoutNanos - elapsed, TimeUnit.NANOSECONDS)
+          val c = f(a, b)
+          cache = Some(c)
+          c
 
-      def isCancelled = futureA.isCancelled || futureB.isCancelled
-      def cancel(evenIfRunning: Boolean): Boolean =
-        futureA.cancel(evenIfRunning) || futureB.cancel(evenIfRunning)
+        def isCancelled = futureA.isCancelled || futureB.isCancelled
+        def cancel(evenIfRunning: Boolean): Boolean = futureA.cancel(evenIfRunning) || futureB.cancel(evenIfRunning)
+        // この行でタイプミスマッチエラーが出る。Future[C]: の書き方が悪い？
+        // Found:    Object with concurrent.Future[C] {...}   
+        // Required: fpinscala.parallelism.MyPar.UnitFuture[C]
+
 
   def lazyUnit[A](a: => A): MyPar[A] = fork(unit(a))
 
@@ -48,7 +52,7 @@ object MyPar:
     (es: ExecutorService) =>
       val af = a(es)
       val bf = b(es)
-      UnitFuture(f(af.get(1L, TimeUnit.SECONDS), bf.get(1L, TimeUnit.SECONDS)))
+      UnitFuture(f(af.get, bf.get))
       // lazyUnit(f(run(a), run(b)))
 
   def fork[A](a: => MyPar[A]): MyPar[A] =
