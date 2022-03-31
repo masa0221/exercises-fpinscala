@@ -74,5 +74,7 @@ object MyExamples:
       // val sumL: MyPar[Int] = MyPar.unit(sum(l))
       // val sumR: MyPar[Int] = MyPar.unit(sum(r))
       // MyPar.get(sumL) + MyPar.get(sumR)
-      MyPar.map2(MyPar.fork(sum(l)), MyPar.fork(sum(r)))(_ + _)
+      // MyPar.map2(MyPar.fork(sum(l)), MyPar.fork(sum(r)))(_ + _)
+      // MyPar.fork(sum(l)).map2Timeouts(MyPar.fork(sum(r)))(_ + _)
+      MyPar.fork(sum(l)).map2Timeouts(sum(r))(_ + _)
 end MyExamples
