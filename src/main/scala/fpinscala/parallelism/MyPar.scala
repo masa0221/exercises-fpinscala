@@ -48,7 +48,6 @@ object MyPar:
       val af = a(es)
       val bf = b(es)
       UnitFuture(f(af.get, bf.get))
-  // lazyUnit(f(run(a), run(b)))
 
   def fork[A](a: => MyPar[A]): MyPar[A] =
     es =>
@@ -57,6 +56,8 @@ object MyPar:
       })
 
   def run[A](s: ExecutorService)(a: MyPar[A]): Future[A] = a(s)
+
+  def asyncF[A, B](f: A => B): A => MyPar[B] = a => lazyUnit(f(a))
 
 end MyPar
 
