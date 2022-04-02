@@ -10,7 +10,6 @@ import org.scalactic.Prettifier.default
 class MyParTest extends AnyFreeSpecLike with Matchers:
   "MyExamples" - {
     val es = Executors.newFixedThreadPool(2)
-
     "sum" - {
       "リストの合計を取得できること" in {
         val myPar = MyExamples.sum(IndexedSeq(1, 2, 3, 4, 5))
@@ -22,6 +21,15 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
         val es = Executors.newFixedThreadPool(2)
         val myPar = MyPar.asyncF[Int, Int](_ + 1)(1)
         MyPar.run(es)(myPar).get(1L, TimeUnit.SECONDS) should equal(2)
+      }
+    }
+    "sortPar" - {
+      "リストをソートできること" in {
+        val es = Executors.newFixedThreadPool(2)
+        val myPar = MyPar.sortPar(MyPar.unit(List(4, 2, 3, 1, 5)))
+        MyPar.run(es)(myPar).get(1L, TimeUnit.SECONDS) should equal(
+          List(1, 2, 3, 4, 5)
+        )
       }
     }
   }
