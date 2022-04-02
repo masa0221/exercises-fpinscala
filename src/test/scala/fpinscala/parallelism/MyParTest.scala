@@ -18,18 +18,22 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
     }
     "asyncF" - {
       "関数が適用できること" in {
-        val es = Executors.newFixedThreadPool(2)
         val myPar = MyPar.asyncF[Int, Int](_ + 1)(1)
         MyPar.run(es)(myPar).get(1L, TimeUnit.SECONDS) should equal(2)
       }
     }
     "sortPar" - {
       "リストをソートできること" in {
-        val es = Executors.newFixedThreadPool(2)
         val myPar = MyPar.sortPar(MyPar.unit(List(4, 2, 3, 1, 5)))
         MyPar.run(es)(myPar).get(1L, TimeUnit.SECONDS) should equal(
           List(1, 2, 3, 4, 5)
         )
+      }
+    }
+    "map" - {
+      "指定した関数が適用できること" in {
+        val myPar = MyPar.map(MyPar.unit(2))(_ + 3)
+        MyPar.run(es)(myPar).get(1L, TimeUnit.SECONDS) should equal(5)
       }
     }
   }

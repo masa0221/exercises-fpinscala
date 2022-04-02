@@ -43,6 +43,9 @@ object MyPar:
 
   def lazyUnit[A](a: => A): MyPar[A] = fork(unit(a))
 
+  def map[A, B](a: MyPar[A])(f: A => B): MyPar[B] =
+    map2(a, unit(()))((a, _) => f(a))
+
   def map2[A, B, C](a: MyPar[A], b: MyPar[B])(f: (A, B) => C): MyPar[C] =
     (es: ExecutorService) =>
       val af = a(es)
