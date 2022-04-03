@@ -45,9 +45,9 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
           MyPar.unit(4),
           MyPar.unit(5)
         )
-        var sequencedPar = MyPar.sequence(parList)(_ * 2)
+        var sequencedPar = MyPar.sequence(parList)
         MyPar.run(es)(sequencedPar) should equal(
-          MyPar.run(es)(MyPar.unit(List(2, 4, 6, 8, 10)))
+          MyPar.run(es)(MyPar.unit(List(1, 2, 3, 4, 5)))
         )
       }
     }
