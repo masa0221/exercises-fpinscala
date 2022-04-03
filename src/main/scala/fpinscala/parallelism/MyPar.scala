@@ -70,7 +70,8 @@ object MyPar:
   //   sequence(fbs)
   // }
 
-  def sequence[A, B](ps: List[MyPar[A]])(f: A => B): MyPar[List[B]] = ???
+  def sequence[A, B](ps: List[MyPar[A]])(f: A => B): MyPar[List[B]] =
+    ps.foldRight(unit(List()))((a, b) => map2(a, b)((aa, bb) => f(aa) :: bb))
 
 end MyPar
 
