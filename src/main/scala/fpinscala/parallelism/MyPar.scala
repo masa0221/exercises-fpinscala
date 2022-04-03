@@ -63,7 +63,7 @@ object MyPar:
   def asyncF[A, B](f: A => B): A => MyPar[B] = a => lazyUnit(f(a))
 
   def sortPar(parList: MyPar[List[Int]]): MyPar[List[Int]] =
-    map2(parList, unit(()))((a, _) => a.sorted)
+    map(parList)(_.sorted)
 
 end MyPar
 
