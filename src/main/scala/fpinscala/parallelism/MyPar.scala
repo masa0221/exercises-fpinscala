@@ -65,10 +65,10 @@ object MyPar:
   def sortPar(parList: MyPar[List[Int]]): MyPar[List[Int]] =
     map(parList)(_.sorted)
 
-  // def parMap[A,B](ps: List[A])(f: A => B): MyPar[List[B]] = fork {
-  //   val fbs: List[MyPar[B]] = ps.map(asyncF(f))
-  //   sequence(fbs)
-  // }
+  def parMap[A, B](ps: List[A])(f: A => B): MyPar[List[B]] = fork {
+    val fbs: List[MyPar[B]] = ps.map(asyncF(f))
+    sequence(fbs)
+  }
 
   def sequence[A](ps: List[MyPar[A]]): MyPar[List[A]] =
     ps.foldRight(unit(List()))((a, b) => map2(a, b)((aa, bb) => aa :: bb))
