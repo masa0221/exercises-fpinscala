@@ -36,5 +36,20 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
         MyPar.run(es)(myPar).get(1L, TimeUnit.SECONDS) should equal(5)
       }
     }
+    "sequence" - {
+      "MyParのリストがMyPar型に変換されること" in {
+        var parList = List(
+          MyPar.unit(1),
+          MyPar.unit(2),
+          MyPar.unit(3),
+          MyPar.unit(4),
+          MyPar.unit(5)
+        )
+        var sequencedPar = MyPar.sequence(parList)(_ * 2)
+        MyPar.run(es)(sequencedPar) should equal(
+          MyPar.unit(List(2, 4, 6, 8, 10))
+        )
+      }
+    }
   }
 end MyParTest
