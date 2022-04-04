@@ -60,5 +60,14 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
         )
       }
     }
+    "parFilter" - {
+      "指定したリストに対して、同じく指定した関数でフィルタリングされたMyParが取得できる" in {
+        var list = List(1, 2, 3, 4, 5)
+        var myPar = MyPar.parMap(list)(_ % 2 == 0)
+        MyPar.run(es)(myPar).get(1L, TimeUnit.SECONDS) should equal(
+          List(2, 4)
+        )
+      }
+    }
   }
 end MyParTest
