@@ -73,7 +73,12 @@ object MyPar:
   def sequence[A](ps: List[MyPar[A]]): MyPar[List[A]] =
     ps.foldRight(unit(List()))((a, b) => map2(a, b)((aa, bb) => aa :: bb))
 
-  def parFilter[A](as: List[A])(f: A => Boolean): MyPar[List[A]] = ???
+  def parFilter[A](as: List[A])(f: A => Boolean): MyPar[List[A]] =
+    val ps: List[MyPar[List[A]]] =
+      as.map(asyncF(a => if (f(a)) List(a) else List()))
+    val sequencedPar: MyPar[List[List[A]]] = sequence(ps)
+    // 中置記法でかけない？
+    map(sequencedPar)(_.flatten)
 
 end MyPar
 
