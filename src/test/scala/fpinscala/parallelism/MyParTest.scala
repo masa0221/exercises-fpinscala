@@ -69,5 +69,18 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
         )
       }
     }
+    "equal" - {
+      "二つの同じ値を持ったMyParの場合trueになること" in {
+        var p1 = MyPar.unit(1)
+        var p2 = MyPar.unit(1)
+        MyPar.equal(es)(p1, p2) should equal(true)
+
+      }
+      "二つの異なる値を持ったMyParの場合falseになること" in {
+        var p1 = MyPar.unit(1)
+        var p2 = MyPar.unit(2)
+        MyPar.equal(es)(p1, p2) should equal(false)
+      }
+    }
   }
 end MyParTest

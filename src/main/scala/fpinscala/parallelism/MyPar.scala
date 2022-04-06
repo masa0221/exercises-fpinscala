@@ -80,6 +80,9 @@ object MyPar:
     // 中置記法でかけない？
     map(sequencedPar)(_.flatten)
 
+  def equal[A](e: ExecutorService)(p: MyPar[A], p2: MyPar[A]): Boolean =
+    p(e).get == p2(e).get
+
 end MyPar
 
 object MyExamples:
