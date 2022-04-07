@@ -82,5 +82,17 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
         MyPar.equal(es)(p1, p2) should equal(false)
       }
     }
+    "delay" - {
+      // "Example. Occur dead lock" in {
+      //   val a = lazyUnit(42 + 1)
+      //   val S = Executors.newFixedThreadPool(1)
+      //   MyPar.equal(S)(a, fork(a)) should equal(true)
+      // }
+      "デッドロックが発生しないこと" in {
+        val a = lazyUnit(42 + 1)
+        val S = Executors.newFixedThreadPool(1)
+        MyPar.equal(S)(a, delay(a)) should equal(true)
+      }
+    }
   }
 end MyParTest

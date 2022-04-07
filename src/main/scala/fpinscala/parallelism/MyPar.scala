@@ -83,6 +83,10 @@ object MyPar:
   def equal[A](e: ExecutorService)(p: MyPar[A], p2: MyPar[A]): Boolean =
     p(e).get == p2(e).get
 
+  // TODO: add test
+  def delay[A](fa: => MyPar[A]): MyPar[A] =
+    es => fa(es)
+
 end MyPar
 
 object MyExamples:
