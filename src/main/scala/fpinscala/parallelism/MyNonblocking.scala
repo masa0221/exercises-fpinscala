@@ -3,6 +3,7 @@ package fpinscala.parallelism
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Callable
 
 object MyNonblocking:
   trait Future[A]:
@@ -23,6 +24,20 @@ object MyNonblocking:
     es => 
       new Future[A]:
         def apply(cb: A => Unit): Unit = cb(a)
+
+  def fork[A](a: => MyPar[A]): MyPar[A] =
+    es =>
+      new Future[A]:
+        def apply(cb: A => Unit): Unit =
+          // a: () => MyPar[A]
+          // () => ExecutorService => Future[A].apply(A => Unit)
+          eval(es)(a(es)(cb))
+
+  def eval(es: ExecutorService)(r: => Unit): Unit =
+    es.submit(
+      new Callable[Unit]:
+        def call = r
+      )
 
   object MyPar:
   end MyPar
