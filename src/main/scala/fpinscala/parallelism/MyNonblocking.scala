@@ -19,6 +19,11 @@ object MyNonblocking:
     latch.await
     ref.get
 
+  def unit[A](a: A): MyPar[A] = 
+    es => 
+      new Future[A]:
+        def apply(cb: A => Unit): Unit = cb(a)
+
   object MyPar:
   end MyPar
 end MyNonblocking
