@@ -26,6 +26,8 @@ object MyNonblocking:
         new Future[A]:
           def apply(cb: A => Unit): Unit = cb(a)
 
+    def lazyUnit[A](a: => A): MyPar[A] = fork(unit(a))
+
     def fork[A](a: => MyPar[A]): MyPar[A] =
       es =>
         new Future[A]:
@@ -58,6 +60,18 @@ object MyNonblocking:
             }
             p(es)(a => combinater ! Left(a))
             p2(es)(b => combinater ! Right(b))
+
+    def parMap[A, B](ps: List[A])(f: A => B): MyPar[List[B]] = fork {
+      val fbs: List[MyPar[B]] = ps.map(asyncF(f))
+      sequence(fbs)
+    }
+
+    def asyncF[A, B](f: A => B): A => MyPar[B] = a => lazyUnit(f(a))
+
+    def sequence[A](ps: List[MyPar[A]]): MyPar[List[A]] =
+      // TODO: aa :: bb で aa が Nothing である必要がある？？？
+      // foldRightのaccの値のせいかな
+      ps.foldRight(unit(List()))((a, b) => map2(a, b)((aa, bb) => aa :: bb))
 
   end MyPar
 end MyNonblocking
