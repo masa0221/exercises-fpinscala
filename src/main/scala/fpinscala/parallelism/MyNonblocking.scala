@@ -69,9 +69,9 @@ object MyNonblocking:
     def asyncF[A, B](f: A => B): A => MyPar[B] = a => lazyUnit(f(a))
 
     def sequence[A](ps: List[MyPar[A]]): MyPar[List[A]] =
-      // TODO: aa :: bb で aa が Nothing である必要がある？？？
-      // foldRightのaccの値のせいかな
-      ps.foldRight(unit(List()))((a, b) => map2(a, b)((aa, bb) => aa :: bb))
+      ps.foldRight(unit(List.empty[A]))((a, b) =>
+        map2(a, b)((aa, bb) => aa :: bb)
+      )
 
   end MyPar
 end MyNonblocking
