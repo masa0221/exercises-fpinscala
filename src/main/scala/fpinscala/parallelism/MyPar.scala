@@ -83,9 +83,11 @@ object MyPar:
   def equal[A](e: ExecutorService)(p: MyPar[A], p2: MyPar[A]): Boolean =
     p(e).get == p2(e).get
 
-  // TODO: add test
   def delay[A](fa: => MyPar[A]): MyPar[A] =
     es => fa(es)
+
+  def choice[A](cond: MyPar[Boolean])(t: MyPar[A], f: MyPar[A]): MyPar[A] =
+    es => if (run(es)(cond).get) t(es) else f(es)
 
 end MyPar
 

@@ -38,14 +38,14 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
     }
     "sequence" - {
       "MyParのリストがMyPar型に変換されること" in {
-        var parList = List(
+        val parList = List(
           MyPar.unit(1),
           MyPar.unit(2),
           MyPar.unit(3),
           MyPar.unit(4),
           MyPar.unit(5)
         )
-        var sequencedPar = MyPar.sequence(parList)
+        val sequencedPar = MyPar.sequence(parList)
         MyPar.run(es)(sequencedPar) should equal(
           MyPar.run(es)(MyPar.unit(List(1, 2, 3, 4, 5)))
         )
@@ -53,8 +53,8 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
     }
     "parMap" - {
       "指定した関数が適用されるMyParが取得できること" in {
-        var list = List(1, 2, 3, 4, 5)
-        var myPar = MyPar.parMap(list)(_ * 2)
+        val list = List(1, 2, 3, 4, 5)
+        val myPar = MyPar.parMap(list)(_ * 2)
         MyPar.run(es)(myPar).get(1L, TimeUnit.SECONDS) should equal(
           List(2, 4, 6, 8, 10)
         )
@@ -62,8 +62,8 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
     }
     "parFilter" - {
       "指定したリストに対して、同じく指定した関数でフィルタリングされたMyParが取得できる" in {
-        var list = List(1, 2, 3, 4, 5)
-        var myPar = MyPar.parFilter(list)(_ % 2 == 0)
+        val list = List(1, 2, 3, 4, 5)
+        val myPar = MyPar.parFilter(list)(_ % 2 == 0)
         MyPar.run(es)(myPar).get(1L, TimeUnit.SECONDS) should equal(
           List(2, 4)
         )
@@ -71,14 +71,14 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
     }
     "equal" - {
       "二つの同じ値を持ったMyParの場合trueになること" in {
-        var p1 = MyPar.unit(1)
-        var p2 = MyPar.unit(1)
+        val p1 = MyPar.unit(1)
+        val p2 = MyPar.unit(1)
         MyPar.equal(es)(p1, p2) should equal(true)
 
       }
       "二つの異なる値を持ったMyParの場合falseになること" in {
-        var p1 = MyPar.unit(1)
-        var p2 = MyPar.unit(2)
+        val p1 = MyPar.unit(1)
+        val p2 = MyPar.unit(2)
         MyPar.equal(es)(p1, p2) should equal(false)
       }
     }
@@ -92,6 +92,25 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
         val a = lazyUnit(42 + 1)
         val S = Executors.newFixedThreadPool(1)
         MyPar.equal(S)(a, delay(a)) should equal(true)
+      }
+    }
+
+    "choice" - {
+      "指定した条件がtrueの時は1つ目のMyParを実行すること" in {
+        val cond = MyPar.unit(true)
+        val p1 = MyPar.unit(1)
+        val p2 = MyPar.unit(2)
+        MyPar
+          .run(es)(MyPar.choice(cond)(p1, p2))
+          .get(1L, TimeUnit.SECONDS) should equal(1)
+      }
+      "指定した条件がfalseの時は2つ目のMyParを実行すること" in {
+        val cond = MyPar.unit(false)
+        val p1 = MyPar.unit(1)
+        val p2 = MyPar.unit(2)
+        MyPar
+          .run(es)(MyPar.choice(cond)(p1, p2))
+          .get(1L, TimeUnit.SECONDS) should equal(2)
       }
     }
   }
