@@ -115,7 +115,7 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
     }
     "choiceN" - {
       "指定した数字のMyParを実行すること" in {
-        val n = MyPar.unit(2)
+        val n = MyPar.unit(1)
         val pl = List(
           MyPar.unit(1),
           MyPar.unit(2),
