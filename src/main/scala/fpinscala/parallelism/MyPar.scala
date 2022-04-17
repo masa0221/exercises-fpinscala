@@ -87,13 +87,13 @@ object MyPar:
     es => fa(es)
 
   def choice[A](cond: MyPar[Boolean])(t: MyPar[A], f: MyPar[A]): MyPar[A] =
-    es => if (run(es)(cond).get) t(es) else f(es)
+    val n = map(cond)(a => if (a) 0 else 1)
+    choiceN(n)(List(t, f))
 
   def choiceN[A](n: MyPar[Int])(choices: List[MyPar[A]]): MyPar[A] =
-    es => {
+    es =>
       val idx = run(es)(n).get
       choices(idx)(es)
-    }
 
 end MyPar
 
