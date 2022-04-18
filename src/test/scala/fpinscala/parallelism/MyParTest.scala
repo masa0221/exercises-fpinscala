@@ -126,5 +126,19 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
           .get(1L, TimeUnit.SECONDS) should equal(2)
       }
     }
+
+    "choiceMap" - {
+      "指定したキーの値をMapから取得できること" in {
+        val key = MyPar.unit("b")
+        val pm = Map(
+          "a" -> MyPar.unit(1),
+          "b" -> MyPar.unit(2),
+          "c" -> MyPar.unit(3)
+        )
+        MyPar
+          .run(es)(MyPar.choiceMap(key)(pm))
+          .get(1L, TimeUnit.SECONDS) should equal(2)
+      }
+    }
   }
 end MyParTest

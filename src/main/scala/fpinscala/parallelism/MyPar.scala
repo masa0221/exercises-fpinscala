@@ -95,6 +95,11 @@ object MyPar:
       val idx = run(es)(n).get
       choices(idx)(es)
 
+  def choiceMap[K, V](key: MyPar[K])(choices: Map[K, MyPar[V]]): MyPar[V] =
+    es =>
+      val k = run(es)(key).get
+      choices.get(k).get(es)
+
 end MyPar
 
 object MyExamples:
