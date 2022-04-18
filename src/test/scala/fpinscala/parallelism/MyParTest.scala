@@ -1,6 +1,7 @@
 package fpinscala.parallelism
 
 import fpinscala.parallelism.MyPar.*
+import fpinscala.parallelism.MyPar
 import org.scalatest.freespec.AnyFreeSpecLike
 import org.scalatest.matchers.should.Matchers
 import java.util.concurrent.Executors
@@ -137,6 +138,21 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
         )
         MyPar
           .run(es)(MyPar.choiceMap(key)(pm))
+          .get(1L, TimeUnit.SECONDS) should equal(2)
+      }
+    }
+
+    "chooser" - {
+      "指定した値を選択肢から取得できること" in {
+        val a = MyPar.unit("b")
+        var b = (a: String) => a match
+          case "a" => MyPar.unit(1)
+          case "b" => MyPar.unit(2)
+          case "c" => MyPar.unit(3)
+          case _ => MyPar.unit(4)
+
+        MyPar
+          .run(es)(MyPar.chooser(a)(b))
           .get(1L, TimeUnit.SECONDS) should equal(2)
       }
     }

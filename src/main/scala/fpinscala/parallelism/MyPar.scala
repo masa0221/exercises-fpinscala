@@ -100,6 +100,8 @@ object MyPar:
       val k = run(es)(key).get
       choices.get(k).get(es)
 
+  def chooser[A,B](a: MyPar[A])(choices: A => MyPar[B]): MyPar[B] = ???
+
 end MyPar
 
 object MyExamples:
