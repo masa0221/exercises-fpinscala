@@ -145,11 +145,12 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
     "chooser" - {
       "指定した値を選択肢から取得できること" in {
         val a = MyPar.unit("b")
-        var b = (a: String) => a match
-          case "a" => MyPar.unit(1)
-          case "b" => MyPar.unit(2)
-          case "c" => MyPar.unit(3)
-          case _ => MyPar.unit(4)
+        var b = (a: String) =>
+          a match
+            case "a" => MyPar.unit(1)
+            case "b" => MyPar.unit(2)
+            case "c" => MyPar.unit(3)
+            case _   => MyPar.unit(4)
 
         MyPar
           .run(es)(MyPar.chooser(a)(b))

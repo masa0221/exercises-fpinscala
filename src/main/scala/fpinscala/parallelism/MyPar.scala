@@ -87,20 +87,15 @@ object MyPar:
     es => fa(es)
 
   def choice[A](cond: MyPar[Boolean])(t: MyPar[A], f: MyPar[A]): MyPar[A] =
-    val n = map(cond)(a => if (a) 0 else 1)
-    choiceN(n)(List(t, f))
+    chooser(cond)(a => if (a) t else f)
 
   def choiceN[A](n: MyPar[Int])(choices: List[MyPar[A]]): MyPar[A] =
-    es =>
-      val idx = run(es)(n).get
-      choices(idx)(es)
+    chooser(n)(a => choices(a))
 
   def choiceMap[K, V](key: MyPar[K])(choices: Map[K, MyPar[V]]): MyPar[V] =
-    es =>
-      val k = run(es)(key).get
-      choices.get(k).get(es)
+    chooser(key)(a => choices.get(a).get)
 
-  def chooser[A,B](a: MyPar[A])(choices: A => MyPar[B]): MyPar[B] =
+  def chooser[A, B](a: MyPar[A])(choices: A => MyPar[B]): MyPar[B] =
     es =>
       val aa = run(es)(a).get
       choices(aa)(es)
