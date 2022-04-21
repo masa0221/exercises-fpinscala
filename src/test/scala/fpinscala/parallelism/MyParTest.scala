@@ -142,8 +142,8 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
       }
     }
 
-    "chooser" - {
-      "指定した値を選択肢から取得できること" in {
+    "flatMap" - {
+      "指定した関数を適用できること" in {
         val a = MyPar.unit("b")
         var b = (a: String) =>
           a match
@@ -153,7 +153,7 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
             case _   => MyPar.unit(4)
 
         MyPar
-          .run(es)(MyPar.chooser(a)(b))
+          .run(es)(MyPar.flatMap(a)(b))
           .get(1L, TimeUnit.SECONDS) should equal(2)
       }
     }
