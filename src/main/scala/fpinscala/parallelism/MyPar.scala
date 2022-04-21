@@ -100,6 +100,11 @@ object MyPar:
       val aa = run(es)(a).get
       f(aa)(es)
 
+  def join[A](a: MyPar[MyPar[A]]): MyPar[A] =
+    es =>
+      val aa = run[MyPar[A]](es)(a).get
+      aa(es)
+
 end MyPar
 
 object MyExamples:
