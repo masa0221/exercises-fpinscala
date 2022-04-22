@@ -105,6 +105,12 @@ object MyPar:
       val aa = run[MyPar[A]](es)(a).get
       aa(es)
 
+  def flatMapViaJoin[A, B](a: MyPar[A])(f: A => MyPar[B]): MyPar[B] =
+    join(map(a)(f))
+
+  def joinViaFlatMap[A](a: MyPar[MyPar[A]]): MyPar[A] =
+    flatMap(a)(a => a)
+
 end MyPar
 
 object MyExamples:

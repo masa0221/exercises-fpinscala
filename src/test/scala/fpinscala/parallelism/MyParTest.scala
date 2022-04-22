@@ -165,5 +165,29 @@ class MyParTest extends AnyFreeSpecLike with Matchers:
         MyPar.run(es)(MyPar.join(pp)).get should equal("test")
       }
     }
+
+    "flatMapViaJoin" - {
+      "指定した関数を適用できること" in {
+        val a = MyPar.unit("b")
+        val b = (a: String) =>
+          a match
+            case "a" => MyPar.unit(1)
+            case "b" => MyPar.unit(2)
+            case "c" => MyPar.unit(3)
+            case _   => MyPar.unit(4)
+
+        MyPar
+          .run(es)(MyPar.flatMapViaJoin(a)(b))
+          .get(1L, TimeUnit.SECONDS) should equal(2)
+      }
+    }
+
+    "joinViaFlatMap" - {
+      "フラッティング（平坦化）できること" in {
+        val p = MyPar.unit("test")
+        val pp = MyPar.unit(p)
+        MyPar.run(es)(MyPar.joinViaFlatMap(pp)).get should equal("test")
+      }
+    }
   }
 end MyParTest
