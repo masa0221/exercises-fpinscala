@@ -1,5 +1,8 @@
 package fpinscala.testing
 
+import fpinscala.state.State
+import fpinscala.state.RNG
+
 trait Prop:
   // self type annotation
   // @see http://www.ne.jp/asahi/hishidama/home/tech/scala/class.html#h_class.this
@@ -25,5 +28,9 @@ object Prop:
 
   def forAll[A](a: Gen[A])(f: A => Boolean): Prop = ???
 
-trait Gen[A]:
-  def listOfN[A](n: Int, a: Gen[A]): Gen[List[A]] = ???
+case class Gen[A](sample: State[RNG, A])
+  
+object Gen:
+  def choose(start: Int, stopExclusive: Int): Gen[Int] =
+    Gen(State(RNG.int).map(n => (n + start) % (stopExclusive - start)))
+
