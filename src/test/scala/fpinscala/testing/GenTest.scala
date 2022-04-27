@@ -5,8 +5,6 @@ import org.scalatest.matchers.should.Matchers
 import fpinscala.state.RNG
 
 class GenTest extends AnyFreeSpecLike with Matchers:
-  // case class Gen[A](sample: State[RNG, A])
-  // def choose(start: Int, stopExclusive: Int): Gen[Int] =
   "choose" - {
     "指定した最大値と最小値の間の値が生成できること" in {
       val min = 10
