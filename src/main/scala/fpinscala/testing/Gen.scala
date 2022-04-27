@@ -32,5 +32,11 @@ case class Gen[A](sample: State[RNG, A])
   
 object Gen:
   def choose(start: Int, stopExclusive: Int): Gen[Int] =
-    Gen(State(RNG.int).map(n => (n + start) % (stopExclusive - start)))
+    Gen(State(RNG.int).map(n => n % (stopExclusive - start) + start))
+
+  def unit[A](a: => A): Gen[A] = Gen(State(RNG.unit(a)))
+
+  def boolean: Gen[Boolean] = ???
+
+  def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] = ???
 
