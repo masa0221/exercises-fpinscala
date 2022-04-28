@@ -29,14 +29,22 @@ object Prop:
   def forAll[A](a: Gen[A])(f: A => Boolean): Prop = ???
 
 case class Gen[A](sample: State[RNG, A])
-  
+
 object Gen:
   def choose(start: Int, stopExclusive: Int): Gen[Int] =
-    Gen(State(RNG.int).map(n => n % (stopExclusive - start) + start))
+    Gen(State(RNG.nonNegativeInt).map(n => start + n % (stopExclusive - start)))
 
   def unit[A](a: => A): Gen[A] = Gen(State(RNG.unit(a)))
 
+  // 仕様不明。。
   def boolean: Gen[Boolean] = ???
 
-  def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] = ???
-
+  def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] =
+    def go(acc: List[A], count: Int)(rng: RNG): (List[A], RNG) =
+      if (count <= 0) {
+        (acc, rng)
+      } else {
+        val (a, rng2) = g.sample.run(rng)
+        go(a :: acc, count - 1)(rng2)
+      }
+    Gen(State(go(List.empty[A], n)))
