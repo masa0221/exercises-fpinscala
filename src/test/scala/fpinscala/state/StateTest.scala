@@ -16,6 +16,21 @@ class StateTest extends AnyFreeSpecLike with Matchers:
       }
     }
 
+    "boolean" - {
+      "2で割り切れる時はtrue" in {
+        // scala> fpinscala.state.RNG.Simple(1).nextInt
+        // val res0: (Int, fpinscala.state.RNG) = (384748,Simple(25214903928))
+        val (expected, rng) = RNG.boolean(RNG.Simple(1))
+        expected should equal(true)
+      }
+      "2で割り切れない時はfalse" in {
+        // scala> fpinscala.state.RNG.Simple(2).nextInt
+        // val res1: (Int, fpinscala.state.RNG) = (769497,Simple(50429807845))
+        val (expected, rng) = RNG.boolean(RNG.Simple(2))
+        expected should equal(false)
+      }
+    }
+
     "double" - {
       "0から1未満までの値になること" in {
         val (expected, rng) = RNG.double(RNG.Simple(1))

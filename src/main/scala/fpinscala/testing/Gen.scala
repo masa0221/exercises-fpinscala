@@ -36,9 +36,10 @@ object Gen:
 
   def unit[A](a: => A): Gen[A] = Gen(State(RNG.unit(a)))
 
-  // 仕様不明。。
-  def boolean: Gen[Boolean] = ???
+  def boolean: Gen[Boolean] = Gen(State(RNG.boolean))
 
+  // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/05.answer.md
+  // TODO: 答えと違う（けど、実装したらコンパイルエラー出る）
   def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] =
     def go(acc: List[A], count: Int)(rng: RNG): (List[A], RNG) =
       if (count <= 0) {

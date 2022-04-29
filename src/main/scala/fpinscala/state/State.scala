@@ -46,6 +46,10 @@ object RNG:
     val res = if (n < 0) (n + 1) * -1 else n
     (res, rng2)
 
+  def boolean(rng: RNG): (Boolean, RNG) =
+    rng.nextInt match
+      case (i,rng2) => (i % 2 == 0,rng2)
+
   def double(rng: RNG): (Double, RNG) =
     val (n, rng2) = nonNegativeInt(rng)
     // こんなことをすると出力までにめっちゃ時間かかる
