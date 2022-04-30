@@ -49,3 +49,7 @@ object Gen:
         go(a :: acc, count - 1)(rng2)
       }
     Gen(State(go(List.empty[A], n)))
+
+  extension [A](self: Gen[A])
+    def flatMap[B](f: A => Gen[B]): Gen[B] =
+      Gen(self.sample.flatMap(a => f(a).sample))

@@ -27,3 +27,15 @@ class GenTest extends AnyFreeSpecLike with Matchers:
       all(expected) should (be >= min and be <= max)
     }
   }
+
+  "flatMap" - {
+    "flatMapできること" in {
+      val (expected, rng) =
+        Gen
+          .unit(() => 1)
+          .flatMap(a => Gen.unit(() => a() + 1))
+          .sample
+          .run(RNG.Simple(1))
+      expected() should equal(2)
+    }
+  }
