@@ -39,17 +39,19 @@ object Gen:
   def boolean: Gen[Boolean] = Gen(State(RNG.boolean))
 
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/05.answer.md
+  // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/06.answer.md
   // TODO: 答えと違う（けど、実装したらコンパイルエラー出る）
-  def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] =
+  extension [A](self: Gen[A]) def listOfN(size: Gen[Int]): Gen[List[A]] =
     def go(acc: List[A], count: Int)(rng: RNG): (List[A], RNG) =
       if (count <= 0) {
         (acc, rng)
       } else {
-        val (a, rng2) = g.sample.run(rng)
+        val (a, rng2) = self.sample.run(rng)
         go(a :: acc, count - 1)(rng2)
       }
-    Gen(State(go(List.empty[A], n)))
+    size.flatMap(n => Gen(State(go(List.empty[A], n)))) 
 
   extension [A](self: Gen[A])
     def flatMap[B](f: A => Gen[B]): Gen[B] =
       Gen(self.sample.flatMap(a => f(a).sample))
+

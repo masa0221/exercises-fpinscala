@@ -22,7 +22,7 @@ class GenTest extends AnyFreeSpecLike with Matchers:
       val max = 20
       val count = 10
       val (expected, rng) =
-        Gen.listOfN(count, Gen.choose(min, max)).sample.run(RNG.Simple(1))
+        Gen.choose(min, max).listOfN(Gen.unit(count)).sample.run(RNG.Simple(1))
       expected.length should equal(count)
       all(expected) should (be >= min and be <= max)
     }
