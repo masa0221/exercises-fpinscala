@@ -39,6 +39,8 @@ object Gen:
   def union[A](g1: Gen[A], g2: Gen[A]): Gen[A] =
     g1.boolean.flatMap(b => if (b) g2 else g1)
 
+  def weighted[A](g1: (Gen[A], Double), g2: (Gen[A], Double)): Gen[A] = ???
+
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/05.answer.md
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/06.answer.md
   // TODO: 答えと違う（けど、実装したらコンパイルエラー出る）

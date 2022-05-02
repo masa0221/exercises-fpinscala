@@ -76,3 +76,18 @@ class GenTest extends AnyFreeSpecLike with Matchers:
       expected should equal(2)
     }
   }
+
+  "weighted" - {
+    "指定した重みで値を生成できること" in {
+      val g1 = (Gen.unit(1), 0.75)
+      val g2 = (Gen.unit(2), 0.25)
+      val (expected, rng) =
+        Gen
+          .weighted(g1, g2)
+          .listOfN(Gen.unit(100))
+          .sample
+          .run(RNG.Simple(1))
+      expected.count(n => n == 1) should equal(75)
+      expected.count(n => n == 2) should equal(25)
+    }
+  }
