@@ -36,22 +36,24 @@ object Gen:
 
   def unit[A](a: => A): Gen[A] = Gen(State(RNG.unit(a)))
 
-  def boolean: Gen[Boolean] = Gen(State(RNG.boolean))
+  def union[A](g1: Gen[A], g2: Gen[A]): Gen[A] =
+    g1.boolean.flatMap(b => if (b) g2 else g1)
 
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/05.answer.md
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/06.answer.md
   // TODO: 答えと違う（けど、実装したらコンパイルエラー出る）
-  extension [A](self: Gen[A]) def listOfN(size: Gen[Int]): Gen[List[A]] =
-    def go(acc: List[A], count: Int)(rng: RNG): (List[A], RNG) =
-      if (count <= 0) {
-        (acc, rng)
-      } else {
-        val (a, rng2) = self.sample.run(rng)
-        go(a :: acc, count - 1)(rng2)
-      }
-    size.flatMap(n => Gen(State(go(List.empty[A], n)))) 
-
   extension [A](self: Gen[A])
     def flatMap[B](f: A => Gen[B]): Gen[B] =
       Gen(self.sample.flatMap(a => f(a).sample))
 
+    def boolean: Gen[Boolean] = Gen(State(RNG.boolean))
+
+    def listOfN(size: Gen[Int]): Gen[List[A]] =
+      def go(acc: List[A], count: Int)(rng: RNG): (List[A], RNG) =
+        if (count <= 0) {
+          (acc, rng)
+        } else {
+          val (a, rng2) = self.sample.run(rng)
+          go(a :: acc, count - 1)(rng2)
+        }
+      size.flatMap(n => Gen(State(go(List.empty[A], n))))
