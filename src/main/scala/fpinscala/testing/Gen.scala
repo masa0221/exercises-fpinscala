@@ -25,6 +25,19 @@ object Prop:
   // 型エイリアスを設定するとコードが読みやすくなる
   type SuccessCount = Int
   type FailedCase = String
+  type TestCases = Int
+
+  case class Prop(run: (TestCases, RNG) => Result)
+
+  sealed trait Result:
+    def isFalsified: Boolean
+
+  case object Passed extends Result:
+    def isFalsified = false
+
+  case class Falsified(failure: FailedCase, successes: SuccessCount)
+      extends Result:
+    def isFalsified = true
 
   def forAll[A](a: Gen[A])(f: A => Boolean): Prop = ???
 
