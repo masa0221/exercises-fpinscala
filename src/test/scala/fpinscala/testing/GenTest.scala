@@ -3,6 +3,7 @@ package fpinscala.testing
 import org.scalatest.freespec.AnyFreeSpecLike
 import org.scalatest.matchers.should.Matchers
 import fpinscala.state.RNG
+import org.scalactic.Pass
 
 class GenTest extends AnyFreeSpecLike with Matchers:
   "choose" - {
@@ -89,5 +90,52 @@ class GenTest extends AnyFreeSpecLike with Matchers:
           .run(RNG.Simple(1))
       expected.count(n => n == 1) should equal(75)
       expected.count(n => n == 2) should equal(25)
+    }
+  }
+
+  "&&" - {
+    import fpinscala.testing.Prop.*
+    "false = false && false" in {
+      val p1 = Prop((testCases: TestCases, rng: RNG) => Falsified("test", 1))
+      val p2 = Prop((testCases: TestCases, rng: RNG) => Falsified("test", 1))
+      p1 && p2 should equal(false)
+    }
+    "false = true && false" in {
+      val p1 = Prop((testCases: TestCases, rng: RNG) => Passed)
+      val p2 = Prop((testCases: TestCases, rng: RNG) => Falsified("test", 1))
+      p1 && p2 should equal(false)
+    }
+    "false = false && true" in {
+      val p1 = Prop((testCases: TestCases, rng: RNG) => Falsified("test", 1))
+      val p2 = Prop((testCases: TestCases, rng: RNG) => Passed)
+      p1 && p2 should equal(false)
+    }
+    "true = true && true" in {
+      val p1 = Prop((testCases: TestCases, rng: RNG) => Passed)
+      val p2 = Prop((testCases: TestCases, rng: RNG) => Passed)
+      p1 && p2 should equal(true)
+    }
+  }
+  "||" - {
+    import fpinscala.testing.Prop.*
+    "false = false && false" in {
+      val p1 = Prop((testCases: TestCases, rng: RNG) => Falsified("test", 1))
+      val p2 = Prop((testCases: TestCases, rng: RNG) => Falsified("test", 1))
+      p1 || p2 should equal(false)
+    }
+    "true = true && false" in {
+      val p1 = Prop((testCases: TestCases, rng: RNG) => Passed)
+      val p2 = Prop((testCases: TestCases, rng: RNG) => Falsified("test", 1))
+      p1 || p2 should equal(false)
+    }
+    "true = false && true" in {
+      val p1 = Prop((testCases: TestCases, rng: RNG) => Falsified("test", 1))
+      val p2 = Prop((testCases: TestCases, rng: RNG) => Passed)
+      p1 || p2 should equal(false)
+    }
+    "true = true && true" in {
+      val p1 = Prop((testCases: TestCases, rng: RNG) => Passed)
+      val p2 = Prop((testCases: TestCases, rng: RNG) => Passed)
+      p1 || p2 should equal(true)
     }
   }

@@ -10,7 +10,6 @@ trait Prop:
   self =>
 
   // checkがEitherに変わったため一旦未実装に戻す
-  def &&(that: Prop): Prop = ???
   // new Prop:
   //   // that なら thisでええやないかと思っちゃうんだけど違うんか・・・郷にいればなんとやらか。
   //   def check = self.check && that.check
@@ -27,7 +26,9 @@ object Prop:
   type FailedCase = String
   type TestCases = Int
 
-  case class Prop(run: (TestCases, RNG) => Result)
+  case class Prop(run: (TestCases, RNG) => Result):
+    def &&(that: Prop): Prop = ???
+    def ||(that: Prop): Prop = ???
 
   sealed trait Result:
     def isFalsified: Boolean
@@ -39,18 +40,18 @@ object Prop:
       extends Result:
     def isFalsified = true
 
-    def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop { (n, rng) =>
-      randomStream(as)(rng)
-        .zip(Stream.from(0))
-        .take(n)
-        .map { case (a, i) =>
-          try {
-            if (f(a)) Passed else Falsified(a.toString, i)
-          } catch { case e: Exception => Falsified(buildMsg(a, e), i) }
-        }
-        .find(_.isFalsified)
-        .getOrElse(Passed)
-    }
+  def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop { (n, rng) =>
+    randomStream(as)(rng)
+      .zip(Stream.from(0))
+      .take(n)
+      .map { case (a, i) =>
+        try {
+          if (f(a)) Passed else Falsified(a.toString, i)
+        } catch { case e: Exception => Falsified(buildMsg(a, e), i) }
+      }
+      .find(_.isFalsified)
+      .getOrElse(Passed)
+  }
 
   def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] =
     Stream.unfold(rng)(rng => Some(g.sample.run(rng)))
