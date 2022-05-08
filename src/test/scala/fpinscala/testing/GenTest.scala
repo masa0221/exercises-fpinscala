@@ -95,25 +95,30 @@ class GenTest extends AnyFreeSpecLike with Matchers:
 
   "&&" - {
     import fpinscala.testing.Prop.*
+    val rng = RNG.Simple(1)
     "false = false && false" in {
-      val p1 = Prop((testCases: TestCases, rng: RNG) => Falsified("test", 1))
-      val p2 = Prop((testCases: TestCases, rng: RNG) => Falsified("test", 1))
-      p1 && p2 should equal(false)
+      val p1 = Prop((testCases: TestCases, rng: RNG) => Falsified("test1", 1))
+      val p2 = Prop((testCases: TestCases, rng: RNG) => Falsified("test2", 1))
+      val actual = (p1 && p2).run(1, rng)
+      actual should equal(Falsified("test1", 1))
     }
     "false = true && false" in {
       val p1 = Prop((testCases: TestCases, rng: RNG) => Passed)
-      val p2 = Prop((testCases: TestCases, rng: RNG) => Falsified("test", 1))
-      p1 && p2 should equal(false)
+      val p2 = Prop((testCases: TestCases, rng: RNG) => Falsified("test2", 1))
+      val actual = (p1 && p2).run(1, rng)
+      actual should equal(Falsified("test2", 1))
     }
     "false = false && true" in {
-      val p1 = Prop((testCases: TestCases, rng: RNG) => Falsified("test", 1))
+      val p1 = Prop((testCases: TestCases, rng: RNG) => Falsified("test1", 1))
       val p2 = Prop((testCases: TestCases, rng: RNG) => Passed)
-      p1 && p2 should equal(false)
+      val actual = (p1 && p2).run(1, rng)
+      actual should equal(Falsified("test1", 1))
     }
     "true = true && true" in {
       val p1 = Prop((testCases: TestCases, rng: RNG) => Passed)
       val p2 = Prop((testCases: TestCases, rng: RNG) => Passed)
-      p1 && p2 should equal(true)
+      val actual = (p1 && p2).run(1, rng)
+      actual should equal(Passed)
     }
   }
   "||" - {

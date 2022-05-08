@@ -27,7 +27,12 @@ object Prop:
   type TestCases = Int
 
   case class Prop(run: (TestCases, RNG) => Result):
-    def &&(that: Prop): Prop = ???
+    def &&(that: Prop): Prop = Prop { (n, rng) =>
+      this.run(n, rng) match
+        case Passed => that.run(n, rng)
+        case res    => res
+    }
+
     def ||(that: Prop): Prop = ???
 
   sealed trait Result:
