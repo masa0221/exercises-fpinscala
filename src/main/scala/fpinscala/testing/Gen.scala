@@ -33,7 +33,15 @@ object Prop:
         case res    => res
     }
 
-    def ||(that: Prop): Prop = ???
+    def ||(that: Prop): Prop = Prop { (n, rng) =>
+      (this.run(n, rng), that.run(n, rng)) match
+        case (Falsified(f1, s1), Falsified(f2, s2)) =>
+          // TODO: 足す必要あるのか？
+          Falsified(f1 + f2, s1 + s2)
+        case (Passed, f) => f
+        case (f, Passed) => f
+        case _           => Passed
+    }
 
   sealed trait Result:
     def isFalsified: Boolean
