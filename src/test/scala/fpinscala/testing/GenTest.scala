@@ -149,3 +149,6 @@ class GenTest extends AnyFreeSpecLike with Matchers:
       actual should equal(Passed)
     }
   }
+  "unsized" - {
+    "SGenが生成できること" in {}
+  }

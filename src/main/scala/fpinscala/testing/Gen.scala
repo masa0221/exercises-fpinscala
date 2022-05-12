@@ -107,3 +107,7 @@ object Gen:
           go(a :: acc, count - 1)(rng2)
         }
       size.flatMap(n => Gen(State(go(List.empty[A], n))))
+
+    def unsized: SGen[A] = ???
+
+case class SGen[+A](forSize: Int => Gen[A])
