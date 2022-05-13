@@ -73,6 +73,8 @@ object Prop:
 case class Gen[A](sample: State[RNG, A])
 
 object Gen:
+  opaque type SGen[+A] = Int => Gen[A]
+
   def choose(start: Int, stopExclusive: Int): Gen[Int] =
     Gen(State(RNG.nonNegativeInt).map(n => start + n % (stopExclusive - start)))
 
@@ -108,6 +110,5 @@ object Gen:
         }
       size.flatMap(n => Gen(State(go(List.empty[A], n))))
 
-    def unsized: SGen[A] = ???
-
-case class SGen[+A](forSize: Int => Gen[A])
+    def unsized: SGen[A] =
+      _ => self
