@@ -70,6 +70,11 @@ object Prop:
       s"generated an exception: ${e.getMessage}\n" +
       s"stack trace:\n ${e.getStackTrace.mkString("\n")}"
 
+// TODO: SGenバージョンを実装するとテスト全部軒並み落ちるから修正するか別バージョン作るか検討する
+// case class Prop(run: (MaxSize, TestCases, RNG) => Result)
+// def forAll[A](g: SGen[A])(f: A => Boolean): Prop = ???
+// def forAll[A](g: Int => Gen[A])(f: A => Boolean): Prop = ???
+
 case class Gen[A](sample: State[RNG, A])
 
 object Gen:
