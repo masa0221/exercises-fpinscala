@@ -25,17 +25,18 @@ object Prop:
   type SuccessCount = Int
   type FailedCase = String
   type TestCases = Int
+  type MaxSize = Int
 
-  case class Prop(run: (TestCases, RNG) => Result):
-    def &&(that: Prop): Prop = Prop { (n, rng) =>
-      this.run(n, rng) match
-        case Passed => that.run(n, rng)
+  case class Prop(run: (MaxSize, TestCases, RNG) => Result):
+    def &&(that: Prop): Prop = Prop { (max, n, rng) =>
+      this.run(max, n, rng) match
+        case Passed => that.run(max, n, rng)
         case res    => res
     }
 
-    def ||(that: Prop): Prop = Prop { (n, rng) =>
-      this.run(n, rng) match
-        case Falsified(_, _) => that.run(n, rng)
+    def ||(that: Prop): Prop = Prop { (max, n, rng) =>
+      this.run(max, n, rng) match
+        case Falsified(_, _) => that.run(max, n, rng)
         case res             => res
     }
 
@@ -49,18 +50,18 @@ object Prop:
       extends Result:
     def isFalsified = true
 
-  def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop { (n, rng) =>
-    randomStream(as)(rng)
-      .zip(Stream.from(0))
-      .take(n)
-      .map { case (a, i) =>
-        try {
-          if (f(a)) Passed else Falsified(a.toString, i)
-        } catch { case e: Exception => Falsified(buildMsg(a, e), i) }
-      }
-      .find(_.isFalsified)
-      .getOrElse(Passed)
-  }
+  // def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop { (n, rng) =>
+  //   randomStream(as)(rng)
+  //     .zip(Stream.from(0))
+  //     .take(n)
+  //     .map { case (a, i) =>
+  //       try {
+  //         if (f(a)) Passed else Falsified(a.toString, i)
+  //       } catch { case e: Exception => Falsified(buildMsg(a, e), i) }
+  //     }
+  //     .find(_.isFalsified)
+  //     .getOrElse(Passed)
+  // }
 
   def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] =
     Stream.unfold(rng)(rng => Some(g.sample.run(rng)))
@@ -70,10 +71,13 @@ object Prop:
       s"generated an exception: ${e.getMessage}\n" +
       s"stack trace:\n ${e.getStackTrace.mkString("\n")}"
 
-// TODO: SGenバージョンを実装するとテスト全部軒並み落ちるから修正するか別バージョン作るか検討する
-// case class Prop(run: (MaxSize, TestCases, RNG) => Result)
-// def forAll[A](g: SGen[A])(f: A => Boolean): Prop = ???
-// def forAll[A](g: Int => Gen[A])(f: A => Boolean): Prop = ???
+  def forAll[A](g: SGen[A])(f: A => Boolean): Prop =
+    forAll(g(_))(f)
+
+  def forAll[A](g: Int => Gen[A])(f: A => Boolean): Prop = ???
+// def forAll[A](g: Int => Gen[A])(f: A => Boolean): Prop = Prop {
+//   (max, n, rng) =>
+// }
 
 case class Gen[A](sample: State[RNG, A])
 
