@@ -50,18 +50,18 @@ object Prop:
       extends Result:
     def isFalsified = true
 
-  // def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop { (n, rng) =>
-  //   randomStream(as)(rng)
-  //     .zip(Stream.from(0))
-  //     .take(n)
-  //     .map { case (a, i) =>
-  //       try {
-  //         if (f(a)) Passed else Falsified(a.toString, i)
-  //       } catch { case e: Exception => Falsified(buildMsg(a, e), i) }
-  //     }
-  //     .find(_.isFalsified)
-  //     .getOrElse(Passed)
-  // }
+  def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop { (_, n, rng) =>
+    randomStream(as)(rng)
+      .zip(Stream.from(0))
+      .take(n)
+      .map { case (a, i) =>
+        try {
+          if (f(a)) Passed else Falsified(a.toString, i)
+        } catch { case e: Exception => Falsified(buildMsg(a, e), i) }
+      }
+      .find(_.isFalsified)
+      .getOrElse(Passed)
+  }
 
   def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] =
     Stream.unfold(rng)(rng => Some(g.sample.run(rng)))
@@ -71,13 +71,23 @@ object Prop:
       s"generated an exception: ${e.getMessage}\n" +
       s"stack trace:\n ${e.getStackTrace.mkString("\n")}"
 
-  def forAll[A](g: SGen[A])(f: A => Boolean): Prop =
-    forAll(g(_))(f)
+  // // @TODO 本に書いているこれの意味がわからん
+  // def forAll[A](g: SGen[A])(f: A => Boolean): Prop =
+  //   forAll(g(_))(f)
 
-  def forAll[A](g: Int => Gen[A])(f: A => Boolean): Prop = ???
-// def forAll[A](g: Int => Gen[A])(f: A => Boolean): Prop = Prop {
-//   (max, n, rng) =>
-// }
+  def forAll[A](g: Int => Gen[A])(f: A => Boolean): Prop = Prop {
+    (max, n, rng) =>
+      val casesParSize = (n + (max - 1)) / max
+      val props: Stream[Prop] =
+        Stream.from(0).take((n min max) + 1).map(i => forAll(g(i))(f))
+      val prop: Prop =
+        props
+          .map(p => Prop { (max, _, rng) => p.run(max, casesParSize, rng) })
+          .toList
+          .reduce(_ && _)
+      prop.run(max, n, rng)
+
+  }
 
 case class Gen[A](sample: State[RNG, A])
 
