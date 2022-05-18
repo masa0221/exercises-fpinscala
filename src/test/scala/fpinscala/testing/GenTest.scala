@@ -97,27 +97,39 @@ class GenTest extends AnyFreeSpecLike with Matchers:
     import fpinscala.testing.Prop.*
     val rng = RNG.Simple(1)
     "false = false && false" in {
-      val p1 = Prop((testCases: TestCases, rng: RNG) => Falsified("test1", 1))
-      val p2 = Prop((testCases: TestCases, rng: RNG) => Falsified("test2", 1))
-      val actual = (p1 && p2).run(1, rng)
+      val p1 = Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) =>
+        Falsified("test1", 1)
+      )
+      val p2 = Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) =>
+        Falsified("test2", 1)
+      )
+      val actual = (p1 && p2).run(1, 1, rng)
       actual should equal(Falsified("test1", 1))
     }
     "false = true && false" in {
-      val p1 = Prop((testCases: TestCases, rng: RNG) => Passed)
-      val p2 = Prop((testCases: TestCases, rng: RNG) => Falsified("test2", 1))
-      val actual = (p1 && p2).run(1, rng)
+      val p1 =
+        Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) => Passed)
+      val p2 = Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) =>
+        Falsified("test2", 1)
+      )
+      val actual = (p1 && p2).run(1, 1, rng)
       actual should equal(Falsified("test2", 1))
     }
     "false = false && true" in {
-      val p1 = Prop((testCases: TestCases, rng: RNG) => Falsified("test1", 1))
-      val p2 = Prop((testCases: TestCases, rng: RNG) => Passed)
-      val actual = (p1 && p2).run(1, rng)
+      val p1 = Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) =>
+        Falsified("test1", 1)
+      )
+      val p2 =
+        Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) => Passed)
+      val actual = (p1 && p2).run(1, 1, rng)
       actual should equal(Falsified("test1", 1))
     }
     "true = true && true" in {
-      val p1 = Prop((testCases: TestCases, rng: RNG) => Passed)
-      val p2 = Prop((testCases: TestCases, rng: RNG) => Passed)
-      val actual = (p1 && p2).run(1, rng)
+      val p1 =
+        Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) => Passed)
+      val p2 =
+        Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) => Passed)
+      val actual = (p1 && p2).run(1, 1, rng)
       actual should equal(Passed)
     }
   }
@@ -125,27 +137,39 @@ class GenTest extends AnyFreeSpecLike with Matchers:
     import fpinscala.testing.Prop.*
     val rng = RNG.Simple(1)
     "false = false && false" in {
-      val p1 = Prop((testCases: TestCases, rng: RNG) => Falsified("test1", 1))
-      val p2 = Prop((testCases: TestCases, rng: RNG) => Falsified("test2", 1))
-      val actual = (p1 || p2).run(1, rng)
+      val p1 = Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) =>
+        Falsified("test1", 1)
+      )
+      val p2 = Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) =>
+        Falsified("test2", 1)
+      )
+      val actual = (p1 || p2).run(1, 1, rng)
       actual should equal(Falsified("test2", 1))
     }
     "true = true && false" in {
-      val p1 = Prop((testCases: TestCases, rng: RNG) => Passed)
-      val p2 = Prop((testCases: TestCases, rng: RNG) => Falsified("test2", 1))
-      val actual = (p1 || p2).run(1, rng)
+      val p1 =
+        Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) => Passed)
+      val p2 = Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) =>
+        Falsified("test2", 1)
+      )
+      val actual = (p1 || p2).run(1, 1, rng)
       actual should equal(Passed)
     }
     "true = false && true" in {
-      val p1 = Prop((testCases: TestCases, rng: RNG) => Falsified("test1", 1))
-      val p2 = Prop((testCases: TestCases, rng: RNG) => Passed)
-      val actual = (p1 || p2).run(1, rng)
+      val p1 = Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) =>
+        Falsified("test1", 1)
+      )
+      val p2 =
+        Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) => Passed)
+      val actual = (p1 || p2).run(1, 1, rng)
       actual should equal(Passed)
     }
     "true = true && true" in {
-      val p1 = Prop((testCases: TestCases, rng: RNG) => Passed)
-      val p2 = Prop((testCases: TestCases, rng: RNG) => Passed)
-      val actual = (p1 || p2).run(1, rng)
+      val p1 =
+        Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) => Passed)
+      val p2 =
+        Prop((maxSize: MaxSize, testCases: TestCases, rng: RNG) => Passed)
+      val actual = (p1 || p2).run(1, 1, rng)
       actual should equal(Passed)
     }
   }
