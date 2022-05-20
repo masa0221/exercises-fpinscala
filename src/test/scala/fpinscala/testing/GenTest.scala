@@ -4,6 +4,7 @@ import org.scalatest.freespec.AnyFreeSpecLike
 import org.scalatest.matchers.should.Matchers
 import fpinscala.state.RNG
 import org.scalactic.Pass
+import fpinscala.testing.Prop.Passed
 
 class GenTest extends AnyFreeSpecLike with Matchers:
   "choose" - {
@@ -174,5 +175,17 @@ class GenTest extends AnyFreeSpecLike with Matchers:
     }
   }
   "unsized" - {
-    "SGenが生成できること" in {}
+    "GenからSGenが生成できること" in {}
+  }
+
+  "nonEmptyList" - {
+    "Passすること" in {
+      val smallInt = Gen.choose(-10, 10)
+      val maxProp = Prop.forAll(smallInt.nonEmptyList) { ns =>
+        val max = ns.max
+        !ns.exists(_ > max)
+      }
+
+      maxProp.run(1, 1, RNG.Simple(1)) should equal(Passed)
+    }
   }

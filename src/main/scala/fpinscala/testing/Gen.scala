@@ -144,6 +144,9 @@ object Gen:
     def unsized: SGen[A] =
       _ => self
 
+    def nonEmptyList: SGen[List[A]] =
+      n => listOfN(Gen.unit(n.max(1)))
+
 type SGen[A] = Int => Gen[A]
 object SGen:
   extension [A](self: SGen[A])
