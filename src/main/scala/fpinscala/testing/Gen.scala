@@ -89,6 +89,12 @@ object Prop:
 
   }
 
+  // p171
+  def check(p: => Boolean): Prop = {
+    lazy val result = p
+    forAll(Gen.unit(()))(_ => result)
+  }
+
   def run(
       p: Prop,
       maxSize: Int = 100,
