@@ -141,6 +141,9 @@ object Gen:
         }
       size.flatMap(n => Gen(State(go(List.empty[A], n))))
 
+    def list: SGen[List[A]] =
+      i => listOfN(Gen.unit(i))
+
     def unsized: SGen[A] =
       _ => self
 

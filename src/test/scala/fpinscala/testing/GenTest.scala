@@ -189,3 +189,19 @@ class GenTest extends AnyFreeSpecLike with Matchers:
       maxProp.run(1, 1, RNG.Simple(1)) should equal(Passed)
     }
   }
+
+  "sortedProp" - {
+    "Passすること" in {
+      val smallInt = Gen.choose(-10, 10)
+      // TODO: ちゃんと理解する
+      // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/14.answer.md
+      val sortedProp = Prop.forAll(smallInt.list) { list =>
+        val slist = list.sorted
+        val ordered =
+          list.isEmpty || slist.zip(slist.tail).forall { (a, b) => a <= b }
+        ordered && list.forall(slist.contains) && slist.forall(list.contains)
+      }
+
+      sortedProp.run(1, 1, RNG.Simple(1)) should equal(Passed)
+    }
+  }
