@@ -50,6 +50,8 @@ object Prop:
       extends Result:
     def isFalsified = true
 
+  case object Proved extends Result
+
   def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop { (_, n, rng) =>
     randomStream(as)(rng)
       .zip(Stream.from(0))
@@ -90,9 +92,8 @@ object Prop:
   }
 
   // p171
-  def check(p: => Boolean): Prop = {
-    lazy val result = p
-    forAll(Gen.unit(()))(_ => result)
+  def check(p: => Boolean): Prop = Prop { (_, _, _) =>
+    if (p) Passed else Falsified("()", 0)
   }
 
   def run(
@@ -106,6 +107,8 @@ object Prop:
         println(s"! Falsified after $n passed tests: \n $msg")
       case Passed =>
         println(s"+ OK, passed $testCases tests.")
+      case Proved =>
+        println(s"+ OK, proved property.")
     }
 
 case class Gen[A](sample: State[RNG, A])
