@@ -5,6 +5,10 @@ import org.scalatest.matchers.should.Matchers
 import fpinscala.state.RNG
 import org.scalactic.Pass
 import fpinscala.testing.Prop.Passed
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import fpinscala.parallelism.MyPar
+import fpinscala.parallelism.Par
 
 class GenTest extends AnyFreeSpecLike with Matchers:
   "choose" - {
@@ -204,4 +208,12 @@ class GenTest extends AnyFreeSpecLike with Matchers:
 
       sortedProp.run(1, 1, RNG.Simple(1)) should equal(Passed)
     }
+  }
+
+  "Parのテスト" in {
+    val es: ExecutorService = Executors.newCachedThreadPool
+    val p1 = Prop.forAll(Gen.unit(MyPar.unit(1)))(i =>
+      // MyPar.mapの使い方がなんか変？
+      MyPar.map(i)(_ + 1)(es).get == MyPar.unit(2)(es).get
+    )
   }

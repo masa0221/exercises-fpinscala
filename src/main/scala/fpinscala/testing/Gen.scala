@@ -50,7 +50,8 @@ object Prop:
       extends Result:
     def isFalsified = true
 
-  case object Proved extends Result
+  case object Proved extends Result:
+    def isFalsified = false
 
   def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop { (_, n, rng) =>
     randomStream(as)(rng)
