@@ -212,8 +212,13 @@ class GenTest extends AnyFreeSpecLike with Matchers:
 
   "Parのテスト" in {
     val es: ExecutorService = Executors.newCachedThreadPool
-    val p1 = Prop.forAll(Gen.unit(MyPar.unit(1)))(i =>
-      // MyPar.mapの使い方がなんか変？
-      MyPar.map(i)(_ + 1)(es).get == MyPar.unit(2)(es).get
-    )
+    // val p1 = Prop.forAll(Gen.unit(MyPar.unit(1)))(i =>
+    //   // MyPar.mapの使い方がなんか変？
+    //   MyPar.map(i)(_ + 1)(es).get == MyPar.unit(2)(es).get
+    // )
+    val p2 = Prop.check {
+      val p = MyPar.map(MyPar.unit(1))(_ + 1)
+      val p2 = MyPar.unit(2)
+      p(es).get == p2(es).get
+    }
   }
