@@ -2,6 +2,8 @@ package fpinscala.testing
 
 import fpinscala.state.State
 import fpinscala.state.RNG
+import fpinscala.parallelism.*
+import fpinscala.parallelism.MyPar
 
 trait Prop:
   // self type annotation
@@ -96,6 +98,9 @@ object Prop:
   def check(p: => Boolean): Prop = Prop { (_, _, _) =>
     if (p) Passed else Falsified("()", 0)
   }
+
+  // def equal[A](p: MyPar[A], p2: MyPar[A]): MyPar[Boolean] =
+  //   MyPar.map2(p, p2)(_ == _)
 
   def run(
       p: Prop,
