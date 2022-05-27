@@ -99,8 +99,8 @@ object Prop:
     if (p) Passed else Falsified("()", 0)
   }
 
-  // def equal[A](p: MyPar[A], p2: MyPar[A]): MyPar[Boolean] =
-  //   MyPar.map2(p, p2)(_ == _)
+  def equalPars[A](p: MyPar[A], p2: MyPar[A]): MyPar[Boolean] =
+    MyPar.map2(p, p2)(_ == _)
 
   def run(
       p: Prop,
