@@ -4,6 +4,7 @@ import fpinscala.state.State
 import fpinscala.state.RNG
 import fpinscala.parallelism.*
 import fpinscala.parallelism.MyPar
+import java.util.concurrent.Executors
 
 trait Prop:
   // self type annotation
@@ -137,12 +138,27 @@ object Gen:
       )
     )
 
+  val S = weighted(
+    choose(1, 4).map(Executors.newFixedThreadPool) -> .75,
+    unit(Executors.newCachedThreadPool) -> .25
+  )
+  def forAllPar[A](g: Gen[A])(
+      f: A => fpinscala.parallelism.MyNonblocking.MyPar[Boolean]
+  ): Prop =
+    Prop.forAll(S.map2(g)((_, _))) { case (s, a) => f(a).run(s).get }
+
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/05.answer.md
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/06.answer.md
   // TODO: 答えと違う（けど、実装したらコンパイルエラー出る）
   extension [A](self: Gen[A])
     def flatMap[B](f: A => Gen[B]): Gen[B] =
       Gen(self.sample.flatMap(a => f(a).sample))
+
+    def map[B](f: A => B): Gen[B] =
+      self.flatMap(g => Gen.unit(f(g)))
+
+    def map2[B, C](g2: Gen[B])(f: (A, B) => Gen[C]): Gen[C] =
+      self.flatMap(g1 => g2.flatMap(g2 => f(g1, g2)))
 
     def boolean: Gen[Boolean] = Gen(State(RNG.boolean))
 
