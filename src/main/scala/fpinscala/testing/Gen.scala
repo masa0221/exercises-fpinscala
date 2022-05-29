@@ -5,6 +5,7 @@ import fpinscala.state.RNG
 import fpinscala.parallelism.*
 import fpinscala.parallelism.MyPar
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 trait Prop:
   // self type annotation
@@ -143,9 +144,11 @@ object Gen:
     unit(Executors.newCachedThreadPool) -> .25
   )
   def forAllPar[A](g: Gen[A])(
-      f: A => fpinscala.parallelism.MyNonblocking.MyPar[Boolean]
+      f: A => fpinscala.parallelism.MyPar[Boolean]
   ): Prop =
-    Prop.forAll(S.map2(g)((_, _))) { case (s, a) => f(a).run(s).get }
+    Prop.forAll(S.map2(g)((s, a) => Gen.unit((s, a)))) { case (s, a) =>
+      MyPar.run(s)(f(a)).get(1L, TimeUnit.SECONDS)
+    }
 
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/05.answer.md
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/06.answer.md
