@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import fpinscala.parallelism.MyPar
 import fpinscala.parallelism.Par
+import fpinscala.testing.Prop.{Falsified, Passed}
 
 class GenTest extends AnyFreeSpecLike with Matchers:
   "choose" - {
@@ -210,21 +211,34 @@ class GenTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
-  "Parのテスト" in {
-    // val es: ExecutorService = Executors.newCachedThreadPool
+  "Parのテスト" - {
     val es = Executors.newFixedThreadPool(2)
-    val p1 = Prop.forAll(Gen.unit(MyPar.unit(1)))(i =>
-      // MyPar.mapの使い方がなんか変？
-      MyPar.run(es)(i).get == MyPar.run(es)(MyPar.unit(2)).get
-    )
-    val p2 = Prop.check {
-      val p1 = MyPar.map(MyPar.unit(1))(_ + 1)
-      val p2 = MyPar.unit(2)
-      MyPar.run(es)(p1).get == MyPar.run(es)(p2).get
+    "forAll" in {
+      val actual = Prop.forAll(Gen.unit(MyPar.unit(1)))(i =>
+        MyPar.run(es)(i).get == MyPar.run(es)(MyPar.unit(2)).get
+      )
+      actual.run(1, 1, RNG.Simple(1)) shouldBe a[Falsified]
     }
-    val p3 = Prop.check {
-      val p1 = MyPar.map(MyPar.unit(1))(_ + 1)
-      val p2 = MyPar.unit(2)
-      MyPar.run(es)(Prop.equalPars(p1, p2)).get
+    "check1" in {
+      val actual = Prop.check {
+        val p1 = MyPar.map(MyPar.unit(1))(_ + 1)
+        val p2 = MyPar.unit(2)
+        MyPar.run(es)(p1).get == MyPar.run(es)(p2).get
+      }
+      actual.run(1, 1, RNG.Simple(1)) should equal(Passed)
+    }
+    "check2" in {
+      val actual = Prop.check {
+        val p1 = MyPar.map(MyPar.unit(1))(_ + 1)
+        val p2 = MyPar.unit(2)
+        MyPar.run(es)(Prop.equalPars(p1, p2)).get
+      }
+      actual.run(1, 1, RNG.Simple(1)) should equal(Passed)
+    }
+    "forAllPar" ignore {
+      val actual = Prop.forAll(Gen.unit(MyPar.unit(1)))(i =>
+        MyPar.run(es)(i).get == MyPar.run(es)(MyPar.unit(2)).get
+      )
+      actual should equal(true)
     }
   }
