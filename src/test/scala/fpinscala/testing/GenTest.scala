@@ -235,10 +235,11 @@ class GenTest extends AnyFreeSpecLike with Matchers:
       }
       actual.run(1, 1, RNG.Simple(1)) should equal(Passed)
     }
-    "forAllPar" ignore {
-      val actual = Prop.forAll(Gen.unit(MyPar.unit(1)))(i =>
-        MyPar.run(es)(i).get == MyPar.run(es)(MyPar.unit(2)).get
-      )
-      actual should equal(true)
+    "forAllPar" in {
+      val actual =
+        Prop.forAllPar(Gen.unit(MyPar.unit(1)))(a =>
+          MyPar.map(MyPar.unit(1))(a => a == 1)
+        )
+      actual.run(1, 1, RNG.Simple(1)) should equal(Passed)
     }
   }
