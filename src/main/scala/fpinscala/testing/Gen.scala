@@ -106,8 +106,8 @@ object Prop:
   def forAllPar[A](g: Gen[A])(
       f: A => fpinscala.parallelism.MyPar[Boolean]
   ): Prop =
-    forAll(S.map2(g)((s, a) => Gen.unit((s, a)))) { case (s, a) =>
-      MyPar.run(s)(f(a)).get(1L, TimeUnit.SECONDS)
+    forAll(S ** g) { case (s, a) =>
+      MyPar.run(s)(f(a)).get
     }
 
   // p171
@@ -167,6 +167,9 @@ object Gen:
       self.flatMap(g1 => g2.flatMap(g2 => f(g1, g2)))
 
     def boolean: Gen[Boolean] = Gen(State(RNG.boolean))
+
+    def **[B](g: Gen[B]): Gen[(A, B)] =
+      (self map2 g)((a, b) => Gen.unit((a, b)))
 
     def listOfN(size: Gen[Int]): Gen[List[A]] =
       def go(acc: List[A], count: Int)(rng: RNG): (List[A], RNG) =
