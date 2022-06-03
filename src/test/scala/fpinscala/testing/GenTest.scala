@@ -211,6 +211,12 @@ class GenTest extends AnyFreeSpecLike with Matchers:
     }
   }
 
+  "**" in {
+    val g = Gen.unit(1) ** Gen.unit(2)
+    val (actual, rng) = g.sample.run(RNG.Simple(1))
+    actual should equal((1, 2))
+  }
+
   "Parのテスト" - {
     val es = Executors.newFixedThreadPool(2)
     "forAll" in {
