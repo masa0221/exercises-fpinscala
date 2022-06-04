@@ -106,7 +106,7 @@ object Prop:
   def forAllPar[A](g: Gen[A])(
       f: A => fpinscala.parallelism.MyPar[Boolean]
   ): Prop =
-    forAll(S ** g) { case (s, a) =>
+    forAll(S ** g) { case s ** a =>
       MyPar.run(s)(f(a)).get
     }
 
@@ -152,6 +152,9 @@ object Gen:
         if (d < g1Threshold) g1._1.sample else g2._1.sample
       )
     )
+
+  object ** :
+    def unapply[A, B](p: (A, B)) = Some(p)
 
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/05.answer.md
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/06.answer.md
