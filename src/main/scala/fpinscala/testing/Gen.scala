@@ -118,6 +118,16 @@ object Prop:
   def equalPars[A](p: MyPar[A], p2: MyPar[A]): MyPar[Boolean] =
     MyPar.map2(p, p2)(_ == _)
 
+  // TODO: 見直す
+  // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/16.answer.md
+  val gpy2: Gen[MyPar[Int]] = choose(-100, 100)
+    .listOfN(choose(0, 20))
+    .map(ys =>
+      ys.foldLeft(MyPar.unit(0))((p, y) =>
+        MyPar.fork(MyPar.map2(p, MyPar.unit(y))(_ + _))
+      )
+    )
+
   def run(
       p: Prop,
       maxSize: Int = 100,
