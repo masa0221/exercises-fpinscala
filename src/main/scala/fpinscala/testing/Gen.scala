@@ -128,6 +128,10 @@ object Prop:
       )
     )
 
+  // TODO: 見直す
+  // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/17.answer.md
+  val forkProp = forAllPar(gpy2)(y => equalPars(MyPar.fork(y), y))
+
   def run(
       p: Prop,
       maxSize: Int = 100,
