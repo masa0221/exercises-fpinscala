@@ -2,9 +2,9 @@ package fpinscala.parallelism
 
 import java.util.concurrent.*
 
+// opaque オリジナルのタイプを定義できるやーつ
+opaque type MyPar[A] = ExecutorService => Future[A]
 object MyPar:
-  // opaque オリジナルのタイプを定義できるやーつ
-  opaque type MyPar[A] = ExecutorService => Future[A]
 
   def unit[A](a: A): MyPar[A] = (es: ExecutorService) => UnitFuture(a)
 
