@@ -170,6 +170,11 @@ object Gen:
   object ** :
     def unapply[A, B](p: (A, B)) = Some(p)
 
+  // TODO: 答え見てもわからないのでどこからわからないか確認し直す
+  // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/19.answer.md
+  def genStringIntFn(g: Gen[Int]): Gen[String => Int] =
+    g map (i => (s => i))
+
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/05.answer.md
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/testing/06.answer.md
   // TODO: 答えと違う（けど、実装したらコンパイルエラー出る）
