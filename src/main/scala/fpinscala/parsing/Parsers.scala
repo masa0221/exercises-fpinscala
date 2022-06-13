@@ -47,7 +47,14 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // run(listOfN(3, "ab" | "cad"))("ababcad") == Right("ababcad")
   // run(listOfN(3, "ab" | "cad"))("cadabab") == Right("cadabab")
   // run(listOfN(3, "ab" | "cad"))("ababab") == Right("ababab")
-  def listOfN[A](n: Int, p: Parser[A]): Parser[List[A]] = ???
+  def listOfN[A](n: Int, p: Parser[A]): Parser[List[A]]
+
+  // 1. 'a'の文字を0個以上認識するParser[Int]
+  // "aa" の場合: 2を返す
+  // "b123" の場合: 0を返す
+  // run(countA("aa")) == Right(2)
+  // run(countA("b123")) == Right(0)
+  def countA(string: String): Parser[Int]
 
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
   // def string と def asStringParser によって Stringが自動的にParserに昇格される
