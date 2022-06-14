@@ -52,9 +52,9 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // 1. 'a'の文字を0個以上認識するParser[Int]
   // "aa" の場合: 2を返す
   // "b123" の場合: 0を返す
-  // run(countA("aa")) == Right(2)
-  // run(countA("b123")) == Right(0)
-  def countA(string: String): Parser[Int]
+  // run(count(char('a')("aa") == Right(2)
+  // run(count(char('a')("b123") == Right(0)
+  def count(c: Char): Parser[Int]
 
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
   // def string と def asStringParser によって Stringが自動的にParserに昇格される
