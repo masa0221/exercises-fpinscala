@@ -1,5 +1,7 @@
 package fpinscala.parsing
 
+import fpinscala.testing.*
+
 // 最小限の台数と関連する法則を設計について考える
 // 追加したい解析タスクについて検討するためのお題
 //
@@ -69,4 +71,14 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     // 2. "abc" が String なので implicit で定義されたstringメソッドが実行される（ String => Parser[String] ）
     def |[B >: A](p2: Parser[B]): Parser[B] = self.or(p, p2)
     def or[B >: A](p2: => Parser[B]): Parser[B] = self.or(p, p2)
+
+  object Laws {
+    // TODO:コンパイルエラー
+    // def equal(p1: Parser[A], p2: Parser[A])(in: Gen[String]): Prop =
+    //   forAll(in)(s => run(p1)(s) == run(p2)(s))
+
+    // TODO:コンパイルエラー
+    // def mapLaw[A](p: Parser[A])(in: Gen[String]): Prop =
+    //   equal(p, p.map(a => a))(in)
+  }
 }
