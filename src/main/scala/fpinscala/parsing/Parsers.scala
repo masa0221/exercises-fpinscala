@@ -1,5 +1,6 @@
 package fpinscala.parsing
 
+// import fpinscala.answers.testing.*
 import fpinscala.testing.*
 
 // 最小限の台数と関連する法則を設計について考える
@@ -73,9 +74,9 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     def or[B >: A](p2: => Parser[B]): Parser[B] = self.or(p, p2)
 
   object Laws {
-    // TODO:コンパイルエラー
-    // def equal(p1: Parser[A], p2: Parser[A])(in: Gen[String]): Prop =
-    //   forAll(in)(s => run(p1)(s) == run(p2)(s))
+    // TODO:なんかおかしい。
+    def equal[A](p1: Parser[A], p2: Parser[A])(in: Gen[String]): Prop.Prop =
+      Prop.forAll(in)(s => run(p1)(s) == run(p2)(s))
 
     // TODO:コンパイルエラー
     // def mapLaw[A](p: Parser[A])(in: Gen[String]): Prop =
