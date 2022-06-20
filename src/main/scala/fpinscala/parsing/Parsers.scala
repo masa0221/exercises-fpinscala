@@ -27,7 +27,7 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // 任意の一文字を認識
   // 成り立つ式
   // run(char(c))(c.toString) == Right(c)
-  def char(c: Char): Parser[Char]
+  def char(c: Char): Parser[Char] = string(c.toString) map (_.charAt(0))
 
   // 任意の文字列を認識
   // def string(s: String): Parser[String]
