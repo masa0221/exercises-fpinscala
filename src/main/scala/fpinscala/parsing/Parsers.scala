@@ -24,6 +24,9 @@ import fpinscala.answers.testing.*
 trait Parsers[ParseError, Parser[+_]] { self =>
   def run[A](p: Parser[A])(input: String): Either[ParseError, A]
 
+  // run(scceed(a))(s) == Right(s)
+  def succeed[A](a: A): Parser[A] = string("") map (_ => a)
+
   // 任意の一文字を認識
   // 成り立つ式
   // run(char(c))(c.toString) == Right(c)
