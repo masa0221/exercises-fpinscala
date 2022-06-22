@@ -62,6 +62,8 @@ trait Parsers[ParseError, Parser[+_]] { self =>
 
   def map[A, B](a: Parser[A])(f: A => B): Parser[B]
 
+  def slice[A](p: Parser[A]): Parser[String]
+
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
   // def string と def asStringParser によって Stringが自動的にParserに昇格される
   implicit def asStringParser[A](a: A)(implicit
