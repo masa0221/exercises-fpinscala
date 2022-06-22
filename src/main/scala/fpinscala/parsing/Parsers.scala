@@ -60,8 +60,11 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // map(many(char('a')))(_.size)
   def many[A](p: Parser[A]): Parser[List[A]]
 
+  def many1[A](p: Parser[A]): Parser[List[A]]
+
   def map[A, B](a: Parser[A])(f: A => B): Parser[B]
 
+  // run(slice(('a'|'b').many))("aaba") == Right("aaba")
   def slice[A](p: Parser[A]): Parser[String]
 
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
