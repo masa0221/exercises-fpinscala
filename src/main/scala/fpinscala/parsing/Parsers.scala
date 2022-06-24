@@ -2,22 +2,6 @@ package fpinscala.parsing
 
 import fpinscala.answers.testing.*
 
-// 最小限の台数と関連する法則を設計について考える
-// 追加したい解析タスクについて検討するためのお題
-//
-// 1. 'a'の文字を0個以上認識するParser[Int]
-// "aa" の場合: 2を返す
-// "b123" の場合: 0を返す
-//
-// 2. 'a'の文字を1個以上認識するParser[Int]
-// "aa" の場合: 2を返す
-// "b123" の場合: "Expected one or more 'a'" を明示
-//
-// 3. 0個以上の'a'に続いて1個以上の'b'を認識するパーサー
-// "bbb"の場合: (0,3)
-// "aaaab"の場合: (4,1)
-//
-
 // Parsers実装ルール
 // 1. 主要な定義(String => Parser[String]など)は Parsers に直接配置する
 // 2. 2項演算子やメソッドはParserOptに記述する
@@ -60,6 +44,7 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // map(many(char('a')))(_.size)
   def many[A](p: Parser[A]): Parser[List[A]]
 
+  // 'a'の文字を1個以上認識する
   def many1[A](p: Parser[A]): Parser[List[A]]
 
   def map[A, B](a: Parser[A])(f: A => B): Parser[B]
