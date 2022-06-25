@@ -47,6 +47,8 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // 'a'の文字を1個以上認識する
   def many1[A](p: Parser[A]): Parser[List[A]]
 
+  def product[A, B](p: Parser[A], p2: Parser[B]): Parser[(A, B)]
+
   def map[A, B](a: Parser[A])(f: A => B): Parser[B]
 
   // run(slice(('a'|'b').many))("aaba") == Right("aaba")
@@ -65,6 +67,8 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     def |[B >: A](p2: Parser[B]): Parser[B] = self.or(p, p2)
     def or[B >: A](p2: => Parser[B]): Parser[B] = self.or(p, p2)
     def map[B](f: A => B): Parser[B] = self.map(p)(f)
+    def **[B >: A](p2: Parser[B]): Parser[(A, B)] = self.product(p, p2)
+    def product[B >: A](p2: Parser[B]): Parser[(A, B)] = self.product(p, p2)
 
   object Laws {
     def equal[A](p1: Parser[A], p2: Parser[A])(in: Gen[String]): Prop =
