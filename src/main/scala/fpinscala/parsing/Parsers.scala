@@ -51,6 +51,9 @@ trait Parsers[ParseError, Parser[+_]] { self =>
 
   def map[A, B](a: Parser[A])(f: A => B): Parser[B]
 
+  def map2[A, B, C](a: Parser[A], b: Parser[B])(f: (A, B) => C): Parser[C] =
+    product(a, b).map(t => f(t._1, t._2))
+
   // run(slice(('a'|'b').many))("aaba") == Right("aaba")
   def slice[A](p: Parser[A]): Parser[String]
 
