@@ -42,7 +42,8 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // "aa" の場合: 2を返す
   // "b123" の場合: 0を返す
   // map(many(char('a')))(_.size)
-  def many[A](p: Parser[A]): Parser[List[A]]
+  def many[A](p: Parser[A]): Parser[List[A]] =
+    map2(p, many(p))(_ :: _) | succeed(List())
 
   // 'a'の文字を1個以上認識する
   def many1[A](p: Parser[A]): Parser[List[A]]
