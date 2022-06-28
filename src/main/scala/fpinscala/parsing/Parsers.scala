@@ -42,11 +42,14 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // "aa" の場合: 2を返す
   // "b123" の場合: 0を返す
   // map(many(char('a')))(_.size)
+  // https://github.com/fpinscala/fpinscala/blob/first-edition/answers/src/main/scala/fpinscala/parsing/Parsers.scala#L42-L43
   def many[A](p: Parser[A]): Parser[List[A]] =
     map2(p, many(p))(_ :: _) | succeed(List())
 
   // 'a'の文字を1個以上認識する
-  def many1[A](p: Parser[A]): Parser[List[A]]
+  // https://github.com/fpinscala/fpinscala/blob/first-edition/answers/src/main/scala/fpinscala/parsing/Parsers.scala#L35-L36
+  def many1[A](p: Parser[A]): Parser[List[A]] =
+    map2(p, many(p))(_ :: _)
 
   def product[A, B](p: Parser[A], p2: Parser[B]): Parser[(A, B)]
 
