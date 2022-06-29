@@ -5,6 +5,9 @@ import fpinscala.answers.testing.*
 // Parsers実装ルール
 // 1. 主要な定義(String => Parser[String]など)は Parsers に直接配置する
 // 2. 2項演算子やメソッドはParserOptに記述する
+//
+// 例: 0個以上のaに続いて1個以上のbを解析するためのパーサー
+// char('a').many.slice.map(_.size) ** char('b').many1.slice.map(_.size)
 trait Parsers[ParseError, Parser[+_]] { self =>
   def run[A](p: Parser[A])(input: String): Either[ParseError, A]
 
