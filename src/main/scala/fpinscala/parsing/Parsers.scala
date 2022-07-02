@@ -8,8 +8,6 @@ import fpinscala.answers.testing.*
 //
 // 例: 0個以上のaに続いて1個以上のbを解析するためのパーサー
 // char('a').many.slice.map(_.size) ** char('b').many1.slice.map(_.size)
-// ParseErrorは仮実装
-case class ParseError()
 trait Parsers[ParseError, Parser[+_]] { self =>
   def run[A](p: Parser[A])(input: String): Either[ParseError, A]
 
