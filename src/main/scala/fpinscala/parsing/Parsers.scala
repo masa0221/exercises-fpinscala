@@ -39,7 +39,10 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // run(listOfN(3, "ab" | "cad"))("ababcad") == Right("ababcad")
   // run(listOfN(3, "ab" | "cad"))("cadabab") == Right("cadabab")
   // run(listOfN(3, "ab" | "cad"))("ababab") == Right("ababab")
-  def listOfN[A](n: Int, p: Parser[A]): Parser[List[A]]
+  // https://github.com/fpinscala/fpinscala/blob/first-edition/answerkey/parsing/04.answer.scala
+  def listOfN[A](n: Int, p: Parser[A]): Parser[List[A]] =
+    if (n <= 0) succeed(List())
+    else map2(p, listOfN(n - 1, p))(_ :: _)
 
   // 1. 'a'の文字を0個以上認識するParser[Int]
   // "aa" の場合: 2を返す
