@@ -44,13 +44,17 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     if (n <= 0) succeed(List())
     else map2(p, listOfN(n - 1, p))(_ :: _)
 
+  // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/parsing/05.answer.md
+  def defer[A](p: => Parser[A]): Parser[A]
+
   // 1. 'a'の文字を0個以上認識するParser[Int]
   // "aa" の場合: 2を返す
   // "b123" の場合: 0を返す
   // map(many(char('a')))(_.size)
   // https://github.com/fpinscala/fpinscala/blob/first-edition/answers/src/main/scala/fpinscala/parsing/Parsers.scala#L42-L43
   def many[A](p: Parser[A]): Parser[List[A]] =
-    map2(p, many(p))(_ :: _) | succeed(List())
+    // map2(p, many(p))(_ :: _) | succeed(List())
+    map2(p, defer(many(p)))(_ :: _) | succeed(List())
 
   // 'a'の文字を1個以上認識する
   // https://github.com/fpinscala/fpinscala/blob/first-edition/answers/src/main/scala/fpinscala/parsing/Parsers.scala#L35-L36
