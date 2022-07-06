@@ -32,7 +32,7 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // 成り立つ式
   // run(or(string("hoge"), string("fuga")))("hoge") == Right("hoge")
   // run(or(string("hoge"), string("fuga")))("fuga") == Right("fuga")
-  def or[A](s1: Parser[A], s2: Parser[A]): Parser[A]
+  def or[A](s1: Parser[A], s2: => Parser[A]): Parser[A]
 
   // 入力値の中に 「"ab" か "cad" どちらか」が3回ある
   // 成り立つ式
