@@ -69,6 +69,8 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     // product(a, b).map(t => f(t._1, t._2))
     product(a, b).map(f.tupled)
 
+  def flatMap[A, B](p: Parser[A])(f: A => Parser[B]): Parser[B]
+
   // run(slice(('a'|'b').many))("aaba") == Right("aaba")
   def slice[A](p: Parser[A]): Parser[String]
 
@@ -87,6 +89,7 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     def map[B](f: A => B): Parser[B] = self.map(p)(f)
     def **[B >: A](p2: Parser[B]): Parser[(A, B)] = self.product(p, p2)
     def product[B >: A](p2: Parser[B]): Parser[(A, B)] = self.product(p, p2)
+    def flatMap[B](f: A => Parser[B]): Parser[B] = self.flatMap(p)(f)
 
   object Laws {
     def equal[A](p1: Parser[A], p2: Parser[A])(in: Gen[String]): Prop =
