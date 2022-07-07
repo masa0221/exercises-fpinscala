@@ -1,6 +1,7 @@
 package fpinscala.parsing
 
 import fpinscala.answers.testing.*
+import scala.util.matching.Regex
 
 // Parsers実装ルール
 // 1. 主要な定義(String => Parser[String]など)は Parsers に直接配置する
@@ -73,6 +74,9 @@ trait Parsers[ParseError, Parser[+_]] { self =>
 
   // run(slice(('a'|'b').many))("aaba") == Right("aaba")
   def slice[A](p: Parser[A]): Parser[String]
+
+  // run(regex("[a-z0-9]*".r))("abc123efg") == Right("abc123efg")
+  implicit def regex(r: Regex): Parser[String]
 
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
   // def string と def asStringParser によって Stringが自動的にParserに昇格される
