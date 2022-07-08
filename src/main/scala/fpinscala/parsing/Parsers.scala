@@ -103,3 +103,11 @@ trait Parsers[ParseError, Parser[+_]] { self =>
       equal(p, p.map(a => a))(in)
   }
 }
+
+// TODO: なんかコンパイルエラー＞＜
+// class Examples[Parser[+_]](P: Parsers[Parser]):
+//   import P.*
+
+//   val nonNegativeInt: Parser[Int] = ???
+
+//   val nConsecutiveAs: Parser[Int] = ???
