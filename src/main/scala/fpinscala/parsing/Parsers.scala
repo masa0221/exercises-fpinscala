@@ -62,7 +62,8 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   def many1[A](p: Parser[A]): Parser[List[A]] =
     map2(p, many(p))(_ :: _)
 
-  def product[A, B](p: Parser[A], p2: => Parser[B]): Parser[(A, B)]
+  def product[A, B](p: Parser[A], p2: => Parser[B]): Parser[(A, B)] =
+    p.flatMap(a => p2.flatMap(b => succeed((a, b))))
 
   def map[A, B](a: Parser[A])(f: A => B): Parser[B]
 
@@ -103,11 +104,3 @@ trait Parsers[ParseError, Parser[+_]] { self =>
       equal(p, p.map(a => a))(in)
   }
 }
-
-// TODO: なんかコンパイルエラー＞＜
-// class Examples[Parser[+_]](P: Parsers[Parser]):
-//   import P.*
-
-//   val nonNegativeInt: Parser[Int] = ???
-
-//   val nConsecutiveAs: Parser[Int] = ???
