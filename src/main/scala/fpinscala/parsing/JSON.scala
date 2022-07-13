@@ -14,9 +14,10 @@ enum JSON:
   case JArray(get: IndexedSeq[JSON])
   case JObject(get: Map[String, JSON])
 
-object JSON
-// def jsonParser[Parser[+_]](P: Parsers[ParseError, Parser]): Parser[JSON] =
-//   import P.*
+object JSON:
+  def jsonParser[Err, Parser[+_]](P: Parsers[Err, Parser]): Parser[JSON] = ???
+// import P.*
+// val space = char(' ').many.slice
 
 // // token???
 // def token(s: String) = string(s).token
