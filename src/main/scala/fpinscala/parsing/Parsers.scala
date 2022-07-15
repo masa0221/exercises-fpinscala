@@ -83,6 +83,10 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // run(regex("[a-z0-9]*".r))("abc123efg") == Right("abc123efg")
   implicit def regex(r: Regex): Parser[String]
 
+  def letter: Parser[String] = regex("[a-zA-Z]+".r)
+  def digit: Parser[String] = regex("[0-9]+".r)
+  def whitespace: Parser[String] = regex("\\s*".r)
+
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
   // def string と def asStringParser によって Stringが自動的にParserに昇格される
   implicit def asStringParser[A](a: A)(implicit
