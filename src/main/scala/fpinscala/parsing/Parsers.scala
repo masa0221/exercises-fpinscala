@@ -86,6 +86,9 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   def letter: Parser[String] = regex("[a-zA-Z]+".r)
   def digit: Parser[String] = regex("[0-9]+".r)
   def whitespace: Parser[String] = regex("\\s*".r)
+  // TODO: TOKENの実装を理解する
+  // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/Parsers.scala#L116-L117
+  def token: Parser[A] = ???
 
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
   // def string と def asStringParser によって Stringが自動的にParserに昇格される
