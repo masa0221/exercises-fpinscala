@@ -90,6 +90,9 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/Parsers.scala#L116-L117
   def token: Parser[A] = ???
 
+  def <*[A](p1: Parser[A], p2: => Parser[Any]): Parser[A] =
+    map2(p1, p2.slice)((a, b) => a)
+
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
   // def string と def asStringParser によって Stringが自動的にParserに昇格される
   implicit def asStringParser[A](a: A)(implicit
@@ -106,6 +109,7 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     def **[B >: A](p2: Parser[B]): Parser[(A, B)] = self.product(p, p2)
     def product[B >: A](p2: Parser[B]): Parser[(A, B)] = self.product(p, p2)
     def flatMap[B](f: A => Parser[B]): Parser[B] = self.flatMap(p)(f)
+    def slice[B]: Parser[String] = self.slice(p)
 
   object Laws {
     def equal[A](p1: Parser[A], p2: Parser[A])(in: Gen[String]): Prop =
