@@ -86,10 +86,14 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   def letter: Parser[String] = regex("[a-zA-Z]+".r)
   def digit: Parser[String] = regex("[0-9]+".r)
   def whitespace: Parser[String] = regex("\\s*".r)
-  // TODO: TOKENの実装を理解する
-  // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/Parsers.scala#L116-L117
-  def token: Parser[A] = ???
 
+  // 繰り返す
+  def attempt[A](p: Parser[A]): Parser[A]
+
+  // 繰り返すが、whitespaceは無視する
+  def token[A](p: Parser[A]): Parser[A] = p.attempt <* whitespace
+
+  // p2の方は無視する
   def <*[A](p1: Parser[A], p2: => Parser[Any]): Parser[A] =
     map2(p1, p2.slice)((a, b) => a)
 
@@ -110,6 +114,9 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     def product[B >: A](p2: Parser[B]): Parser[(A, B)] = self.product(p, p2)
     def flatMap[B](f: A => Parser[B]): Parser[B] = self.flatMap(p)(f)
     def slice[B]: Parser[String] = self.slice(p)
+    def <*(p2: Parser[Any]): Parser[A] = self.<*(p, p2)
+    def attempt: Parser[A] = self.attempt(p)
+    def token: Parser[A] = self.token(p)
 
   object Laws {
     def equal[A](p1: Parser[A], p2: Parser[A])(in: Gen[String]): Prop =
