@@ -16,6 +16,9 @@ enum JSON:
 object JSON:
   def jsonParser[Err, Parser[+_]](P: Parsers[Err, Parser]): Parser[JSON] =
     import P.*
+
+    def token(s: String) = string(s).token
+
     // [] で囲まれた文字をarrayとする
     def array = ???
 
