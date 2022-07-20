@@ -78,6 +78,7 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   def flatMap[A, B](p: Parser[A])(f: A => Parser[B]): Parser[B]
 
   // run(slice(('a'|'b').many))("aaba") == Right("aaba")
+  // char('a').many.slice // Parser[List[Char]]
   def slice[A](p: Parser[A]): Parser[String]
 
   // run(regex("[a-z0-9]*".r))("abc123efg") == Right("abc123efg")
@@ -96,6 +97,10 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // p2の方は無視する
   def <*[A](p1: Parser[A], p2: => Parser[Any]): Parser[A] =
     map2(p1, p2.slice)((a, b) => a)
+
+  // parseした内容を全てbにする
+  // Parser[A] -> Parser[List[A]] -> Parser[List[B]]
+  def as[A, B](p: Parser[A], b: B): Parser[B] = p.slice.map(_ => b)
 
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
   // def string と def asStringParser によって Stringが自動的にParserに昇格される
@@ -117,6 +122,7 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     def <*(p2: Parser[Any]): Parser[A] = self.<*(p, p2)
     def attempt: Parser[A] = self.attempt(p)
     def token: Parser[A] = self.token(p)
+    def as[B](b: B): Parser[B] = self.as(p, b)
 
   object Laws {
     def equal[A](p1: Parser[A], p2: Parser[A])(in: Gen[String]): Prop =
