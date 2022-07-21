@@ -28,8 +28,14 @@ object JSON:
     // "key": "value" の形?
     def keyval = ???
 
-    // 実際の値(literalの略)
-    def lit = ???
+    // 実際の値
+    def literal = (
+      token("true").as(JBool(true)) |
+        token("false").as(JBool(false)) |
+        token("null").as(JNull) |
+        digit.as(JNumber) |
+        letter.as(JString)
+    )
 
     def value: Parser[JSON] = ???
 
