@@ -96,7 +96,11 @@ trait Parsers[ParseError, Parser[+_]] { self =>
 
   // p2の方は無視する
   def <*[A](p1: Parser[A], p2: => Parser[Any]): Parser[A] =
-    map2(p1, p2.slice)((a, b) => a)
+    map2(p1, p2.slice)((a, _) => a)
+
+  // p1の方は無視する
+  def *>[A, B](p1: Parser[A], p2: => Parser[B]): Parser[B] =
+    map2(p1.slice, p2)((_, b) => b)
 
   // parseした内容を全てbにする
   // Parser[A] -> Parser[List[A]] -> Parser[List[B]]
@@ -120,6 +124,7 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     def flatMap[B](f: A => Parser[B]): Parser[B] = self.flatMap(p)(f)
     def slice[B]: Parser[String] = self.slice(p)
     def <*(p2: Parser[Any]): Parser[A] = self.<*(p, p2)
+    def *>[B](p2: => Parser[B]): Parser[B] = self.*>(p, p2)
     def attempt: Parser[A] = self.attempt(p)
     def token: Parser[A] = self.token(p)
     def as[B](b: B): Parser[B] = self.as(p, b)
