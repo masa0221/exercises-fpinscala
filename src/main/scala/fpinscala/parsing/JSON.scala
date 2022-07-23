@@ -17,7 +17,7 @@ object JSON:
   def jsonParser[Err, Parser[+_]](P: Parsers[Err, Parser]): Parser[JSON] =
     import P.*
 
-    def token(s: String) = string(s).token
+    def token(s: String): Parser[String] = string(s).token
 
     // [] で囲まれた文字をarrayとする
     def array = ???
@@ -25,8 +25,10 @@ object JSON:
     // {} で囲まれた文字をobjectとする
     def obj = ???
 
-    // "key": "value" の形?
-    def keyval = ???
+    // "key": "value" の形
+    //
+    // TODO: Parser[(String, Object)] になってる
+    def keyval: Parser[(String, JSON)] = letter ** (token(":") *> value)
 
     // 実際の値
     def literal = (
