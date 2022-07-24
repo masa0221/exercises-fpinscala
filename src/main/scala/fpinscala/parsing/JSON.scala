@@ -26,8 +26,6 @@ object JSON:
     def obj = ???
 
     // "key": "value" の形
-    //
-    // TODO: Parser[(String, Object)] になってる
     def keyval: Parser[(String, JSON)] = letter ** (token(":") *> value)
 
     // 実際の値
