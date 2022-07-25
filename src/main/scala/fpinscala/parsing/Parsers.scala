@@ -106,6 +106,10 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // Parser[A] -> Parser[List[A]] -> Parser[List[B]]
   def as[A, B](p: Parser[A], b: B): Parser[B] = p.slice.map(_ => b)
 
+  def sep[A](p1: Parser[A], separator: Parser[Any]): Parser[List[A]] = ???
+
+  def sep1[A](p1: Parser[A], separator: Parser[Any]): Parser[List[A]] = ???
+
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
   // def string と def asStringParser によって Stringが自動的にParserに昇格される
   implicit def asStringParser[A](a: A)(implicit
@@ -119,8 +123,10 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     def |[B >: A](p2: Parser[B]): Parser[B] = self.or(p, p2)
     def or[B >: A](p2: => Parser[B]): Parser[B] = self.or(p, p2)
     def map[B](f: A => B): Parser[B] = self.map(p)(f)
-    def **[B, A](p2: Parser[B]): Parser[(A, B)] = self.product(p, p2)
-    def product[B >: A](p2: Parser[B]): Parser[(A, B)] = self.product(p, p2)
+    def map2[B, C](p2: => Parser[B], f: (A, B) => C): Parser[C] =
+      self.map2(p, p2)(f)
+    def **[B](p2: Parser[B]): Parser[(A, B)] = self.product(p, p2)
+    def product[B](p2: Parser[B]): Parser[(A, B)] = self.product(p, p2)
     def flatMap[B](f: A => Parser[B]): Parser[B] = self.flatMap(p)(f)
     def slice[B]: Parser[String] = self.slice(p)
     def <*(p2: Parser[Any]): Parser[A] = self.<*(p, p2)
