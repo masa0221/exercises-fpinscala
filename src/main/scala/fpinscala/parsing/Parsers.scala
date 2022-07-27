@@ -108,7 +108,6 @@ trait Parsers[ParseError, Parser[+_]] { self =>
 
   def sep[A](p1: Parser[A], separator: Parser[Any]): Parser[List[A]] = ???
 
-  // TODO: separator が *> メソッド呼べない問題
   def sep1[A](p1: Parser[A], separator: Parser[Any]): Parser[List[A]] =
     p1.map2((separator *> p1).many)(_ :: _)
 
@@ -125,16 +124,19 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     def |[B >: A](p2: Parser[B]): Parser[B] = self.or(p, p2)
     def or[B >: A](p2: => Parser[B]): Parser[B] = self.or(p, p2)
     def map[B](f: A => B): Parser[B] = self.map(p)(f)
-    def map2[B, C](p2: => Parser[B], f: (A, B) => C): Parser[C] =
+    def map2[B, C](p2: => Parser[B])(f: (A, B) => C): Parser[C] =
       self.map2(p, p2)(f)
     def **[B](p2: Parser[B]): Parser[(A, B)] = self.product(p, p2)
     def product[B](p2: Parser[B]): Parser[(A, B)] = self.product(p, p2)
     def flatMap[B](f: A => Parser[B]): Parser[B] = self.flatMap(p)(f)
     def slice[B]: Parser[String] = self.slice(p)
-    def <*(p2: Parser[Any]): Parser[A] = self.<*(p, p2)
+    def <*(p2: => Parser[Any]): Parser[A] = self.<*(p, p2)
+    // TODO: *<がないってエラー
+    def *>[B](p2: => Parser[B]): Parser[B] = self.*<(p, p2)
     def attempt: Parser[A] = self.attempt(p)
     def token: Parser[A] = self.token(p)
     def as[B](b: B): Parser[B] = self.as(p, b)
+    def many: Parser[List[A]] = self.many(p)
 
   object Laws {
     def equal[A](p1: Parser[A], p2: Parser[A])(in: Gen[String]): Prop =
