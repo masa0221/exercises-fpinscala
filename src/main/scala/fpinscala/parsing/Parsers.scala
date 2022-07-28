@@ -131,8 +131,7 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     def flatMap[B](f: A => Parser[B]): Parser[B] = self.flatMap(p)(f)
     def slice[B]: Parser[String] = self.slice(p)
     def <*(p2: => Parser[Any]): Parser[A] = self.<*(p, p2)
-    // TODO: *<がないってエラー
-    def *>[B](p2: => Parser[B]): Parser[B] = self.*<(p, p2)
+    def *>[B](p2: => Parser[B]): Parser[B] = self.*>(p, p2)
     def attempt: Parser[A] = self.attempt(p)
     def token: Parser[A] = self.token(p)
     def as[B](b: B): Parser[B] = self.as(p, b)
