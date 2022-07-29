@@ -106,7 +106,8 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   // Parser[A] -> Parser[List[A]] -> Parser[List[B]]
   def as[A, B](p: Parser[A], b: B): Parser[B] = p.slice.map(_ => b)
 
-  def sep[A](p1: Parser[A], separator: Parser[Any]): Parser[List[A]] = ???
+  def sep[A](p1: Parser[A], separator: Parser[Any]): Parser[List[A]] =
+    sep1(p1, separator) | succeed(List.empty[A])
 
   def sep1[A](p1: Parser[A], separator: Parser[Any]): Parser[List[A]] =
     p1.map2((separator *> p1).many)(_ :: _)
