@@ -137,6 +137,7 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     def token: Parser[A] = self.token(p)
     def as[B](b: B): Parser[B] = self.as(p, b)
     def many: Parser[List[A]] = self.many(p)
+    def sep(separator: Parser[Any]): Parser[List[A]] = self.sep(p, separator)
 
   object Laws {
     def equal[A](p1: Parser[A], p2: Parser[A])(in: Gen[String]): Prop =

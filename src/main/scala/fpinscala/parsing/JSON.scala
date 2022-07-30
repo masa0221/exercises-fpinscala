@@ -20,7 +20,7 @@ object JSON:
     def token(s: String): Parser[String] = string(s).token
 
     // [] で囲まれた文字をarrayとする
-    def array = ???
+    def array = token("[") *> value.sep(token(",") <* token("]"))
 
     // {} で囲まれた文字をobjectとする
     def obj = ???
