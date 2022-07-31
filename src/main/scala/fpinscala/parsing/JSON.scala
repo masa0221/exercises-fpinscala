@@ -23,7 +23,7 @@ object JSON:
     def array = token("[") *> value.sep(token(",") <* token("]"))
 
     // {} で囲まれた文字をobjectとする
-    def obj = ???
+    def obj = token("{") *> keyval.sep(token(",") <* token("}"))
 
     // "key": "value" の形
     def keyval: Parser[(String, JSON)] = letter ** (token(":") *> value)
