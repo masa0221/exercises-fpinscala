@@ -20,15 +20,21 @@ object JSON:
     def token(s: String): Parser[String] = string(s).token
 
     // [] で囲まれた文字をarrayとする
-    def array = token("[") *> value.sep(token(",") <* token("]"))
+    def array: Parser[JSON] = token("[") *> value
+      .sep(token(","))
+      .map(values => JArray(values.toIndexedSeq)) <* token("]")
 
     // {} で囲まれた文字をobjectとする
-    def obj = token("{") *> keyval.sep(token(",") <* token("}"))
+    def obj: Parser[JSON] =
+      token("{") *> keyval
+        .sep(token(","))
+        .map(kv => JObject(kv.toMap)) <* token("}")
 
     // "key": "value" の形
     def keyval: Parser[(String, JSON)] = letter ** (token(":") *> value)
 
     // 実際の値
+    // TODO: 型がおかしい
     def literal = (
       token("true").as(JBool(true)) |
         token("false").as(JBool(false)) |
