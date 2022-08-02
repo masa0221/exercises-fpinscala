@@ -34,14 +34,12 @@ object JSON:
     def keyval: Parser[(String, JSON)] = letter ** (token(":") *> value)
 
     // 実際の値
-    // TODO: 型がおかしい
-    def literal = (
+    def literal: Parser[JSON] =
       token("true").as(JBool(true)) |
         token("false").as(JBool(false)) |
         token("null").as(JNull) |
-        digit.as(JNumber) |
-        letter.as(JString)
-    )
+        digit.map(n => JNumber(n.toDouble)) |
+        letter.map(s => JString(s))
 
     def value: Parser[JSON] = ???
 
