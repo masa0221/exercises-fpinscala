@@ -41,6 +41,6 @@ object JSON:
         digit.map(n => JNumber(n.toDouble)) |
         letter.map(s => JString(s))
 
-    def value: Parser[JSON] = ???
+    def value: Parser[JSON] = literal | array | obj
 
     ???
