@@ -112,6 +112,10 @@ trait Parsers[ParseError, Parser[+_]] { self =>
   def sep1[A](p1: Parser[A], separator: Parser[Any]): Parser[List[A]] =
     p1.map2((separator *> p1).many)(_ :: _)
 
+  def root[A](p: Parser[A]): Parser[A] = p <* eof
+
+  def eof: Parser[String] = regex("\\z".r)
+
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
   // def string と def asStringParser によって Stringが自動的にParserに昇格される
   implicit def asStringParser[A](a: A)(implicit
@@ -138,6 +142,7 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     def as[B](b: B): Parser[B] = self.as(p, b)
     def many: Parser[List[A]] = self.many(p)
     def sep(separator: Parser[Any]): Parser[List[A]] = self.sep(p, separator)
+    def root: Parser[A] = self.root(p)
 
   object Laws {
     def equal[A](p1: Parser[A], p2: Parser[A])(in: Gen[String]): Prop =
