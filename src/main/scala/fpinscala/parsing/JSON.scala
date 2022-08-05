@@ -43,4 +43,4 @@ object JSON:
 
     def value: Parser[JSON] = literal | array | obj
 
-    ???
+    (whitespace *> (obj | array)).root
