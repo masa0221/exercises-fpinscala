@@ -116,6 +116,8 @@ trait Parsers[ParseError, Parser[+_]] { self =>
 
   def eof: Parser[String] = regex("\\z".r)
 
+  def label[A](msg: String)(p: Parser[A]): Parser[A]
+
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
   // def string と def asStringParser によって Stringが自動的にParserに昇格される
   implicit def asStringParser[A](a: A)(implicit
@@ -151,4 +153,12 @@ trait Parsers[ParseError, Parser[+_]] { self =>
     def mapLaw[A](p: Parser[A])(in: Gen[String]): Prop =
       equal(p, p.map(a => a))(in)
   }
+
+}
+
+case class Location(input: String, offset: Int = 0) {
+  lazy val line = input.slice(0, offset + 1).count(_ == '\n') + 1
+  lazy val col = input.slice(0, offset + 1).lastIndexOf('\n') match
+    case -1        => offset + 1
+    case lineStart => offset - lineStart
 }
