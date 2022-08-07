@@ -118,6 +118,10 @@ trait Parsers[ParseError, Parser[+_]] { self =>
 
   def label[A](msg: String)(p: Parser[A]): Parser[A]
 
+  def errorLocation(e: ParseError): Location
+
+  def errorMessage(e: ParseError): String
+
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
   // def string と def asStringParser によって Stringが自動的にParserに昇格される
   implicit def asStringParser[A](a: A)(implicit
@@ -152,6 +156,14 @@ trait Parsers[ParseError, Parser[+_]] { self =>
 
     def mapLaw[A](p: Parser[A])(in: Gen[String]): Prop =
       equal(p, p.map(a => a))(in)
+
+    def labelLaw[A](p: Parser[A], inputs: SGen[String]): Prop =
+      Prop.forAll(inputs ** Gen.string) { case (input, msg) =>
+        run(label(msg)(p))(input) match {
+          case Left(e) => errorMessage(e) == msg
+          case _       => true
+        }
+      }
   }
 
 }
@@ -161,4 +173,5 @@ case class Location(input: String, offset: Int = 0) {
   lazy val col = input.slice(0, offset + 1).lastIndexOf('\n') match
     case -1        => offset + 1
     case lineStart => offset - lineStart
+
 }
