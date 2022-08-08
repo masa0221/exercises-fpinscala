@@ -122,6 +122,8 @@ trait Parsers[ParseError, Parser[+_]] { self =>
 
   def errorMessage(e: ParseError): String
 
+  def scope[A](msg: String)(p: Parser[A]): Parser[A]
+
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
   // def string と def asStringParser によって Stringが自動的にParserに昇格される
   implicit def asStringParser[A](a: A)(implicit
