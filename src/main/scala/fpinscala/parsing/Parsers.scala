@@ -9,7 +9,7 @@ import scala.util.matching.Regex
 //
 // 例: 0個以上のaに続いて1個以上のbを解析するためのパーサー
 // char('a').many.slice.map(_.size) ** char('b').many1.slice.map(_.size)
-trait Parsers[ParseError, Parser[+_]] { self =>
+trait Parsers[Parser[+_]] { self =>
   def run[A](p: Parser[A])(input: String): Either[ParseError, A]
 
   // run(scceed(a))(s) == Right(s)
@@ -177,3 +177,5 @@ case class Location(input: String, offset: Int = 0) {
     case lineStart => offset - lineStart
 
 }
+
+case class ParseError(stack: List[(Location, String)])
