@@ -88,7 +88,8 @@ trait Parsers[Parser[+_]] { self =>
   def digit: Parser[String] = regex("[0-9]+".r)
   def whitespace: Parser[String] = regex("\\s*".r)
 
-  // 繰り返す
+  // 解析へのコミットを先送りさせる
+  // attempt(p flatMap (_ => fail)) or p2 == p2
   def attempt[A](p: Parser[A]): Parser[A]
 
   // 繰り返すが、whitespaceは無視する
