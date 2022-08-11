@@ -130,6 +130,14 @@ trait Parsers[Parser[+_]] { self =>
 
   def scope[A](msg: String)(p: Parser[A]): Parser[A]
 
+  // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/parsing/11.answer.md
+  // エラーが発生した場合、最も多くの文字を消費した後に発生したエラーを返す
+  def furthest[A](p: Parser[A]): Parser[A]
+
+  // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/parsing/11.answer.md
+  // エラーが発生した場合、直近に発生したエラーを返す
+  def latest[A](p: Parser[A]): Parser[A]
+
   implicit def operators[A](p: Parser[A]): ParserOps[A] = ParserOps[A](p)
   // def string と def asStringParser によって Stringが自動的にParserに昇格される
   implicit def asStringParser[A](a: A)(implicit
@@ -157,6 +165,8 @@ trait Parsers[Parser[+_]] { self =>
     def many: Parser[List[A]] = self.many(p)
     def sep(separator: Parser[Any]): Parser[List[A]] = self.sep(p, separator)
     def root: Parser[A] = self.root(p)
+    def furthest: Parser[A] = self.furthest(p)
+    def latest: Parser[A] = self.latest(p)
 
   object Laws {
     def equal[A](p1: Parser[A], p2: Parser[A])(in: Gen[String]): Prop =
