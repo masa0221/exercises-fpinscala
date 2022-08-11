@@ -89,7 +89,12 @@ trait Parsers[Parser[+_]] { self =>
   def whitespace: Parser[String] = regex("\\s*".r)
 
   // 解析へのコミットを先送りさせる
+  // attempt が満たす条件
   // attempt(p flatMap (_ => fail)) or p2 == p2
+  //
+  // "abra cadabra!" を解析する場合の例
+  // (attempt("abra" ** spaces ** "abra") ** "cadabra") or ("abra" ** space "cadabra!")
+  // ("abra" ** space "cadabra!") がコミットされる
   def attempt[A](p: Parser[A]): Parser[A]
 
   // 繰り返すが、whitespaceは無視する
