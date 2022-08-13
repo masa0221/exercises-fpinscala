@@ -5,6 +5,8 @@ import fpinscala.parsing.*
 class Parser[+A]
 
 object Reference extends Parsers[Parser] {
+  type Parser[+A] = String => Either[ParseError, A]
+
   def attempt[A](p: Parser[A]): Parser[A] = ???
   def defer[A](p: => Parser[A]): Parser[A] = ???
   def errorLocation(
@@ -22,5 +24,10 @@ object Reference extends Parsers[Parser] {
   ): Either[ParseError, A] = ???
   def scope[A](msg: String)(p: Parser[A]): Parser[A] = ???
   def slice[A](p: Parser[A]): Parser[String] = ???
-  implicit def string(s: String): Parser[String] = ???
+  implicit def string(s: String): Parser[String] =
+    (input: String) =>
+      if (input.startsWith(s))
+        Right(s)
+      else
+        Left(Location(input).toError("Expected: " + s))
 }

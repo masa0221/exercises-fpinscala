@@ -192,6 +192,8 @@ case class Location(input: String, offset: Int = 0) {
     case -1        => offset + 1
     case lineStart => offset - lineStart
 
+  def toError(msg: String): ParseError =
+    ParseError(List((this, msg)))
 }
 
 case class ParseError(stack: List[(Location, String)])
