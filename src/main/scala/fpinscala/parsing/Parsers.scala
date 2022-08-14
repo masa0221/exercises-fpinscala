@@ -3,6 +3,12 @@ package fpinscala.parsing
 import fpinscala.answers.testing.*
 import scala.util.matching.Regex
 
+type Parser[+A] = Location => Result[A]
+
+trait Result[+A]
+case class Success[+A](get: A, charsConsumed: Int) extends Result[A]
+case class Failure[+A](get: ParseError) extends Result[Nothing]
+
 // Parsers実装ルール
 // 1. 主要な定義(String => Parser[String]など)は Parsers に直接配置する
 // 2. 2項演算子やメソッドはParserOptに記述する
