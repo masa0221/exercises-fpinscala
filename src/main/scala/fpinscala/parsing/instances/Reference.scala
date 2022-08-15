@@ -2,10 +2,9 @@ package fpinscala.parsing.instances
 
 import fpinscala.parsing.*
 
-class Parser[+A]
-
+// https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/instances/Reference.scala
 object Reference extends Parsers[Parser] {
-  type Parser[+A] = String => Either[ParseError, A]
+  type Parser[+A] = Location => Result[A]
 
   def attempt[A](p: Parser[A]): Parser[A] = ???
   def defer[A](p: => Parser[A]): Parser[A] = ???
@@ -24,10 +23,13 @@ object Reference extends Parsers[Parser] {
   ): Either[ParseError, A] = ???
   def scope[A](msg: String)(p: Parser[A]): Parser[A] = ???
   def slice[A](p: Parser[A]): Parser[String] = ???
-  implicit def string(s: String): Parser[String] =
-    (input: String) =>
-      if (input.startsWith(s))
-        Right(s)
-      else
-        Left(Location(input).toError("Expected: " + s))
+
+  def string(w: String): Parser[String] =
+    l =>
+      // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/instances/Reference.scala#L45-L54
+      val i = firstNonmatchingIndex(l.input, w, l.offset)
+      if i == -1 then fpinscala.parsing.Success(w, w.length)
+      // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/Parsers.scala#L157
+      else fpinscala.parsing.Failure(l.advanceBy(i).toError(s"$w"), i != 0)
+
 }
