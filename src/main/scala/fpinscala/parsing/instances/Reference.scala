@@ -24,6 +24,14 @@ object Reference extends Parsers[Parser] {
   def scope[A](msg: String)(p: Parser[A]): Parser[A] = ???
   def slice[A](p: Parser[A]): Parser[String] = ???
 
+  def firstNonmatchingIndex(s1: String, s2: String, offset: Int): Int =
+    var i = 0
+    while (i + offset < s1.length && i < s2.length)
+      if s1.charAt(i + offset) != s2.charAt(i) then return i
+      i += 1
+    if s1.length - offset >= s2.length then -1
+    else s1.length - offset
+
   def string(w: String): Parser[String] =
     l =>
       // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/instances/Reference.scala#L45-L54
