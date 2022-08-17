@@ -200,6 +200,9 @@ case class Location(input: String, offset: Int = 0) {
 
   def toError(msg: String): ParseError =
     ParseError(List((this, msg)))
+
+  // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/Parsers.scala#L157
+  def advanceBy(n: Int) = copy(offset = offset + n)
 }
 
 case class ParseError(stack: List[(Location, String)])

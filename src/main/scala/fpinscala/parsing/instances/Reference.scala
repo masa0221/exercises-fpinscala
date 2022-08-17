@@ -24,6 +24,7 @@ object Reference extends Parsers[Parser] {
   def scope[A](msg: String)(p: Parser[A]): Parser[A] = ???
   def slice[A](p: Parser[A]): Parser[String] = ???
 
+  // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/instances/Reference.scala#L45-L54
   def firstNonmatchingIndex(s1: String, s2: String, offset: Int): Int =
     var i = 0
     while (i + offset < s1.length && i < s2.length)
@@ -34,10 +35,8 @@ object Reference extends Parsers[Parser] {
 
   def string(w: String): Parser[String] =
     l =>
-      // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/instances/Reference.scala#L45-L54
       val i = firstNonmatchingIndex(l.input, w, l.offset)
       if i == -1 then fpinscala.parsing.Success(w, w.length)
-      // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/Parsers.scala#L157
-      else fpinscala.parsing.Failure(l.advanceBy(i).toError(s"$w"), i != 0)
+      else fpinscala.parsing.Failure(l.advanceBy(i).toError(s"$w"))
 
 }
