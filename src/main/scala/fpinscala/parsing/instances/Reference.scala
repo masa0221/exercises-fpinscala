@@ -1,6 +1,7 @@
 package fpinscala.parsing.instances
 
 import fpinscala.parsing.*
+import scala.util.matching.Regex
 
 // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/instances/Reference.scala
 object Reference extends Parsers[Parser] {
@@ -17,7 +18,14 @@ object Reference extends Parsers[Parser] {
   def label[A](msg: String)(p: Parser[A]): Parser[A] = ???
   def latest[A](p: Parser[A]): Parser[A] = ???
   def or[A](s1: Parser[A], s2: => Parser[A]): Parser[A] = ???
-  implicit def regex(r: scala.util.matching.Regex): Parser[String] = ???
+
+  // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/instances/Reference.scala#L64-L69
+  def regex(r: Regex): Parser[String] =
+    l =>
+      r.findPrefixOf(l.remaining) match
+        case None    => Failure(l.toError(s"regex $r"))
+        case Some(m) => Success(m, m.length)
+
   def run[A](p: Parser[A])(
       input: String
   ): Either[ParseError, A] = ???
