@@ -31,7 +31,13 @@ object Reference extends Parsers[Parser] {
       input: String
   ): Either[ParseError, A] = ???
   def scope[A](msg: String)(p: Parser[A]): Parser[A] = ???
-  def slice[A](p: Parser[A]): Parser[String] = ???
+
+  // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/instances/Reference.scala#L94-L97
+  def slice[A](p: Parser[A]): Parser[String] =
+    l =>
+      p(l) match
+        case Success(a, n)        => Success(l.slice(n), n)
+        case failure @ Failure(_) => failure
 
   // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/instances/Reference.scala#L45-L54
   def firstNonmatchingIndex(s1: String, s2: String, offset: Int): Int =

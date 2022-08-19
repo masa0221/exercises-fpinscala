@@ -205,6 +205,8 @@ case class Location(input: String, offset: Int = 0) {
   def advanceBy(n: Int) = copy(offset = offset + n)
 
   def remaining: String = input.substring(offset)
+
+  def slice(n: Int): String = input.substring(offset, offset + n)
 }
 
 case class ParseError(stack: List[(Location, String)])
