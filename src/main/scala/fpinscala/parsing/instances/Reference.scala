@@ -7,6 +7,7 @@ import scala.util.matching.Regex
 object Reference extends Parsers[Parser] {
   type Parser[+A] = Location => Result[A]
 
+  def succeed[A](a: A): Parser[A] = _ => Success(a, 0)
   def attempt[A](p: Parser[A]): Parser[A] = ???
   def defer[A](p: => Parser[A]): Parser[A] = ???
   def errorLocation(
