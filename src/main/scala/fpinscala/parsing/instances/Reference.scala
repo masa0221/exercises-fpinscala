@@ -30,7 +30,9 @@ object Reference extends Parsers[Parser] {
   def run[A](p: Parser[A])(
       input: String
   ): Either[ParseError, A] = ???
-  def scope[A](msg: String)(p: Parser[A]): Parser[A] = ???
+
+  def scope[A](msg: String)(p: Parser[A]): Parser[A] =
+    l => p(l).mapError(_.push(l, msg))
 
   // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/instances/Reference.scala#L94-L97
   def slice[A](p: Parser[A]): Parser[String] =

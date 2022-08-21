@@ -5,7 +5,11 @@ import scala.util.matching.Regex
 
 type Parser[+A] = Location => Result[A]
 
-trait Result[+A]
+trait Result[+A]:
+  def mapError(f: ParseError => ParseError): Result[A] = this match
+    case Failure(e) => Failure(f(e))
+    case _          => this
+
 case class Success[+A](get: A, charsConsumed: Int) extends Result[A]
 case class Failure[+A](get: ParseError) extends Result[Nothing]
 
@@ -209,4 +213,7 @@ case class Location(input: String, offset: Int = 0) {
   def slice(n: Int): String = input.substring(offset, offset + n)
 }
 
-case class ParseError(stack: List[(Location, String)])
+case class ParseError(stack: List[(Location, String)]) {
+  def push(loc: Location, msg: String): ParseError =
+    copy(stack = (loc, msg) :: stack)
+}
