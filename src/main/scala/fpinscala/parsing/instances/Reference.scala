@@ -16,7 +16,6 @@ object Reference extends Parsers[Parser] {
   def errorMessage(e: ParseError): String = ???
   def flatMap[A, B](p: Parser[A])(f: A => Parser[B]): Parser[B] = ???
   def furthest[A](p: Parser[A]): Parser[A] = ???
-  def label[A](msg: String)(p: Parser[A]): Parser[A] = ???
   def latest[A](p: Parser[A]): Parser[A] = ???
   def or[A](s1: Parser[A], s2: => Parser[A]): Parser[A] = ???
 
@@ -33,6 +32,9 @@ object Reference extends Parsers[Parser] {
 
   def scope[A](msg: String)(p: Parser[A]): Parser[A] =
     l => p(l).mapError(_.push(l, msg))
+
+  def label[A](msg: String)(p: Parser[A]): Parser[A] =
+    l => p(l).mapError(_.label(msg))
 
   // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/instances/Reference.scala#L94-L97
   def slice[A](p: Parser[A]): Parser[String] =
