@@ -23,7 +23,7 @@ object Reference extends Parsers[Parser] {
   def regex(r: Regex): Parser[String] =
     l =>
       r.findPrefixOf(l.remaining) match
-        case None    => Failure(l.toError(s"regex $r"))
+        case None    => Failure(l.toError(s"regex $r"), true)
         case Some(m) => Success(m, m.length)
 
   def run[A](p: Parser[A])(
@@ -40,8 +40,8 @@ object Reference extends Parsers[Parser] {
   def slice[A](p: Parser[A]): Parser[String] =
     l =>
       p(l) match
-        case Success(a, n)        => Success(l.slice(n), n)
-        case failure @ Failure(_) => failure
+        case Success(a, n)           => Success(l.slice(n), n)
+        case failure @ Failure(_, _) => failure
 
   // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/instances/Reference.scala#L45-L54
   def firstNonmatchingIndex(s1: String, s2: String, offset: Int): Int =
@@ -56,6 +56,6 @@ object Reference extends Parsers[Parser] {
     l =>
       val i = firstNonmatchingIndex(l.input, w, l.offset)
       if i == -1 then fpinscala.parsing.Success(w, w.length)
-      else fpinscala.parsing.Failure(l.advanceBy(i).toError(s"$w"))
+      else fpinscala.parsing.Failure(l.advanceBy(i).toError(s"$w"), true)
 
 }

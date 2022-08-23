@@ -7,11 +7,16 @@ type Parser[+A] = Location => Result[A]
 
 trait Result[+A]:
   def mapError(f: ParseError => ParseError): Result[A] = this match
-    case Failure(e) => Failure(f(e))
-    case _          => this
+    case Failure(e, isCommited) => Failure(f(e), isCommited)
+    case _                      => this
+
+  def uncommit: Result[A] = this match
+    case Failure(e, true) => Failure(e, false)
+    case _                => this
 
 case class Success[+A](get: A, charsConsumed: Int) extends Result[A]
-case class Failure[+A](get: ParseError) extends Result[Nothing]
+case class Failure[+A](get: ParseError, isCommited: Boolean)
+    extends Result[Nothing]
 
 // Parsers実装ルール
 // 1. 主要な定義(String => Parser[String]など)は Parsers に直接配置する
