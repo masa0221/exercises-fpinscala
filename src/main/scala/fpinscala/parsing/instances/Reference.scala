@@ -19,7 +19,11 @@ object Reference extends Parsers[Parser] {
   def flatMap[A, B](p: Parser[A])(f: A => Parser[B]): Parser[B] = ???
   def furthest[A](p: Parser[A]): Parser[A] = ???
   def latest[A](p: Parser[A]): Parser[A] = ???
-  def or[A](s1: Parser[A], s2: => Parser[A]): Parser[A] = ???
+  def or[A](s1: Parser[A], s2: => Parser[A]): Parser[A] =
+    l =>
+      s1(l) match
+        case Failure(e, false) => s2(l)
+        case result            => result
 
   // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/parsing/instances/Reference.scala#L64-L69
   def regex(r: Regex): Parser[String] =
