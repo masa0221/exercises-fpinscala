@@ -16,7 +16,13 @@ object Reference extends Parsers[Parser] {
       e: ParseError
   ): Location = ???
   def errorMessage(e: ParseError): String = ???
-  def flatMap[A, B](p: Parser[A])(f: A => Parser[B]): Parser[B] = ???
+  def flatMap[A, B](p: Parser[A])(f: A => Parser[B]): Parser[B] =
+    l =>
+      p(l) match
+        case Success(a, n) =>
+          f(a)(l.advanceBy(n)).addCommit(n != 0).advanceSuccess(n)
+        case f @ Failure(_, _) => f
+
   def furthest[A](p: Parser[A]): Parser[A] = ???
   def latest[A](p: Parser[A]): Parser[A] = ???
   def or[A](s1: Parser[A], s2: => Parser[A]): Parser[A] =
