@@ -40,7 +40,9 @@ object Reference extends Parsers[Parser] {
 
   def run[A](p: Parser[A])(
       input: String
-  ): Either[ParseError, A] = ???
+  ): Either[ParseError, A] = p(Location(input, 0)) match
+    case Success(a, _) => Right(a)
+    case Failure(e, _) => Left(e)
 
   def scope[A](msg: String)(p: Parser[A]): Parser[A] =
     l => p(l).mapError(_.push(l, msg))
