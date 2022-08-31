@@ -9,7 +9,23 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
       stringMonad.op("abcd", "efg") should equal("abcdefg")
     }
   }
-  "intAddition" - {}
-  "intMultiplication" - {}
-  "booleanOr" - {}
-  "booleanAnd" - {}
+  "intAddition" - {
+    "足し算ができること" in {
+      intAddition.op(2, 3) should equal(5)
+    }
+  }
+  "intMultiplication" - {
+    "掛け算ができること" in {
+      intAddition.op(2, 3) should equal(6)
+    }
+  }
+  "booleanOr" - {
+    "unimplements" in {
+      true should equal(true)
+    }
+  }
+  "booleanAnd" - {
+    "unimplements" in {
+      true should equal(true)
+    }
+  }
