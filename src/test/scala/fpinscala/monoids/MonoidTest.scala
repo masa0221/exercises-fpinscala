@@ -19,10 +19,10 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
       intAddition.op(2, 3) should equal(6)
     }
   }
-  "booleanOr" - {
-    "unimplements" in {
-      true should equal(true)
-    }
+  "booleanOr" in {
+    booleanOr.op(false, false) should equal(false)
+    booleanOr.op(false, true) should equal(true)
+    booleanOr.op(true, true) should equal(true)
   }
   "booleanAnd" - {
     "unimplements" in {
