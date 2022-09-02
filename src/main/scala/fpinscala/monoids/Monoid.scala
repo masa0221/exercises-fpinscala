@@ -20,4 +20,6 @@ val booleanOr: Monoid[Boolean] = new Monoid[Boolean]:
   def op(a1: Boolean, a2: Boolean): Boolean = a1 || a2
   def zero: Boolean = false
 
-val booleanAnd: Monoid[Boolean] = ???
+val booleanAnd: Monoid[Boolean] = new Monoid[Boolean]:
+  def op(a1: Boolean, a2: Boolean): Boolean = a1 && a2
+  def zero: Boolean = false
