@@ -1,25 +1,32 @@
 package fpinscala.monoids
 
+import scala.Option
+
 trait Monoid[A]:
   def op(a1: A, a2: A): A
   def zero: A
 
-val stringMonad = new Monoid[String]:
-  def op(a1: String, a2: String): String = a1 + a2
-  def zero: String = ""
+object Monoid:
+  val stringMonoid = new Monoid[String]:
+    def op(a1: String, a2: String): String = a1 + a2
+    def zero: String = ""
 
-val intAddition: Monoid[Int] = new Monoid[Int]:
-  def op(a1: Int, a2: Int): Int = a1 + a2
-  def zero: Int = 0
+  val intAddition: Monoid[Int] = new Monoid[Int]:
+    def op(a1: Int, a2: Int): Int = a1 + a2
+    def zero: Int = 0
 
-val intMultiplication: Monoid[Int] = new Monoid[Int]:
-  def op(a1: Int, a2: Int): Int = a1 * a2
-  def zero: Int = 0
+  val intMultiplication: Monoid[Int] = new Monoid[Int]:
+    def op(a1: Int, a2: Int): Int = a1 * a2
+    def zero: Int = 0
 
-val booleanOr: Monoid[Boolean] = new Monoid[Boolean]:
-  def op(a1: Boolean, a2: Boolean): Boolean = a1 || a2
-  def zero: Boolean = false
+  val booleanOr: Monoid[Boolean] = new Monoid[Boolean]:
+    def op(a1: Boolean, a2: Boolean): Boolean = a1 || a2
+    def zero: Boolean = false
 
-val booleanAnd: Monoid[Boolean] = new Monoid[Boolean]:
-  def op(a1: Boolean, a2: Boolean): Boolean = a1 && a2
-  def zero: Boolean = false
+  val booleanAnd: Monoid[Boolean] = new Monoid[Boolean]:
+    def op(a1: Boolean, a2: Boolean): Boolean = a1 && a2
+    def zero: Boolean = false
+
+  def optionMonoid[A]: Monoid[Option[A]] = new Monoid[Option[A]]:
+    def op(a1: Option[A], a2: Option[A]): Option[A] = a1.orElse(a2)
+    def zero = Option.empty[A]

@@ -4,9 +4,11 @@ import org.scalatest.freespec.AnyFreeSpecLike
 import org.scalatest.matchers.should.Matchers
 
 class MonoidTest extends AnyFreeSpecLike with Matchers:
-  "stringMonad" - {
+  import Monoid.*
+
+  "stringMonoid" - {
     "足し算ができること" in {
-      stringMonad.op("abcd", "efg") should equal("abcdefg")
+      stringMonoid.op("abcd", "efg") should equal("abcdefg")
     }
   }
   "intAddition" - {
@@ -30,4 +32,22 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
     booleanAnd.op(false, true) should equal(false)
     booleanAnd.op(true, false) should equal(false)
     booleanAnd.op(true, true) should equal(true)
+  }
+  "optionMonoid" - {
+    val x = Some(1)
+    val y = Some(2)
+    val z = Some(3)
+
+    val o = Monoid.optionMonoid[Int]
+    val zero = o.zero
+
+    "op(op(x, y), z) == op(x, op(y, z))" in {
+      o.op(o.op(x, y), z) should equal(o.op(x, o.op(y, z)))
+    }
+    "op(x, zero) == x" in {
+      o.op(x, zero) should equal(x)
+    }
+    "op(zero, x) == x" in {
+      o.op(zero, x) should equal(x)
+    }
   }
