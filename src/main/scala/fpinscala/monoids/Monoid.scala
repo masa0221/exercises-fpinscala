@@ -30,3 +30,7 @@ object Monoid:
   def optionMonoid[A]: Monoid[Option[A]] = new Monoid[Option[A]]:
     def op(a1: Option[A], a2: Option[A]): Option[A] = a1.orElse(a2)
     def zero = Option.empty[A]
+
+  def endoMonoid[A]: Monoid[A => A] = new Monoid[A => A]:
+    def op(a1: A => A, a2: A => A): A => A = a => a2(a1(a))
+    def zero = a => a
