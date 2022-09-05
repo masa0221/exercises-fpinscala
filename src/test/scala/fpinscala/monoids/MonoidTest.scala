@@ -60,15 +60,14 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
     val o = Monoid.endoMonoid[Int]
     val zero = o.zero
 
-    // TODO: testする方法
     "op(op(x, y), z) == op(x, op(y, z))" in {
-      o.op(o.op(x, y), z) should equal(o.op(x, o.op(y, z)))
+      o.op(o.op(x, y), z) === equal(o.op(x, o.op(y, z)))
     }
     "op(x, zero) == x" in {
-      o.op(x, zero) should equal(x)
+      o.op(x, zero) === equal(x(1))
     }
     "op(zero, x) == x" in {
-      o.op(zero, x) should equal(x)
+      o.op(zero, x) === equal(x)
     }
 
   }
