@@ -1,6 +1,8 @@
 package fpinscala.monoids
 
 import scala.Option
+import fpinscala.answers.testing.exhaustive.Gen
+import fpinscala.answers.testing.exhaustive.Prop
 
 trait Monoid[A]:
   def op(a1: A, a2: A): A
@@ -34,3 +36,5 @@ object Monoid:
   def endoMonoid[A]: Monoid[A => A] = new Monoid[A => A]:
     def op(a1: A => A, a2: A => A): A => A = a => a2(a1(a))
     def zero = a => a
+
+  def monoidLaws[A](m: Monoid[A], gen: Gen[A]): Prop = ???
