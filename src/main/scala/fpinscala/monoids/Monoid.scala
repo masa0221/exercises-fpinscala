@@ -33,22 +33,13 @@ object Monoid:
     def op(a1: Option[A], a2: Option[A]): Option[A] = a1.orElse(a2)
     def zero = Option.empty[A]
 
-  def firstOptionMonoid[A]: Monoid[Option[A]] = new:
-    def op(a1: Option[A], a2: Option[A]): Option[A] = a1.orElse(a2)
-    def zero = None
+  def dual[A](m: Monoid[A]): Monoid[A] = new Monoid[A]:
+    def op(a1: A, a2: A): A = m.op(a2, a1)
+    def zero = m.zero
 
-  def lastOptionMonoid[A]: Monoid[Option[A]] = new:
-    def op(a1: Option[A], a2: Option[A]): Option[A] = a2.orElse(a1)
-    def zero = None
+  def firstOptionMonoid[A]: Monoid[Option[A]] = optionMonoid
 
-  // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/monoids/02.answer.md
-  // def dual[A](m: Monoid[A]): Monoid[A] = new:
-  //   def op(a1: Option[A], a2: Option[A]): Option[A] = m.op(a2, a1)
-  //   def zero = m.empty
-
-  // def lastOptionMonoid[A]: Monoid[Option[A]] = ???
-
-  // def optionMonoid[A](f: (A, A) => A): Monoid[Option[A]] = ???
+  def lastOptionMonoid[A]: Monoid[Option[A]] = dual(firstOptionMonoid)
 
   def endoMonoid[A]: Monoid[A => A] = new Monoid[A => A]:
     def op(a1: A => A, a2: A => A): A => A = a => a2(a1(a))
