@@ -45,4 +45,13 @@ object Monoid:
     def op(a1: A => A, a2: A => A): A => A = a1 compose a2
     def zero = (a: A) => a
 
-  def monoidLaws[A](m: Monoid[A], gen: Gen[A]): Prop = ???
+  def monoidLaws[A](m: Monoid[A], gen: Gen[A]): Prop =
+    import fpinscala.answers.testing.exhaustive.Prop.forAll
+    forAll(for {
+      x <- gen
+      y <- gen
+      z <- gen
+    } yield (x, y, z))(p =>
+      m.op(p._1, m.op(p._2, p._3)) == m.op(m.op(p._1, p._2), p._3)
+    ) &&
+    forAll(gen)((a: A) => m.op(a, m.zero) == a && m.op(m.zero, a) == a)

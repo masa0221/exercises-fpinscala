@@ -72,7 +72,7 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
 
   }
 
-  "monoidLaws" - {
+  "monoidLaws" in {
     import fpinscala.answers.testing.exhaustive.Gen
     import fpinscala.answers.testing.exhaustive.Prop
     import fpinscala.answers.testing.exhaustive.Prop.Result.Passed
@@ -80,5 +80,9 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
     val genInt = Gen.choose(Int.MinValue, Int.MaxValue)
     val genOption = genInt.map(i => if i % 2 == 0 then Some(i / 2) else None)
 
-    monoidLaws(intAddition, genInt).check() should equal(Passed)
+    monoidLaws(intAddition, genInt).check() === equal(Passed)
+    monoidLaws(intMultiplication, genInt).check() === equal(Passed)
+    monoidLaws(booleanOr, Gen.boolean).check() === equal(Passed)
+    monoidLaws(booleanAnd, Gen.boolean).check() === equal(Passed)
+    monoidLaws(optionMonoid[Int], genOption).check() === equal(Passed)
   }
