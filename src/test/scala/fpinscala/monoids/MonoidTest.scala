@@ -86,3 +86,7 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
     monoidLaws(booleanAnd, Gen.boolean).check() === equal(Passed)
     monoidLaws(optionMonoid[Int], genOption).check() === equal(Passed)
   }
+
+  "concatenate" in {
+    concatenate(List("a", "b", "c"), stringMonoid) should equal("abc")
+  }

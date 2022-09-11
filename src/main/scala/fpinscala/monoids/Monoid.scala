@@ -55,3 +55,5 @@ object Monoid:
       m.op(p._1, m.op(p._2, p._3)) == m.op(m.op(p._1, p._2), p._3)
     ) &&
     forAll(gen)((a: A) => m.op(a, m.zero) == a && m.op(m.zero, a) == a)
+
+  def concatenate[A](as: List[A], m: Monoid[A]): A = as.foldLeft(m.zero)(m.op)
