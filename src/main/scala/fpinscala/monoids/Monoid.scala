@@ -57,3 +57,6 @@ object Monoid:
     forAll(gen)((a: A) => m.op(a, m.zero) == a && m.op(m.zero, a) == a)
 
   def concatenate[A](as: List[A], m: Monoid[A]): A = as.foldLeft(m.zero)(m.op)
+
+  def flatMap[A, B](as: List[A], m: Monoid[B])(f: A => B): B =
+    as.map(f).foldLeft(m.zero)(m.op)

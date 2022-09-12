@@ -90,3 +90,7 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
   "concatenate" in {
     concatenate(List("a", "b", "c"), stringMonoid) should equal("abc")
   }
+
+  "flatMap" in {
+    flatMap(List(1.1, 2.2, 3.3), intAddition)(_.toInt) should equal(6)
+  }
