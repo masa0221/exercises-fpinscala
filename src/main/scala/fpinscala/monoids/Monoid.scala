@@ -60,3 +60,6 @@ object Monoid:
 
   def flatMap[A, B](as: List[A], m: Monoid[B])(f: A => B): B =
     as.map(f).foldLeft(m.zero)(m.op)
+
+  def foldLeft[A, B](as: List[A])(z: B)(op: (B, A) => B): B =
+    if (as.isEmpty) z else this.foldLeft(as.tail)(op(z, as.head))(op)

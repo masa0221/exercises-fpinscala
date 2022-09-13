@@ -94,3 +94,9 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
   "flatMap" in {
     flatMap(List(1.1, 2.2, 3.3), intAddition)(_.toInt) should equal(6)
   }
+
+  "foldLeft" in {
+    foldLeft(List(1, 2, 3))(intAddition.zero)(
+      intAddition.op
+    ) should equal(6)
+  }
