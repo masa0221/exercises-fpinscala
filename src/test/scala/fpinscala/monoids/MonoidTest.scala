@@ -100,3 +100,9 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
       intAddition.op
     ) should equal(6)
   }
+
+  "foldRight" in {
+    foldLeft(List(1, 2, 3))(intAddition.zero)(
+      intAddition.op
+    ) should equal(6)
+  }

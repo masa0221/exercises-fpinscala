@@ -63,3 +63,8 @@ object Monoid:
 
   def foldLeft[A, B](as: List[A])(z: B)(op: (B, A) => B): B =
     if (as.isEmpty) z else this.foldLeft(as.tail)(op(z, as.head))(op)
+
+  def foldRight[A, B](as: List[A])(z: B)(op: (A, B) => B): B =
+    as match
+      case Nil    => z
+      case h :: t => this.foldRight(t)(op(h, z))(op)
