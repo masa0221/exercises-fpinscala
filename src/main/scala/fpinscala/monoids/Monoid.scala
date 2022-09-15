@@ -62,9 +62,14 @@ object Monoid:
     as.map(f).foldLeft(m.zero)(m.op)
 
   def foldLeft[A, B](as: List[A])(z: B)(op: (B, A) => B): B =
-    if (as.isEmpty) z else this.foldLeft(as.tail)(op(z, as.head))(op)
+    // if (as.isEmpty) z else this.foldLeft(as.tail)(op(z, as.head))(op)
+    // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/monoids/06.answer.md
+    flatMap(as, dual(endoMonoid))(a => b => op(b, a))(z)
 
   def foldRight[A, B](as: List[A])(z: B)(op: (A, B) => B): B =
-    as match
-      case Nil    => z
-      case h :: t => this.foldRight(t)(op(h, z))(op)
+    // op(a, (z) => )
+    // as match
+    //   case Nil    => z
+    //   case h :: t => this.foldRight(t)(op(h, z))(op)
+    // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/monoids/06.answer.md
+    flatMap(as, endoMonoid)(op.curried)(z)
