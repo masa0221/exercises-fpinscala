@@ -73,3 +73,5 @@ object Monoid:
     //   case h :: t => this.foldRight(t)(op(h, z))(op)
     // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/monoids/06.answer.md
     flatMap(as, endoMonoid)(op.curried)(z)
+
+  def foldMapV[A, B](v: IndexedSeq[A], m: Monoid[B])(f: A => B): B = ???
