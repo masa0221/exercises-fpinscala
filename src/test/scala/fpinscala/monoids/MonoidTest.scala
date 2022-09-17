@@ -106,3 +106,8 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
       intAddition.op
     ) should equal(6)
   }
+
+  "foldMapV" in {
+    val m = intAddition
+    foldMapV(IndexedSeq(1, 2, 3, 4), m)(_ + 1) should equal(14)
+  }

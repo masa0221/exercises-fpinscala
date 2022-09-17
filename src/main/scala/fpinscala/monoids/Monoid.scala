@@ -74,4 +74,9 @@ object Monoid:
     // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/monoids/06.answer.md
     flatMap(as, endoMonoid)(op.curried)(z)
 
-  def foldMapV[A, B](v: IndexedSeq[A], m: Monoid[B])(f: A => B): B = ???
+  def foldMapV[A, B](v: IndexedSeq[A], m: Monoid[B])(f: A => B): B =
+    if (v.length == 1) f(v.head)
+    else if (v.length == 0) m.zero
+    else
+      val (l, r) = v.splitAt(v.length / 2)
+      m.op(foldMapV(l, m)(f), foldMapV(r, m)(f))
