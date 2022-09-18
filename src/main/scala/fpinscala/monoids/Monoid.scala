@@ -3,6 +3,7 @@ package fpinscala.monoids
 import scala.Option
 import fpinscala.answers.testing.exhaustive.Gen
 import fpinscala.answers.testing.exhaustive.Prop
+import fpinscala.answers.parallelism.Nonblocking._
 
 trait Monoid[A]:
   def op(a1: A, a2: A): A
@@ -80,3 +81,7 @@ object Monoid:
     else
       val (l, r) = v.splitAt(v.length / 2)
       m.op(foldMapV(l, m)(f), foldMapV(r, m)(f))
+
+  def par[A](m: Monoid[A]): Monoid[Par[A]] = ???
+
+  def parFoldMap[A, B](v: IndexedSeq[A], m: Monoid[B])(f: A => B): Par[B] = ???
