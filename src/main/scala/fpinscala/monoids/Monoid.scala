@@ -82,6 +82,10 @@ object Monoid:
       val (l, r) = v.splitAt(v.length / 2)
       m.op(foldMapV(l, m)(f), foldMapV(r, m)(f))
 
-  def par[A](m: Monoid[A]): Monoid[Par[A]] = ???
+  def par[A](m: Monoid[A]): Monoid[Par[A]] = new Monoid[Par[A]]:
+    def op(a1: Par[A], a2: Par[A]): Par[A] =
+      a1.flatMap(aa1 => a2.map(aa2 => m.op(aa1, aa2)))
+    def zero = Par.unit(m.zero)
 
-  def parFoldMap[A, B](v: IndexedSeq[A], m: Monoid[B])(f: A => B): Par[B] = ???
+  def parFoldMap[A, B](v: IndexedSeq[A], m: Monoid[B])(f: A => B): Par[B] =
+    foldMapV(v, par(m))(a => Par.unit(f(a)))

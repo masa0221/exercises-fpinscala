@@ -2,6 +2,7 @@ package fpinscala.monoids
 
 import org.scalatest.freespec.AnyFreeSpecLike
 import org.scalatest.matchers.should.Matchers
+import java.util.concurrent.Executors
 
 class MonoidTest extends AnyFreeSpecLike with Matchers:
   import Monoid.*
@@ -110,4 +111,11 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
   "foldMapV" in {
     val m = intAddition
     foldMapV(IndexedSeq(1, 2, 3, 4), m)(_ + 1) should equal(14)
+  }
+
+  "parFoldMap" in {
+    val m = intAddition
+    val p = parFoldMap(IndexedSeq(1, 2, 3, 4), m)(_ + 1)
+    val es = Executors.newFixedThreadPool(2)
+    p.run(es) should equal(14)
   }
