@@ -89,3 +89,10 @@ object Monoid:
 
   def parFoldMap[A, B](v: IndexedSeq[A], m: Monoid[B])(f: A => B): Par[B] =
     foldMapV(v, par(m))(a => Par.unit(f(a)))
+
+  // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/monoids/09.answer.md
+  opaque type Interval = (Int, Int)
+
+  val orderdMonoid: Monoid[(Boolean, Option[Interval])] = ???
+
+  def orderd(ints: IndexedSeq[Int]): Boolean = ???

@@ -119,3 +119,8 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
     val es = Executors.newFixedThreadPool(2)
     p.run(es) should equal(14)
   }
+
+  "ordered" in {
+    orderd(IndexedSeq(1, 2, 3, 4, 5)) should equal(true)
+    orderd(IndexedSeq(3, 5, 1, 2, 4)) should equal(false)
+  }
