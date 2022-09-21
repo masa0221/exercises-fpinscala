@@ -93,6 +93,13 @@ object Monoid:
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/monoids/09.answer.md
   opaque type Interval = (Int, Int)
 
-  val orderdMonoid: Monoid[(Boolean, Option[Interval])] = ???
+  val orderdMonoid: Monoid[(Boolean, Option[Interval])] = new:
+    def op(
+        a1: (Boolean, Option[Interval]),
+        a2: (Boolean, Option[Interval])
+    ): (Boolean, Option[Interval]) = (a1._2, a2._2) match
+      case (Some((leftInt1, rightInt1)), Some((leftInt2, rightInt2))) => ???
+      case _                                                          => ???
+    def zero: (Boolean, Option[Interval]) = (true, None)
 
   def orderd(ints: IndexedSeq[Int]): Boolean = ???
