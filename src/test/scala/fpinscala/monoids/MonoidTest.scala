@@ -121,6 +121,6 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
   }
 
   "ordered" in {
-    orderd(IndexedSeq(1, 2, 3, 4, 5)) should equal(true)
-    orderd(IndexedSeq(3, 5, 1, 2, 4)) should equal(false)
+    ordered(IndexedSeq(1, 2, 3, 4, 5)) should equal(true)
+    ordered(IndexedSeq(3, 5, 1, 2, 4)) should equal(false)
   }

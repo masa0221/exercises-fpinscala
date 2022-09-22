@@ -79,6 +79,8 @@ object Monoid:
     if (v.length == 1) f(v.head)
     else if (v.length == 0) m.zero
     else
+      // scala> IndexedSeq(1,2,3).splitAt(3 / 2)
+      // val res1: (IndexedSeq[Int], IndexedSeq[Int]) = (Vector(1),Vector(2, 3))
       val (l, r) = v.splitAt(v.length / 2)
       m.op(foldMapV(l, m)(f), foldMapV(r, m)(f))
 
@@ -98,8 +100,10 @@ object Monoid:
         a1: (Boolean, Option[Interval]),
         a2: (Boolean, Option[Interval])
     ): (Boolean, Option[Interval]) = (a1._2, a2._2) match
-      case (Some((leftInt1, rightInt1)), Some((leftInt2, rightInt2))) => ???
-      case _                                                          => ???
+      case (Some((leftMin, leftMax)), Some((rightMin, rightMax))) =>
+        (a1._1 && a2._1 && leftMax <= rightMin, Some((leftMin, rightMax)))
+      case _ => (a1._1 && a2._1, a1._2.orElse(a2._2))
     def zero: (Boolean, Option[Interval]) = (true, None)
 
-  def orderd(ints: IndexedSeq[Int]): Boolean = ???
+  def ordered(ints: IndexedSeq[Int]): Boolean =
+    foldMapV(ints, orderdMonoid)(i => (true, Some(i, i)))(0)
