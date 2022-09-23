@@ -107,3 +107,11 @@ object Monoid:
 
   def ordered(ints: IndexedSeq[Int]): Boolean =
     foldMapV(ints, orderdMonoid)(i => (true, Some(i, i)))(0)
+
+  sealed trait WC
+  case class Stub(chars: String) extends WC
+  case class Part(lStub: String, words: Int, rStub: String) extends WC
+
+  val wcMonoid: Monoid[WC] = new:
+    def op(wc1: WC, wc2: WC): WC = ???
+    def zero: WC = ???

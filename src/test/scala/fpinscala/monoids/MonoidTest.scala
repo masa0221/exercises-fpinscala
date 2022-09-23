@@ -124,3 +124,23 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
     ordered(IndexedSeq(1, 2, 3, 4, 5)) should equal(true)
     ordered(IndexedSeq(3, 5, 1, 2, 4)) should equal(false)
   }
+
+  "wcMonoid" in {
+    val x = Stub("x")
+    val y = Stub("y")
+    val z = Stub("z")
+
+    val m = Monoid.wcMonoid
+    val zero = m.zero
+
+    "op(op(x, y), z) == op(x, op(y, z))" in {
+      m.op(m.op(x, y), z) === equal(m.op(x, m.op(y, z)))
+    }
+    "op(x, zero) == x" in {
+      m.op(x, zero) === equal(x)
+    }
+    "op(zero, x) == x" in {
+      m.op(zero, x) === equal(x)
+    }
+
+  }
