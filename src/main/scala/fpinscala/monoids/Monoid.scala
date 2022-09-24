@@ -114,4 +114,4 @@ object Monoid:
 
   val wcMonoid: Monoid[WC] = new:
     def op(wc1: WC, wc2: WC): WC = ???
-    def zero: WC = ???
+    def zero: WC = Stub("")
