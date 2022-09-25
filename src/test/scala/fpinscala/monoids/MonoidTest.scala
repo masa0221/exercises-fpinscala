@@ -125,22 +125,42 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
     ordered(IndexedSeq(3, 5, 1, 2, 4)) should equal(false)
   }
 
-  "wcMonoid" in {
-    val x = Stub("x")
-    val y = Stub("y")
-    val z = Stub("z")
-
-    val m = Monoid.wcMonoid
-    val zero = m.zero
-
-    "op(op(x, y), z) == op(x, op(y, z))" in {
-      m.op(m.op(x, y), z) === equal(m.op(x, m.op(y, z)))
-    }
-    "op(x, zero) == x" in {
-      m.op(x, zero) === equal(x)
-    }
-    "op(zero, x) == x" in {
-      m.op(zero, x) === equal(x)
+  "wcMonoid" - {
+    "Stubのみ" - {
+      val m = Monoid.wcMonoid
+      val x = Stub("x")
+      val y = Stub("y")
+      val z = Stub("z")
+      monoidTest[WC](m, x, y, z)
     }
 
+    "Partのみ" - {
+      val m = Monoid.wcMonoid
+      val x = Part("x1", 1, "x2")
+      val y = Part("y1", 2, "y2")
+      val z = Part("z1", 3, "y3")
+      monoidTest[WC](m, x, y, z)
+    }
+
+    "StubとPartどちらもある場合" - {
+      val m = Monoid.wcMonoid
+      val x = Stub("x")
+      val y = Part("y1", 2, "y2")
+      val z = Stub("z")
+      monoidTest[WC](m, x, y, z)
+    }
+
+
+    def monoidTest[A](m: Monoid[A], x: A, y: A, z: A): Unit = 
+      val zero = m.zero
+
+      "op(op(x, y), z) == op(x, op(y, z))" in {
+        m.op(m.op(x, y), z) === equal(m.op(x, m.op(y, z)))
+      }
+      "op(x, zero) == x" in {
+        m.op(x, zero) === equal(x)
+      }
+      "op(zero, x) == x" in {
+        m.op(zero, x) === equal(x)
+      }
   }

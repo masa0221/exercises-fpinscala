@@ -113,5 +113,11 @@ object Monoid:
   case class Part(lStub: String, words: Int, rStub: String) extends WC
 
   val wcMonoid: Monoid[WC] = new:
-    def op(wc1: WC, wc2: WC): WC = ???
+    def op(wc1: WC, wc2: WC): WC = (wc1, wc2) match
+      case (Stub(a), Stub(b)) => Stub(a + b)
+      case (Stub(a), Part(lStub, words, rStub)) => Part(a + lStub, 2, rStub)
+      case (Part(lStub, words, rStub), Stub(b)) => Part(lStub, 2, rStub + b)
+      case (Part(lStub1, words1, rStub1), Part(lStub2, words2, rStub2)) => 
+        val words = if ((rStub1 + lStub2).isEmpty) 0 else 1
+        Part(lStub1 + lStub2, words, rStub1 + rStub2)
     def zero: WC = Stub("")
