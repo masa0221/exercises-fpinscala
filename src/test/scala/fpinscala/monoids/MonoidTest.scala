@@ -164,3 +164,10 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
         m.op(zero, x) === equal(x)
       }
   }
+
+  "wc" in {
+    wc("What is WC meaning?") should equal(3)
+    wc("It's toilet meaning in Japan.") should equal(5)
+    wc("Please tell me why I writing tests for toilet.") should equal(9)
+  }
+

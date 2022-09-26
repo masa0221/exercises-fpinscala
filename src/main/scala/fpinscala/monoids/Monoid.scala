@@ -121,3 +121,5 @@ object Monoid:
         val words = if ((rStub1 + lStub2).isEmpty) 0 else 1
         Part(lStub1 + lStub2, words, rStub1 + rStub2)
     def zero: WC = Stub("")
+
+  def wc(strings: String): Int = ???
