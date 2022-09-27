@@ -150,8 +150,7 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
       monoidTest[WC](m, x, y, z)
     }
 
-
-    def monoidTest[A](m: Monoid[A], x: A, y: A, z: A): Unit = 
+    def monoidTest[A](m: Monoid[A], x: A, y: A, z: A): Unit =
       val zero = m.zero
 
       "op(op(x, y), z) == op(x, op(y, z))" in {
@@ -165,9 +164,8 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
       }
   }
 
-  "wc" in {
-    wc("What is WC meaning?") should equal(3)
-    wc("It's toilet meaning in Japan.") should equal(5)
-    wc("Please tell me why I writing tests for toilet.") should equal(9)
+  "count" in {
+    count("What is WC meaning?") should equal(3)
+    count("It's toilet meaning in Japan.") should equal(5)
+    count("Please tell me why I writing tests for toilet.") should equal(9)
   }
-
