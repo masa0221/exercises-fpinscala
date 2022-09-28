@@ -124,6 +124,11 @@ object Monoid:
 
   // https://github.com/fpinscala/fpinscala/blob/second-edition/answerkey/monoids/11.answer.md
   def count(strings: String): Int =
-    def wc(c: Char): WC = ???
-    def unstub(s: String): Int = ???
-    ???
+    def wc(c: Char): WC =
+      if c.isWhitespace then Part("", 0, "") else Stub(c.toString)
+
+    def unstub(s: String): Int = if s.isEmpty then 0 else 1
+
+    foldMapV(strings, wcMonoid)(wc) match
+      case Stub(s)       => unstub(s)
+      case Part(l, n, r) => unstub(l) + n + unstub(r)
