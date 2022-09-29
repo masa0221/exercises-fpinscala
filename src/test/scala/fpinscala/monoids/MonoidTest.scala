@@ -165,7 +165,7 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
   }
 
   "count" in {
-    count("What is WC meaning?") should equal(3)
+    count("What is WC meaning?") should equal(4)
     count("It's toilet meaning in Japan.") should equal(5)
     count("Please tell me why I writing tests for toilet.") should equal(9)
   }
