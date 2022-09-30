@@ -134,3 +134,9 @@ object Monoid:
     foldMapV(strings, wcMonoid)(wc) match
       case Stub(s)       => unstub(s)
       case Part(l, n, r) => unstub(l) + n + unstub(r)
+
+trait Foldable[F[_]]:
+  def foldRght[A, B](as: F[A])(z: B)(f: (A, B) => B): B
+  def foldLeft[A, B](as: F[A])(z: B)(f: (B, A) => B): B
+  def foldMap[A, B](as: F[A])(f: A => B)(mb: Monoid[B]): B
+  def concatenate[A](as: F[A])(m: Monoid[A]): A
