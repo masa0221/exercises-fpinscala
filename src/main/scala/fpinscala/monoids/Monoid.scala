@@ -135,8 +135,21 @@ object Monoid:
       case Stub(s)       => unstub(s)
       case Part(l, n, r) => unstub(l) + n + unstub(r)
 
+// https://github.com/fpinscala/fpinscala/blob/first-edition/answerkey/monoids/12.answer.scala
 trait Foldable[F[_]]:
-  def foldRght[A, B](as: F[A])(z: B)(f: (A, B) => B): B
-  def foldLeft[A, B](as: F[A])(z: B)(f: (B, A) => B): B
-  def foldMap[A, B](as: F[A])(f: A => B)(mb: Monoid[B]): B
-  def concatenate[A](as: F[A])(m: Monoid[A]): A
+  import fpinscala.monoids.Monoid.*
+
+  def foldRight[A, B](as: F[A])(z: B)(f: (A, B) => B): B =
+    foldMap(as)(f.curried)(endoMonoid[B])(z)
+
+  def foldLeft[A, B](as: F[A])(z: B)(f: (B, A) => B): B = ???
+  def foldMap[A, B](as: F[A])(f: A => B)(mb: Monoid[B]): B = ???
+  def concatenate[A](as: F[A])(m: Monoid[A]): A = ???
+
+// TODO: geven instance
+// https://docs.scala-lang.org/scala3/reference/contextual/givens.html
+// object FoldableList extends Foldable[List]:
+//   def foldRight[A, B](as: List[A])(z: B)(f: (A, B) => B): B = ???
+//   def foldLeft[A, B](as: List[A])(z: B)(f: (B, A) => B): B = ???
+//   def foldMap[A, B](as: List[A])(f: A => B)(mb: Monoid[B]): B = ???
+//   def concatenate[A](as: List[A], m: Monoid[A]): A = ???
