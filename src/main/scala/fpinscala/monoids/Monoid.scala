@@ -159,6 +159,5 @@ object FoldableList extends Foldable[List]:
   override def foldLeft[A, B](as: List[A])(z: B)(f: (B, A) => B): B =
     as.foldLeft(z)(f)
 
-  override def foldMap[A, B](as: List[A])(f: A => B)(mb: Monoid[B]): B = ???
-
-  override def concatenate[A](as: List[A], m: Monoid[A]): A = ???
+  override def foldMap[A, B](as: List[A])(f: A => B)(mb: Monoid[B]): B =
+    foldLeft(as)(mb.zero)((b, a) => mb.op(f(a), b))
