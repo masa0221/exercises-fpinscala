@@ -169,3 +169,26 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
     count("It's toilet meaning in Japan.") should equal(5)
     count("Please tell me why I writing tests for toilet.") should equal(9)
   }
+
+  "Foldable" - {
+    "FoldableList" - {
+      "foldRight" in {
+        val as = List(1, 2, 3, 4, 5)
+        val f = (a: Int, b: String) => a.toString + b
+        FoldableList.foldRight(as)("")(f) should equal("12345")
+      }
+      "foldLeft" in {
+        val as = List(1, 2, 3, 4, 5)
+        val f = (b: String, a: Int) => a.toString + b
+        FoldableList.foldLeft(as)("")(f) should equal("54321")
+      }
+      "foldMap" in {
+        val as = List(1, 2, 3, 4, 5)
+        FoldableList.foldMap(as)(_ * 2)(intAddition) should equal(30)
+      }
+      "concatenate" in {
+        val as = List(1, 2, 3, 4, 5)
+        FoldableList.concatenate(as)(intAddition) should equal(15)
+      }
+    }
+  }
