@@ -161,3 +161,17 @@ object FoldableList extends Foldable[List]:
 
   override def foldMap[A, B](as: List[A])(f: A => B)(mb: Monoid[B]): B =
     foldLeft(as)(mb.zero)((b, a) => mb.op(f(a), b))
+
+object FoldableIndexedSeq extends Foldable[IndexedSeq]:
+  import fpinscala.monoids.Monoid.*
+
+  override def foldRight[A, B](as: IndexedSeq[A])(z: B)(f: (A, B) => B): B =
+    as.foldRight(z)(f)
+
+  override def foldLeft[A, B](as: IndexedSeq[A])(z: B)(f: (B, A) => B): B =
+    as.foldLeft(z)(f)
+
+  override def foldMap[A, B](as: IndexedSeq[A])(f: A => B)(mb: Monoid[B]): B =
+    foldMapV(as, mb)(f)
+
+object FoldableStream extends Foldable[Stream]

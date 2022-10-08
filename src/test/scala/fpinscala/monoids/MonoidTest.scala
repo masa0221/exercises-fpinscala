@@ -191,4 +191,24 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
         FoldableList.concatenate(as)(intAddition) should equal(15)
       }
     }
+    "FoldableIndexedSeq" - {
+      "foldRight" in {
+        val as = IndexedSeq(1, 2, 3, 4, 5)
+        val f = (a: Int, b: String) => a.toString + b
+        FoldableIndexedSeq.foldRight(as)("")(f) should equal("12345")
+      }
+      "foldLeft" in {
+        val as = IndexedSeq(1, 2, 3, 4, 5)
+        val f = (b: String, a: Int) => a.toString + b
+        FoldableIndexedSeq.foldLeft(as)("")(f) should equal("54321")
+      }
+      "foldMap" in {
+        val as = IndexedSeq(1, 2, 3, 4, 5)
+        FoldableIndexedSeq.foldMap(as)(_ * 2)(intAddition) should equal(30)
+      }
+      "concatenate" in {
+        val as = IndexedSeq(1, 2, 3, 4, 5)
+        FoldableIndexedSeq.concatenate(as)(intAddition) should equal(15)
+      }
+    }
   }
