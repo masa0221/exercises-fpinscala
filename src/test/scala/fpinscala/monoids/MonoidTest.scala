@@ -172,43 +172,61 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
 
   "Foldable" - {
     "FoldableList" - {
+      val as = List(1, 2, 3, 4, 5)
+
       "foldRight" in {
-        val as = List(1, 2, 3, 4, 5)
         val f = (a: Int, b: String) => a.toString + b
         FoldableList.foldRight(as)("")(f) should equal("12345")
       }
       "foldLeft" in {
-        val as = List(1, 2, 3, 4, 5)
         val f = (b: String, a: Int) => a.toString + b
         FoldableList.foldLeft(as)("")(f) should equal("54321")
       }
       "foldMap" in {
-        val as = List(1, 2, 3, 4, 5)
         FoldableList.foldMap(as)(_ * 2)(intAddition) should equal(30)
       }
       "concatenate" in {
-        val as = List(1, 2, 3, 4, 5)
         FoldableList.concatenate(as)(intAddition) should equal(15)
       }
     }
     "FoldableIndexedSeq" - {
+      val as = IndexedSeq(1, 2, 3, 4, 5)
+
       "foldRight" in {
-        val as = IndexedSeq(1, 2, 3, 4, 5)
         val f = (a: Int, b: String) => a.toString + b
         FoldableIndexedSeq.foldRight(as)("")(f) should equal("12345")
       }
       "foldLeft" in {
-        val as = IndexedSeq(1, 2, 3, 4, 5)
         val f = (b: String, a: Int) => a.toString + b
         FoldableIndexedSeq.foldLeft(as)("")(f) should equal("54321")
       }
       "foldMap" in {
-        val as = IndexedSeq(1, 2, 3, 4, 5)
         FoldableIndexedSeq.foldMap(as)(_ * 2)(intAddition) should equal(30)
       }
       "concatenate" in {
-        val as = IndexedSeq(1, 2, 3, 4, 5)
         FoldableIndexedSeq.concatenate(as)(intAddition) should equal(15)
+      }
+    }
+    "FoldableStream" - {
+      // https://docs.scala-lang.org/ja/overviews/collections/concrete-immutable-collection-classes.html
+      def fibFrom(a: Int, b: Int): Stream[Int] = a #:: fibFrom(b, a + b)
+
+      // 1, 1, 2, 3, 5
+      val as = fibFrom(1, 1).take(5)
+
+      "foldRight" in {
+        val f = (a: Int, b: String) => a.toString + b
+        FoldableStream.foldRight(as)("")(f) should equal("11235")
+      }
+      "foldLeft" in {
+        val f = (b: String, a: Int) => a.toString + b
+        FoldableStream.foldLeft(as)("")(f) should equal("53211")
+      }
+      "foldMap" in {
+        FoldableStream.foldMap(as)(_ * 2)(intAddition) should equal(24)
+      }
+      "concatenate" in {
+        FoldableStream.concatenate(as)(intAddition) should equal(12)
       }
     }
   }

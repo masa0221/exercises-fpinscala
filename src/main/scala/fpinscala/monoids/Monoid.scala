@@ -174,4 +174,9 @@ object FoldableIndexedSeq extends Foldable[IndexedSeq]:
   override def foldMap[A, B](as: IndexedSeq[A])(f: A => B)(mb: Monoid[B]): B =
     foldMapV(as, mb)(f)
 
-object FoldableStream extends Foldable[Stream]
+object FoldableStream extends Foldable[Stream]:
+  override def foldRight[A, B](as: Stream[A])(z: B)(f: (A, B) => B): B =
+    as.foldRight(z)(f)
+
+  override def foldLeft[A, B](as: Stream[A])(z: B)(f: (B, A) => B): B =
+    as.foldLeft(z)(f)
