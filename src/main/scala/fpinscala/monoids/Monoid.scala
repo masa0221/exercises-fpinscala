@@ -180,3 +180,8 @@ object FoldableStream extends Foldable[Stream]:
 
   override def foldLeft[A, B](as: Stream[A])(z: B)(f: (B, A) => B): B =
     as.foldLeft(z)(f)
+
+sealed trait Tree[+A]
+case object Leaf[A](value: A) extends Tree[A]
+case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
+
