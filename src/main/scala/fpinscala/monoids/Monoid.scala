@@ -189,4 +189,6 @@ object FoldableTree extends Foldable[Tree]:
   override def foldRight[A, B](as: Tree[A])(z: B)(f: (A, B) => B): B = ???
   override def foldLeft[A, B](as: Tree[A])(z: B)(f: (B, A) => B): B = ???
   override def foldMap[A, B](as: Tree[A])(f: A => B)(mb: Monoid[B]): B =
-    foldLeft(as)(mb.zero)((b, a) => mb.op(f(a), b))
+    as match
+      case Leaf(a)      => f(a)
+      case Branch(l, r) => mb.op(foldMap(l)(f)(mb), foldMap(r)(f)(mb))
