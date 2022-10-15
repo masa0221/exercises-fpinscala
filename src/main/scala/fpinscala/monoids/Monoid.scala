@@ -200,3 +200,19 @@ object FoldableTree extends Foldable[Tree]:
     as match
       case Leaf(a)      => f(a)
       case Branch(l, r) => mb.op(foldMap(l)(f)(mb), foldMap(r)(f)(mb))
+
+object FoldableOption extends Foldable[Option]:
+  def foldRight[A, B](as: Option[A])(z: B)(f: (A, B) => B): B =
+    as match
+      case Some(a) => f(a, z)
+      case None    => z
+
+  def foldLeft[A, B](as: Option[A])(z: B)(f: (B, A) => B): B =
+    as match
+      case Some(a) => f(z, a)
+      case None    => z
+
+  def foldMap[A, B](as: Option[A])(f: A => B)(mb: Monoid[B]): B =
+    as match
+      case Some(a) => mb.op(f(a), mb.zero)
+      case None    => mb.zero
