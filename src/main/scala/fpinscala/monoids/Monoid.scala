@@ -150,6 +150,9 @@ trait Foldable[F[_]]:
 
   def concatenate[A](as: F[A])(m: Monoid[A]): A = foldLeft(as)(m.zero)(m.op)
 
+  def toList[A](fa: F[A]): List[A] =
+    foldRight(fa)(List[A].empty)(_ :: _)
+
 // TODO: geven instance
 // https://docs.scala-lang.org/scala3/reference/contextual/givens.html
 object FoldableList extends Foldable[List]:
