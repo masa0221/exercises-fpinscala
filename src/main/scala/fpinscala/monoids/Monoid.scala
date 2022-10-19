@@ -46,7 +46,10 @@ object Monoid:
     def op(a1: A => A, a2: A => A): A => A = a1 compose a2
     def zero = (a: A) => a
 
-  def productMonoid[A, B](A: Monoid[A], B: Monoid[B]): Monoid[(A, B)] = ???
+  def productMonoid[A, B](ma: Monoid[A], mb: Monoid[B]): Monoid[(A, B)] =
+    new Monoid[(A, B)]:
+      def op = ???
+      def zero = ???
 
   def monoidLaws[A](m: Monoid[A], gen: Gen[A]): Prop =
     import fpinscala.answers.testing.exhaustive.Prop.forAll
