@@ -60,6 +60,10 @@ object Monoid:
           acc.updated(k, v.op(a.getOrElse(k, v.zero), b.getOrElse(k, v.zero)))
         }
 
+  def functionMonoid[A, B](m: Monoid[B]): Monoid[A => B] = new Monoid[A => B]:
+    def zero: A => B = a => m.zero
+    def op(fa: A => B, fb: A => B): A => B = a => m.op(fa(a), fb(a))
+
   def monoidLaws[A](m: Monoid[A], gen: Gen[A]): Prop =
     import fpinscala.answers.testing.exhaustive.Prop.forAll
     forAll(for {
