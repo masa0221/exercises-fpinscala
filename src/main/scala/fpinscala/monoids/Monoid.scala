@@ -153,7 +153,9 @@ object Monoid:
       case Stub(s)       => unstub(s)
       case Part(l, n, r) => unstub(l) + n + unstub(r)
 
-  def bag[A](as: IndexedSeq[A]): Map[A, Int] = ???
+  // https://github.com/fpinscala/fpinscala/blob/first-edition/answerkey/monoids/18.answer.scala
+  def bag[A](as: IndexedSeq[A]): Map[A, Int] =
+    foldMapV(as, mapMergeMonoid[A, Int](intAddition))((a: A) => Map(a -> 1))
 
 // https://github.com/fpinscala/fpinscala/blob/first-edition/answerkey/monoids/12.answer.scala
 trait Foldable[F[_]]:
