@@ -1,5 +1,7 @@
 package fpinscala.monads
 
+import fpinscala.answers.testing.exhaustive.Gen
+
 trait Functor[F[_]]:
   def map[A, B](fa: F[A])(f: A => B): F[B]
 
@@ -14,7 +16,7 @@ trait Functor[F[_]]:
 val listFunctor = new Functor[List]:
   def map[A, B](as: List[A])(f: A => B): List[B] = as map f
 
-trait Mon[F[_]]:
+trait Monad[F[_]]:
   def unit[A](a: => A): F[A]
   def flatMap[A, B](fa: F[A])(f: A => F[B]): F[B]
 
@@ -23,3 +25,8 @@ trait Mon[F[_]]:
 
   def map2[A, B, C](fa: F[A], fb: F[B])(f: (A, B) => C): F[C] =
     flatMap(fa)(a => map(fb)(b => f(a, b)))
+
+object Monad:
+  val getMonad = new Monad[Gen]:
+    def unit[A](a: => A): Gen[A] = Gen.unit(a)
+    def flatMap[A, B](ma: Gen[A])(f: A => Gen[B]): Gen[B] = ma flatMap f
