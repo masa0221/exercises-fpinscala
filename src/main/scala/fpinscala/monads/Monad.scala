@@ -1,6 +1,7 @@
 package fpinscala.monads
 
 import fpinscala.answers.testing.exhaustive.Gen
+import fpinscala.answers.parallelism.Nonblocking.Par
 
 trait Functor[F[_]]:
   def map[A, B](fa: F[A])(f: A => B): F[B]
@@ -27,6 +28,10 @@ trait Monad[F[_]]:
     flatMap(fa)(a => map(fb)(b => f(a, b)))
 
 object Monad:
-  val getMonad = new Monad[Gen]:
+  val genMonad = new Monad[Gen]:
     def unit[A](a: => A): Gen[A] = Gen.unit(a)
     def flatMap[A, B](ma: Gen[A])(f: A => Gen[B]): Gen[B] = ma flatMap f
+
+  val parMonad = new Monad[Par]:
+    def unit[A](a: => A): Par[A] = Par.unit(a)
+    def flatMap[A, B](ma: Par[A])(f: A => Par[B]): Par[B] = ma flatMap f
