@@ -39,3 +39,7 @@ object Monad:
   val optionMonad = new Monad[Option]:
     def unit[A](a: => A): Option[A] = Some(a)
     def flatMap[A, B](ma: Option[A])(f: A => Option[B]) = ma flatMap f
+
+  val streamMonad = new Monad[Stream]:
+    def unit[A](a: => A): Stream[A] = Stream(a)
+    def flatMap[A, B](ma: Stream[A])(f: A => Stream[B]) = ma flatMap f
