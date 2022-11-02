@@ -35,3 +35,7 @@ object Monad:
   val parMonad = new Monad[Par]:
     def unit[A](a: => A): Par[A] = Par.unit(a)
     def flatMap[A, B](ma: Par[A])(f: A => Par[B]): Par[B] = ma flatMap f
+
+  val optionMonad = new Monad[Option]:
+    def unit[A](a: => A): Option[A] = Some(a)
+    def flatMap[A, B](ma: Option[A])(f: A => Option[B]) = ma flatMap f
