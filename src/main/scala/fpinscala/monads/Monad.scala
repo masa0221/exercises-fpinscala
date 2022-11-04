@@ -43,3 +43,7 @@ object Monad:
   val streamMonad = new Monad[Stream]:
     def unit[A](a: => A): Stream[A] = Stream(a)
     def flatMap[A, B](ma: Stream[A])(f: A => Stream[B]) = ma flatMap f
+
+  val listMonad = new Monad[List]:
+    def unit[A](a: => A): List[A] = List(a)
+    def flatMap[A, B](ma: List[A])(f: A => List[B]) = ma flatMap f
