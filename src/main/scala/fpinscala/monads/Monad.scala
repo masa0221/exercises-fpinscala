@@ -2,6 +2,7 @@ package fpinscala.monads
 
 import fpinscala.answers.testing.exhaustive.Gen
 import fpinscala.answers.parallelism.Nonblocking.Par
+import fpinscala.answers.state.State
 
 trait Functor[F[_]]:
   def map[A, B](fa: F[A])(f: A => B): F[B]
@@ -47,3 +48,17 @@ object Monad:
   val listMonad = new Monad[List]:
     def unit[A](a: => A): List[A] = List(a)
     def flatMap[A, B](ma: List[A])(f: A => List[B]) = ma flatMap f
+
+// https://github.com/fpinscala/fpinscala/blob/first-edition/answerkey/monads/02.answer.scala
+// 以下だと動かない
+// val stateMonad = new Monad[State]:
+//   def unit[S, A](a: => A): State[S, A] = State.unit(a)
+//   def flatMap[S, A, B](ma: State[S, A])(f: A => State[S, B]) = ma flatMap f
+class StateMonads[S]:
+  type StateS[A] = State[S, A]
+
+  val monad = new Monad[StateS]:
+    def unit[A](a: => A): State[S, A] = State(s => (a, s))
+    override def flatMap[A, B](st: State[S, A])(
+        f: A => State[S, B]
+    ): State[S, B] = st flatMap f
