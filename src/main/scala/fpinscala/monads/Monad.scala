@@ -28,6 +28,11 @@ trait Monad[F[_]]:
   def map2[A, B, C](fa: F[A], fb: F[B])(f: (A, B) => C): F[C] =
     flatMap(fa)(a => map(fb)(b => f(a, b)))
 
+  def sequence[A](lma: List[F[A]]): F[List[A]] =
+    lma.foldRight(unit(List.empty[A]))((ma, acc) => map2(ma, acc)(_ :: _))
+
+  def traverse[A, B](la: List[A])(f: A => F[B]): F[List[B]] = ???
+
 object Monad:
   val genMonad = new Monad[Gen]:
     def unit[A](a: => A): Gen[A] = Gen.unit(a)
