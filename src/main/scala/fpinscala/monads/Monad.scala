@@ -31,7 +31,9 @@ trait Monad[F[_]]:
   def sequence[A](lma: List[F[A]]): F[List[A]] =
     lma.foldRight(unit(List.empty[A]))((ma, acc) => map2(ma, acc)(_ :: _))
 
-  def traverse[A, B](la: List[A])(f: A => F[B]): F[List[B]] = ???
+  // https://github.com/fpinscala/fpinscala/blob/first-edition/answerkey/monads/03.answer.scala#L4-L5
+  def traverse[A, B](la: List[A])(f: A => F[B]): F[List[B]] =
+    la.foldRight(unit(List.empty[B]))((a, lmb) => map2(f(a), lmb)(_ :: _))
 
 object Monad:
   val genMonad = new Monad[Gen]:
