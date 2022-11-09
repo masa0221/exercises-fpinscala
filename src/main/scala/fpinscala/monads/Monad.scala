@@ -35,7 +35,10 @@ trait Monad[F[_]]:
   def traverse[A, B](la: List[A])(f: A => F[B]): F[List[B]] =
     la.foldRight(unit(List.empty[B]))((a, lmb) => map2(f(a), lmb)(_ :: _))
 
-  def replicateM[A](n: Int, ma: F[A]): F[List[A]] = ???
+  def replicateM[A](n: Int, ma: F[A]): F[List[A]] =
+    List
+      .fill(n)(ma)
+      .foldRight(unit(List.empty[A]))((a, b) => map2(a, b)(_ :: _))
 
 object Monad:
   val genMonad = new Monad[Gen]:
