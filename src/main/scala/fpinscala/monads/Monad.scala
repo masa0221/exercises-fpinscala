@@ -40,6 +40,8 @@ trait Monad[F[_]]:
       .fill(n)(ma)
       .foldRight(unit(List.empty[A]))((a, b) => map2(a, b)(_ :: _))
 
+  def product[A,B](ma: F[A], mb: F[B]): F[(A, B)] = map2(ma, mb)((_, _))
+
 object Monad:
   val genMonad = new Monad[Gen]:
     def unit[A](a: => A): Gen[A] = Gen.unit(a)
