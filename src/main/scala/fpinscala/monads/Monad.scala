@@ -40,9 +40,18 @@ trait Monad[F[_]]:
       .fill(n)(ma)
       .foldRight(unit(List.empty[A]))((a, b) => map2(a, b)(_ :: _))
 
-  def product[A,B](ma: F[A], mb: F[B]): F[(A, B)] = map2(ma, mb)((_, _))
+  def product[A, B](ma: F[A], mb: F[B]): F[(A, B)] = map2(ma, mb)((_, _))
 
-  def filterM[A](ms: List[A])(f: A => F[Boolean]): F[List[A]] = ???
+  // https://github.com/fpinscala/fpinscala/blob/first-edition/answerkey/monads/06.answer.scala
+  def filterM[A](ms: List[A])(f: A => F[Boolean]): F[List[A]] = ms match
+    case Nil => unit(Nil)
+    case h :: t =>
+      flatMap(f(h))(b =>
+        if (!b)
+          filterM(t)(f)
+        else
+          map(filterM(t)(f))(h :: _)
+      )
 
 object Monad:
   val genMonad = new Monad[Gen]:
