@@ -42,6 +42,8 @@ trait Monad[F[_]]:
 
   def product[A,B](ma: F[A], mb: F[B]): F[(A, B)] = map2(ma, mb)((_, _))
 
+  def filterM[A](ms: List[A])(f: A => F[Boolean]): F[List[A]] = ???
+
 object Monad:
   val genMonad = new Monad[Gen]:
     def unit[A](a: => A): Gen[A] = Gen.unit(a)
