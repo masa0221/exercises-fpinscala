@@ -20,7 +20,9 @@ val listFunctor = new Functor[List]:
 
 trait Monad[F[_]]:
   def unit[A](a: => A): F[A]
-  def flatMap[A, B](fa: F[A])(f: A => F[B]): F[B]
+
+  // https://github.com/fpinscala/fpinscala/blob/first-edition/answerkey/monads/08.answer.scala
+  def flatMap[A, B](ma: F[A])(f: A => F[B]): F[B] = compose((_: Unit) => ma, f)(())
 
   def map[A, B](fa: F[A])(f: A => B): F[B] =
     flatMap(fa)(a => unit(f(a)))
