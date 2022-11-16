@@ -22,7 +22,8 @@ trait Monad[F[_]]:
   def unit[A](a: => A): F[A]
 
   // https://github.com/fpinscala/fpinscala/blob/first-edition/answerkey/monads/08.answer.scala
-  def flatMap[A, B](ma: F[A])(f: A => F[B]): F[B] = compose((_: Unit) => ma, f)(())
+  // def flatMap[A, B](ma: F[A])(f: A => F[B]): F[B] = compose((_: Unit) => ma, f)(())
+  def flatMap[A, B](ma: F[A])(f: A => F[B]): F[B]
 
   def map[A, B](fa: F[A])(f: A => B): F[B] =
     flatMap(fa)(a => unit(f(a)))
@@ -57,6 +58,8 @@ trait Monad[F[_]]:
 
   def compose[A, B, C](f: A => F[B], g: B => F[C]): A => F[C] = a =>
     flatMap(f(a))(g)
+
+  def join[A](mma: F[F[A]]): F[A] = ???
 
 object Monad:
   val genMonad = new Monad[Gen]:
