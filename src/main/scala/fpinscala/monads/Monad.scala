@@ -23,6 +23,10 @@ trait Monad[F[_]]:
 
   // https://github.com/fpinscala/fpinscala/blob/first-edition/answerkey/monads/08.answer.scala
   // def flatMap[A, B](ma: F[A])(f: A => F[B]): F[B] = compose((_: Unit) => ma, f)(())
+  //
+  // https://github.com/fpinscala/fpinscala/blob/first-edition/answerkey/monads/13.answer.scala
+  // def flatMap[A, B](ma: F[A])(f: A => F[B]): F[B] =
+  //   join(map(ma)(f))
   def flatMap[A, B](ma: F[A])(f: A => F[B]): F[B]
 
   def map[A, B](fa: F[A])(f: A => B): F[B] =
