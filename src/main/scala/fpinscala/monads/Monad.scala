@@ -62,7 +62,8 @@ trait Monad[F[_]]:
 
   // def compose[A, B, C](f: A => F[B], g: B => F[C]): A => F[C] = a =>
   //   flatMap(f(a))(g)
-  def compose[A, B, C](f: A => F[B], g: B => F[C]): A => F[C] = a => join(map(f(a))(g))
+  def compose[A, B, C](f: A => F[B], g: B => F[C]): A => F[C] = a =>
+    join(map(f(a))(g))
 
   def join[A](mma: F[F[A]]): F[A] = flatMap(mma)(ma => ma)
 
@@ -100,3 +101,9 @@ class StateMonads[S]:
     override def flatMap[A, B](st: State[S, A])(
         f: A => State[S, B]
     ): State[S, B] = st flatMap f
+
+case class Id[A](value: A)
+object Id:
+  val IdMonad = new Monad[Id]:
+    def unit[A](a: => A): Id[A] = ???
+    def flatMap[A, B](ma: Id[A])(f: A => Id[B]) = ???
