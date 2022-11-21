@@ -102,8 +102,12 @@ class StateMonads[S]:
         f: A => State[S, B]
     ): State[S, B] = st flatMap f
 
-case class Id[A](value: A)
+// https://github.com/fpinscala/fpinscala/blob/first-edition/answerkey/monads/17.answer.scala
+case class Id[A](value: A):
+  def map[B](f: A => B): Id[B] = Id(f(value))
+  def flatMap[B](f: A => Id[B]): Id[B] = f(value)
+
 object Id:
   val IdMonad = new Monad[Id]:
-    def unit[A](a: => A): Id[A] = ???
-    def flatMap[A, B](ma: Id[A])(f: A => Id[B]) = ???
+    def unit[A](a: => A): Id[A] = Id(a)
+    def flatMap[A, B](ma: Id[A])(f: A => Id[B]): Id[B] = ma flatMap f
