@@ -111,3 +111,8 @@ object Id:
   val IdMonad = new Monad[Id]:
     def unit[A](a: => A): Id[A] = Id(a)
     def flatMap[A, B](ma: Id[A])(f: A => Id[B]): Id[B] = ma flatMap f
+
+type IntState[A] = State[Int, A]
+object IntStateMonad extends Monad[IntState]:
+  def unit[A](a: => A): IntState[A] = State(s => (a, s))
+  def flatMap[A, B](st: IntState[A])(f: A => IntState[B]): IntState[B] = st flatMap f
