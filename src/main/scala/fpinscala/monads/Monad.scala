@@ -88,6 +88,11 @@ object Monad:
     def unit[A](a: => A): List[A] = List(a)
     def flatMap[A, B](ma: List[A])(f: A => List[B]) = ma flatMap f
 
+  def stateMonad[S] = new Monad[({ type f[x] = State[S, x] })#f]:
+    def unit[A](a: => A): State[S, A] = State(s => (a, s))
+    def flatMap[A, B](st: State[S, A])(f: A => State[S, B]): State[S, B] =
+      st flatMap f
+
 // https://github.com/fpinscala/fpinscala/blob/first-edition/answerkey/monads/02.answer.scala
 // 以下だと動かない
 // val stateMonad = new Monad[State]:
@@ -114,5 +119,9 @@ object Id:
 
 type IntState[A] = State[Int, A]
 object IntStateMonad extends Monad[IntState]:
+// 動かん
+// object IntStateMonad
+//     extends Monad[({ type IntState[A] = State[Int, A] })#IntState]:
   def unit[A](a: => A): IntState[A] = State(s => (a, s))
-  def flatMap[A, B](st: IntState[A])(f: A => IntState[B]): IntState[B] = st flatMap f
+  def flatMap[A, B](st: IntState[A])(f: A => IntState[B]): IntState[B] =
+    st flatMap f
