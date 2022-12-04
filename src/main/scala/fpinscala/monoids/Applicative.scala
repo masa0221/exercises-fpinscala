@@ -8,11 +8,13 @@ trait Applicative[F[_]] extends Functor[F]:
   def apply[A, B](fab: F[A => B])(fa: F[A]): F[B]
   def unit[A](a: => A): F[A]
 
-  def map2[A, B, C](fa: F[A], fb: F[B])(f: (A, B) => C): F[C]
-  def unit[A](a: => A): F[A]
-
   // 派生コンビネータ
-  def map[A, B](fa: F[A])(f: A => B): F[B] = map2(fa, unit(()))((a, _) => f(a))
+  def map2[A, B, C](fa: F[A], fb: F[B])(f: (A, B) => C): F[C] =
+    // これだとfの戻り値がF[C]になるのでNG
+    map(fa)(a => map(fb)((b => f(a, b))))
+
+  // def map[A, B](fa: F[A])(f: A => B): F[B] = map2(fa, unit(()))((a, _) => f(a))
+  def map[A, B](fa: F[A])(f: A => B): F[B] = apply(unit(f))(fa)
 
   def traverse[A, B](as: List[A])(f: A => F[B]): F[List[B]] =
     as.foldRight(unit(List[B]()))((a, acc) => f(a).map2(acc)(_ :: _))
