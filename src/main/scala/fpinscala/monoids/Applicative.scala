@@ -10,8 +10,7 @@ trait Applicative[F[_]] extends Functor[F]:
 
   // 派生コンビネータ
   def map2[A, B, C](fa: F[A], fb: F[B])(f: (A, B) => C): F[C] =
-    // これだとfの戻り値がF[C]になるのでNG
-    map(fa)(a => map(fb)((b => f(a, b))))
+    apply(map(fa)(f.curried), fb)
 
   // def map[A, B](fa: F[A])(f: A => B): F[B] = map2(fa, unit(()))((a, _) => f(a))
   def map[A, B](fa: F[A])(f: A => B): F[B] = apply(unit(f))(fa)
