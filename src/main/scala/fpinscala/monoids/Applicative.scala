@@ -23,7 +23,7 @@ trait Applicative[F[_]] extends Functor[F]:
 
   def map4[A, B, C, D, E](fa: F[A], fb: F[B], fc: F[C], fd: F[D])(
       f: (A, B, C, D) => E
-  ): F[E] = ???
+  ): F[E] = apply(map3(fa, fb, fc)((a, b, c) => f(a, b, c, _)))(fd)
 
   def traverse[A, B](as: List[A])(f: A => F[B]): F[List[B]] =
     as.foldRight(unit(List[B]()))((a, acc) => map2(f(a), acc)(_ :: _))
