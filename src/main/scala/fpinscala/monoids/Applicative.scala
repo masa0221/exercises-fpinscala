@@ -35,3 +35,13 @@ trait Applicative[F[_]] extends Functor[F]:
 
   def product[A, B](fa: F[A], fb: F[B]): F[(A, B)] =
     map2(fa, fb)((_, _))
+
+// TODO: to implement
+// これによって全てのモナドがアプリカティブファンクタであることがわかる
+trait Monad[F[_]] extends Applicative[F]:
+  // Monadの実装では、少なくともunitを実装し、flatMapかjoinのいずれかとmapを上書きしなければならない
+  def flatMap[A, B](fa: F[A])(f: A => F[B]): F[B]
+  def join[A](ffa: F[F[A]]): F[A]
+  def compose[A, B, C](f: A => F[B], g: B => F[C]): A => F[C]
+  def map[A, B](fa: F[A])(f: A => B): F[B]
+  def map2[A, B, C](fa: F[A], fb: F[B])(f: (A, B) => C): F[C]
