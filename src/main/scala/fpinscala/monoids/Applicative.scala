@@ -36,7 +36,6 @@ trait Applicative[F[_]] extends Functor[F]:
   def product[A, B](fa: F[A], fb: F[B]): F[(A, B)] =
     map2(fa, fb)((_, _))
 
-// TODO: to implement
 // これによって全てのモナドがアプリカティブファンクタであることがわかる
 trait Monad[F[_]] extends Applicative[F]:
   // Monadの実装では、少なくともunitを実装し、flatMapかjoinのいずれかとmapを上書きしなければならない
@@ -48,3 +47,13 @@ trait Monad[F[_]] extends Applicative[F]:
     flatMap(fa)(a => unit(f(a)))
   override def map2[A, B, C](fa: F[A], fb: F[B])(f: (A, B) => C): F[C] =
     flatMap(fa)(a => map(fb)(b => f(a, b)))
+
+// OptionアプリカティブとOptionモナド
+val F: Applicative[Option] = ???
+
+val depts: Map[String, String] = Map("Alice" -> "development")
+val salaries: Map[String, Double] = Map("Alice" -> 100000.00)
+val o: Option[String] =
+  F.map2(depts.get("Alice"), salaries.get("Alice"))((dept, salary) =>
+    s"Alice in $dept makes $salary par year"
+  )
