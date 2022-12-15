@@ -53,7 +53,31 @@ val F: Applicative[Option] = ???
 
 val depts: Map[String, String] = Map("Alice" -> "development")
 val salaries: Map[String, Double] = Map("Alice" -> 100000.00)
-val o: Option[String] =
+val idsByName: Map[String, String] = Map("Alice" -> "Alice")
+
+// Applicativeの場合
+// プリミティブ
+// - unit, map2
+// - unit, apply
+// - map2, map
+// 計算の構造が固定であると言える(flatMapが使えない制限が有利に働くと言える)
+val oWithApplicative: Option[String] =
   F.map2(depts.get("Alice"), salaries.get("Alice"))((dept, salary) =>
     s"Alice in $dept makes $salary par year"
   )
+
+// Monadの場合
+// プリミティブ
+// - unit, flatMap
+// - unit, compose
+// - unit, map, join
+// ある検索結果を次の検索に反映させたい場合
+val oWithMonad: Option[String] =
+  // ApplicativeにflatMapを実装する手段はない(ので以下のことが発生しないと言える)
+  // 前の計算の結果が次に実行される計算に影響を及ぼす可能性がある
+  idsByName.get("Alice").flatMap { id =>
+    // idsByNameの検索結果が次の結果に作用する
+    F.map2(depts.get(id), salaries.get(id))((dept, salary) =>
+      s"Alice in $dept makes $salary par year"
+    )
+  }
