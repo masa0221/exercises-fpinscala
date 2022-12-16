@@ -60,6 +60,10 @@ val idsByName: Map[String, String] = Map("Alice" -> "Alice")
 // - unit, map2
 // - unit, apply
 // - map2, map
+//
+// - 計算の構造が固定されており、作用を並べていくだけ
+// - Applicativeの計算はコンテキストに依存しない
+//
 // 計算の構造が固定であると言える(flatMapが使えない制限が有利に働くと言える)
 val oWithApplicative: Option[String] =
   F.map2(depts.get("Alice"), salaries.get("Alice"))((dept, salary) =>
@@ -71,6 +75,13 @@ val oWithApplicative: Option[String] =
 // - unit, flatMap
 // - unit, compose
 // - unit, map, join
+//
+// - 前の計算の結果に基づいて構造を動的に選択できる
+// - Monadの計算はコンテキストに依存させることができる
+// - 作用はファーストクラス
+//   - 「解釈」時に生成
+//   - プログラムによって事前に選択されない
+//
 // ある検索結果を次の検索に反映させたい場合
 val oWithMonad: Option[String] =
   // ApplicativeにflatMapを実装する手段はない(ので以下のことが発生しないと言える)
