@@ -92,3 +92,10 @@ val oWithMonad: Option[String] =
       s"Alice in $dept makes $salary par year"
     )
   }
+
+// val streamApplicative = new Applicative[Stream]:
+//   def unit[A](a: => A): Stream[A] = Stream.continually(a)
+//   override def map2[A, B, C](a: Stream[A], b: Stream[B])(
+//       f: (A, B) => C
+//   ): Stream[C] =
+//     a zip b map f.tupled
