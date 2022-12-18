@@ -93,9 +93,17 @@ val oWithMonad: Option[String] =
     )
   }
 
-// val streamApplicative = new Applicative[Stream]:
-//   def unit[A](a: => A): Stream[A] = Stream.continually(a)
-//   override def map2[A, B, C](a: Stream[A], b: Stream[B])(
-//       f: (A, B) => C
-//   ): Stream[C] =
-//     a zip b map f.tupled
+// REPLでの実行結果
+// scala> streamApplicative.sequence(List(streamApplicative.unit(1)))
+// val res3: Stream[List[Int]] = Stream(List(1), <not computed>)
+// scala> streamApplicative.sequence(List(streamApplicative.unit(1))).head
+// val res4: List[Int] = List(1)
+// scala> streamApplicative.sequence(List(streamApplicative.unit(1))).tail
+// val res5: Stream[List[Int]] = Stream(List(1), <not computed>)
+val streamApplicative = new Applicative[Stream]:
+  def apply[A, B](fab: Stream[A => B])(fa: Stream[A]): Stream[B] = ???
+  def unit[A](a: => A): Stream[A] = Stream.continually(a)
+  override def map2[A, B, C](a: Stream[A], b: Stream[B])(
+      f: (A, B) => C
+  ): Stream[C] =
+    a zip b map f.tupled
