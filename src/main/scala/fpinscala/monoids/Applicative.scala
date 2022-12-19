@@ -36,6 +36,16 @@ trait Applicative[F[_]] extends Functor[F]:
   def product[A, B](fa: F[A], fb: F[B]): F[(A, B)] =
     map2(fa, fb)((_, _))
 
+// TODO: 動くようにする
+// object Applicative:
+//   // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/applicative/Applicative.scala#L204-L209
+//   given eitherMonad[E]: Monad[Either[E, _]] with
+//     def unit[A](a: => A): Either[E, A] = Right(a)
+//     extension [A](eea: Either[E, A])
+//       override def flatMap[B](f: A => Either[E, B]) = eea match
+//         case Right(a) => f(a)
+//         case Left(b)  => Left(b)
+
 // これによって全てのモナドがアプリカティブファンクタであることがわかる
 trait Monad[F[_]] extends Applicative[F]:
   // Monadの実装では、少なくともunitを実装し、flatMapかjoinのいずれかとmapを上書きしなければならない
