@@ -124,3 +124,11 @@ case class Failure[E](head: E, tail: Vector[E] = Vector())
     extends Validation[E, Nothing]
 
 case class Success[A](a: A) extends Validation[Nothing, A]
+
+// def validationApplicative[E]
+//     : Applicative[({ type f[x] = Validation[E, x] })#f] =
+//   new Applicative[({ type f[x] = Validation[E, x] })#f]:
+//     def unit[A](a: => A) = ???
+//     override def map2[A, B, C](fa: Validation[E, A], fb: Validation[E, B])(
+//         f: (A, B) => C
+//     ) = ???
