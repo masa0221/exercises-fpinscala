@@ -103,21 +103,6 @@ val oWithMonad: Option[String] =
     )
   }
 
-// REPLでの実行結果
-// scala> streamApplicative.sequence(List(streamApplicative.unit(1)))
-// val res3: Stream[List[Int]] = Stream(List(1), <not computed>)
-// scala> streamApplicative.sequence(List(streamApplicative.unit(1))).head
-// val res4: List[Int] = List(1)
-// scala> streamApplicative.sequence(List(streamApplicative.unit(1))).tail
-// val res5: Stream[List[Int]] = Stream(List(1), <not computed>)
-val streamApplicative = new Applicative[Stream]:
-  def apply[A, B](fab: Stream[A => B])(fa: Stream[A]): Stream[B] = ???
-  def unit[A](a: => A): Stream[A] = Stream.continually(a)
-  override def map2[A, B, C](a: Stream[A], b: Stream[B])(
-      f: (A, B) => C
-  ): Stream[C] =
-    a zip b map f.tupled
-
 sealed trait Validation[+E, +A]
 
 case class Failure[E](head: E, tail: Vector[E] = Vector())
@@ -125,10 +110,39 @@ case class Failure[E](head: E, tail: Vector[E] = Vector())
 
 case class Success[A](a: A) extends Validation[Nothing, A]
 
-// def validationApplicative[E]
-//     : Applicative[({ type f[x] = Validation[E, x] })#f] =
-//   new Applicative[({ type f[x] = Validation[E, x] })#f]:
-//     def unit[A](a: => A) = ???
-//     override def map2[A, B, C](fa: Validation[E, A], fb: Validation[E, B])(
-//         f: (A, B) => C
-//     ) = ???
+object Applicative {
+  // REPLでの実行結果
+  // scala> streamApplicative.sequence(List(streamApplicative.unit(1)))
+  // val res3: Stream[List[Int]] = Stream(List(1), <not computed>)
+  // scala> streamApplicative.sequence(List(streamApplicative.unit(1))).head
+  // val res4: List[Int] = List(1)
+  // scala> streamApplicative.sequence(List(streamApplicative.unit(1))).tail
+  // val res5: Stream[List[Int]] = Stream(List(1), <not computed>)
+  val streamApplicative = new Applicative[Stream] {
+
+    def apply[A, B](fab: Stream[A => B])(fa: Stream[A]): Stream[B] = ???
+    def unit[A](a: => A): Stream[A] =
+      Stream.continually(a) // The infinite, constant stream
+
+    override def map2[A, B, C](
+        a: Stream[A],
+        b: Stream[B]
+    )( // Combine elements pointwise
+        f: (A, B) => C
+    ): Stream[C] =
+      a zip b map f.tupled
+  }
+
+  def validationApplicative[E]
+      : Applicative[({ type f[x] = Validation[E, x] })#f] =
+    new Applicative[({ type f[x] = Validation[E, x] })#f] {
+      def apply[A, B](fab: Validation[E, A => B])(
+          fa: Validation[E, A]
+      ): Validation[E, B] = ???
+      def unit[A](a: => A) = ???
+      override def map2[A, B, C](fa: Validation[E, A], fb: Validation[E, B])(
+          f: (A, B) => C
+      ) = ???
+
+    }
+}
