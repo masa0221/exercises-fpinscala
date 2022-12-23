@@ -139,10 +139,14 @@ object Applicative {
       def apply[A, B](fab: Validation[E, A => B])(
           fa: Validation[E, A]
       ): Validation[E, B] = ???
-      def unit[A](a: => A) = ???
+      def unit[A](a: => A) = Success(a)
       override def map2[A, B, C](fa: Validation[E, A], fb: Validation[E, B])(
           f: (A, B) => C
-      ) = ???
-
+      ) = (fa, fb) match
+        case (Success(a), Success(b))              => Success(f(a, b))
+        case (Success(_), failure @ Failure(_, _)) => failure
+        case (failure @ Failure(_, _), Success(_)) => failure
+        case (Failure(ha, ta), Failure(hb, tb)) =>
+          Failure(ha, ta ++ Vector(hb) ++ tb)
     }
 }
