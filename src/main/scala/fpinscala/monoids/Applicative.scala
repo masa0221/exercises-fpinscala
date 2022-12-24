@@ -110,6 +110,8 @@ case class Failure[E](head: E, tail: Vector[E] = Vector())
 
 case class Success[A](a: A) extends Validation[Nothing, A]
 
+case class WebForm(name: String, birthdate: Date, phoneNumber: String)
+
 object Applicative {
   // REPLでの実行結果
   // scala> streamApplicative.sequence(List(streamApplicative.unit(1)))
@@ -149,4 +151,13 @@ object Applicative {
         case (Failure(ha, ta), Failure(hb, tb)) =>
           Failure(ha, ta ++ Vector(hb) ++ tb)
     }
+
+  def validName(name: String): Validation[String, String] =
+    if (name != "") Success(name)
+    else Failure("Name cannot be empty")
+
+  // TODO: to implement
+  def validBirthdate(birthdate: String): Validation[String, Date] = ???
+  def validPhone(phoneNumber: String): Validation[String, String] ???
+  def validWebForm(name: String, birthdate: String, phone: String): Validation[String, WebForm] = ???
 }
