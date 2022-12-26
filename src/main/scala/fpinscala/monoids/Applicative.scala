@@ -4,6 +4,7 @@ package applicative
 import monads.Functor
 import java.util.Date
 import scala.util.Try
+import scala.util.matching.Regex
 
 trait Applicative[F[_]] extends Functor[F]:
   // プリミティブコンビネータ
@@ -165,8 +166,12 @@ object Applicative {
       Failure("The specified birth date string cannot be available format")
     case scala.util.Success(v) => Success(v)
 
+  def validPhone(phoneNumber: String): Validation[String, String] =
+    val numberPattern: Regex = "[0-9]{3,4}-?[0-9]{3,4}-?[0-9]{3,4}-?".r
+    if (numberPattern.matches(phoneNumber)) Success(phoneNumber)
+    else Failure("The specified phone number cannot be available format")
+
   // TODO: to implement
-  def validPhone(phoneNumber: String): Validation[String, String] = ???
   def validWebForm(
       name: String,
       birthdate: String,
