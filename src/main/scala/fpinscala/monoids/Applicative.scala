@@ -159,12 +159,12 @@ object Applicative {
     if (name != "") Success(name)
     else Failure("Name cannot be empty")
 
-  def validBirthdate(birthdate: String): Validation[String, Date] = Try(
-    Date.apply(birthdate)
-  ) match
-    case scala.util.Failure(_) =>
-      Failure("The specified birth date string cannot be available format")
-    case scala.util.Success(v) => Success(v)
+  def validBirthdate(birthdate: String): Validation[String, Date] = try {
+    import java.text._
+    Success((new SimpleDateFormat("yyyy-MM-dd")).parse(birthdate))
+  } catch {
+    Failure("Birthdate must be in the form yyyy-MM-dd")
+  }
 
   def validPhone(phoneNumber: String): Validation[String, String] =
     val numberPattern: Regex = "[0-9]{3,4}-?[0-9]{3,4}-?[0-9]{3,4}-?".r
