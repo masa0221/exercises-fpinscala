@@ -159,22 +159,28 @@ object Applicative {
     if (name != "") Success(name)
     else Failure("Name cannot be empty")
 
-  def validBirthdate(birthdate: String): Validation[String, Date] = try {
-    import java.text._
-    Success((new SimpleDateFormat("yyyy-MM-dd")).parse(birthdate))
-  } catch {
-    Failure("Birthdate must be in the form yyyy-MM-dd")
-  }
+  def validBirthdate(birthdate: String): Validation[String, Date] = Try(
+    (new java.text.SimpleDateFormat("yyyy-MM-dd")).parse(birthdate)
+  ) match
+    case scala.util.Success(v) => Success(v)
+    case scala.util.Failure(_) =>
+      Failure("Birthdate must be in the form yyyy-MM-dd")
 
   def validPhone(phoneNumber: String): Validation[String, String] =
     val numberPattern: Regex = "[0-9]{3,4}-?[0-9]{3,4}-?[0-9]{3,4}-?".r
     if (numberPattern.matches(phoneNumber)) Success(phoneNumber)
     else Failure("The specified phone number cannot be available format")
 
-  // TODO: to implement
   def validWebForm(
       name: String,
       birthdate: String,
       phone: String
-  ): Validation[String, WebForm] = ???
+  ): Validation[String, WebForm] =
+    validationApplicative.map3(
+      validName(name),
+      validBirthdate(birthdate),
+      validPhone(phone)
+    )(
+      WebForm(_, _, _)
+    )
 }
