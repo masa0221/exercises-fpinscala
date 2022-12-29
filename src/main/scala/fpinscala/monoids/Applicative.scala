@@ -183,4 +183,15 @@ object Applicative {
     )(
       WebForm(_, _, _)
     )
+
+  val oF: Applicative[Option] = ???
+  case class Employee(name: String, id: Int)
+  case class Pay(rate: Double, hoursPerYear: Double)
+
+  def format(e: Option[Employee], pay: Option[Pay]): Option[String] = ???
+
+  val employee: Option[Employee] = ???
+  val pay: Option[Pay] = ???
+
+  format(employee, pay)
 }
