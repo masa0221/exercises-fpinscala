@@ -188,7 +188,10 @@ object Applicative {
   case class Employee(name: String, id: Int)
   case class Pay(rate: Double, hoursPerYear: Double)
 
-  def format(e: Option[Employee], pay: Option[Pay]): Option[String] = ???
+  def format(e: Option[Employee], pay: Option[Pay]): Option[String] =
+    oF.map2(e, pay) { (e, pay) =>
+      s"${e.name} makes ${pay.rate * pay.hoursPerYear}"
+    }
 
   val employee: Option[Employee] = ???
   val pay: Option[Pay] = ???
