@@ -7,6 +7,8 @@ import scala.util.Try
 import scala.util.matching.Regex
 
 trait Applicative[F[_]] extends Functor[F]:
+  self =>
+
   // プリミティブコンビネータ
   def apply[A, B](fab: F[A => B])(fa: F[A]): F[B]
   def unit[A](a: => A): F[A]
@@ -38,6 +40,11 @@ trait Applicative[F[_]] extends Functor[F]:
 
   def product[A, B](fa: F[A], fb: F[B]): F[(A, B)] =
     map2(fa, fb)((_, _))
+
+  def product[G[_]](G: Applicative[G]): Applicative[[x] =>> (F[x], G[x])] = new:
+    def unit[A](a: => A) = (self.unit(a), G.unit(a))
+    override def apply[A, B](fs: (F[A => B], G[A => B]))(p: (F[A], G[A])) =
+      (self.apply(fs._1)(p._1), G.apply(fs._2)(p._2))
 
 // TODO: 動くようにする
 // object Applicative:
