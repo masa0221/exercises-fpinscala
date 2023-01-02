@@ -47,6 +47,13 @@ trait Applicative[F[_]] extends Functor[F]:
       (self.apply(fs._1)(p._1), G.apply(fs._2)(p._2))
 
 // TODO: 動くようにする
+//   def compose[G[_]](G: Applicative[G]): Applicative[[X] =>> F[G[X]]] = new:
+//     def unit[A](a: => A) = self.unit(G.unit(a))
+//     extension [A](fga: F[G[A]])
+//       override def map2[B, C](fgb: F[G[B]])(f: (A, B) => C) =
+//         self.map2(fga, fgb)(G.map2(_, _)(f))
+
+// TODO: 動くようにする
 // object Applicative:
 //   // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/applicative/Applicative.scala#L204-L209
 //   given eitherMonad[E]: Monad[Either[E, _]] with
