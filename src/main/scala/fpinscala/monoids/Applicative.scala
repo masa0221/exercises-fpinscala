@@ -46,12 +46,11 @@ trait Applicative[F[_]] extends Functor[F]:
     override def apply[A, B](fs: (F[A => B], G[A => B]))(p: (F[A], G[A])) =
       (self.apply(fs._1)(p._1), G.apply(fs._2)(p._2))
 
-// TODO: 動くようにする
-//   def compose[G[_]](G: Applicative[G]): Applicative[[X] =>> F[G[X]]] = new:
-//     def unit[A](a: => A) = self.unit(G.unit(a))
-//     extension [A](fga: F[G[A]])
-//       override def map2[B, C](fgb: F[G[B]])(f: (A, B) => C) =
-//         self.map2(fga, fgb)(G.map2(_, _)(f))
+  def compose[G[_]](G: Applicative[G]): Applicative[[X] =>> F[G[X]]] = new:
+    def apply[A, B](fab: F[G[A => B]])(fa: F[G[A]]): F[G[B]] = ???
+    def unit[A](a: => A) = self.unit(G.unit(a))
+    override def map2[A, B, C](fga: F[G[A]], fgb: F[G[B]])(f: (A, B) => C) =
+      self.map2(fga, fgb)(G.map2(_, _)(f))
 
 // TODO: 動くようにする
 // object Applicative:
