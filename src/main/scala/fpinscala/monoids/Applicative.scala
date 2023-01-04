@@ -52,6 +52,8 @@ trait Applicative[F[_]] extends Functor[F]:
     override def map2[A, B, C](fga: F[G[A]], fgb: F[G[B]])(f: (A, B) => C) =
       self.map2(fga, fgb)(G.map2(_, _)(f))
 
+  def sequenceMap[K, V](ofa: Map[K, F[V]]): F[Map[K, V]] = ???
+
 // TODO: 動くようにする
 // object Applicative:
 //   // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/applicative/Applicative.scala#L204-L209
