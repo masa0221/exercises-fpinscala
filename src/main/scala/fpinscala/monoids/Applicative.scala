@@ -52,9 +52,10 @@ trait Applicative[F[_]] extends Functor[F]:
     override def map2[A, B, C](fga: F[G[A]], fgb: F[G[B]])(f: (A, B) => C) =
       self.map2(fga, fgb)(G.map2(_, _)(f))
 
-  def sequenceMap[K, V](ofa: Map[K, F[V]]): F[Map[K, V]] = ofa.foldLeft(unit(Map.empty[K, V])) {
-    case (acc, (k, fv)) => map2(acc, fv)((m, v) => m + (k -> v))
-  }
+  def sequenceMap[K, V](ofa: Map[K, F[V]]): F[Map[K, V]] =
+    ofa.foldLeft(unit(Map.empty[K, V])) { case (acc, (k, fv)) =>
+      map2(acc, fv)((m, v) => m + (k -> v))
+    }
 
 // TODO: 動くようにする
 // object Applicative:
@@ -220,3 +221,10 @@ object Applicative {
     oF.map(pay)(p => p.rate * p.hoursPerYear)
   )
 }
+
+// TODO: map?
+// trait Traverse[F[_]]:
+//   def traverse[G[_]: Applicative, A, B](fa: F[A])(f: A => G[B]): G[F[B]] =
+//     sequence(map(fa)(f))
+//   def sequence[G[_]: Applicative, A](fga: F[G[A]]): G[F[A]] =
+//     traverse(fga)(ga => ga)
