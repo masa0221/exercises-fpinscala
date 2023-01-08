@@ -223,8 +223,22 @@ object Applicative {
 }
 
 trait Traverse[F[_]]:
-  def traverse[G[_]: Applicative, A, B](fa: F[A])(f: A => G[B]): G[F[B]] =
-    sequence(map(fa)(f))
-  def sequence[G[_]: Applicative, A](fga: F[G[A]]): G[F[A]] =
-    traverse(fga)(ga => ga)
-  def map[A, B](fa: F[A])(f: A => B): F[B] = ???
+  extension [A](fa: F[A])
+    def traverse[G[_]: Applicative, B](f: A => G[B]): G[F[B]] =
+      fa.map(f).sequence
+
+  extension [G[_]: Applicative, A](fga: F[G[A]])
+    def sequence: G[F[A]] =
+      fga.traverse(ga => ga)
+
+  extension [A](fa: F[A])
+    def map[B](f: A => B): F[B] =
+      ???
+
+case class Tree[+A](head: A, tail: List[Tree[A]])
+
+object Traverse:
+  given listTraverse: Traverse[List] with
+    extension [A](as: List[A])
+      override def traverse[G[_]: Applicative, B](f: A => G[B]): G[List[B]] =
+        ???
