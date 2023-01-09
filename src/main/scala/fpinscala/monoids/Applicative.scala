@@ -241,4 +241,9 @@ object Traverse:
   given listTraverse: Traverse[List] with
     extension [A](as: List[A])
       override def traverse[G[_]: Applicative, B](f: A => G[B]): G[List[B]] =
-        ???
+        // メソッドの(implicit g: Applicative[G])と同じ意味
+        val g = summon[Applicative[G]]
+        as.foldRight(g.unit(List.empty[B]))((a, acc) =>
+          g.map2(f(a), acc)(_ :: _)
+        )
+// as.foldRight(unit(List[B]()))((a, acc) => map2(f(a), acc)(_ :: _))
