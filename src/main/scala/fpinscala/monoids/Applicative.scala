@@ -246,4 +246,12 @@ object Traverse:
         as.foldRight(g.unit(List.empty[B]))((a, acc) =>
           g.map2(f(a), acc)(_ :: _)
         )
-// as.foldRight(unit(List[B]()))((a, acc) => map2(f(a), acc)(_ :: _))
+
+  given optionTraverse: Traverse[Option] with
+    extention [A](ao: Option[A])
+      override def traverse[G[_]: Applicative, B](f: A => G[B]): G[Option[B]] =
+        val g = summon[Applicative[G]]
+        ao match
+          case Some(a) => g.map(f(a))(Some(_))
+          case None => g.unit(None)
+        
