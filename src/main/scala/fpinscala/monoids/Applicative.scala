@@ -248,10 +248,9 @@ object Traverse:
         )
 
   given optionTraverse: Traverse[Option] with
-    extention [A](ao: Option[A])
+    extension [A](ao: Option[A])
       override def traverse[G[_]: Applicative, B](f: A => G[B]): G[Option[B]] =
         val g = summon[Applicative[G]]
         ao match
           case Some(a) => g.map(f(a))(Some(_))
-          case None => g.unit(None)
-        
+          case None    => g.unit(None)
