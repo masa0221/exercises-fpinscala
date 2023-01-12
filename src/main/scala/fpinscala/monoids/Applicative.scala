@@ -254,3 +254,7 @@ object Traverse:
         ao match
           case Some(a) => g.map(f(a))(Some(_))
           case None    => g.unit(None)
+
+  given treeTraverse: Traverse[Tree] with
+    extension [A](treea: Tree[A])
+      override def traverse[G[_]: Applicative, B](f: A => G[B]): G[Tree[B]] = ???
