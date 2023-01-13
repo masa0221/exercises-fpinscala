@@ -255,6 +255,8 @@ object Traverse:
           case Some(a) => g.map(f(a))(Some(_))
           case None    => g.unit(None)
 
-  given treeTraverse: Traverse[Tree] with
+  given treeTraverse: Traverse[Tree] = new:
     extension [A](treea: Tree[A])
-      override def traverse[G[_]: Applicative, B](f: A => G[B]): G[Tree[B]] = ???
+      override def traverse[G[_]: Applicative, B](f: A => G[B]): G[Tree[B]] =
+        val g = summon[Applicative[G]]
+        g.map2(f(treea.head), treea.tail.traverse(a => a.traverse(f)))(Tree(_, _))
