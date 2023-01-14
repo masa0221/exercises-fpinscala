@@ -223,6 +223,14 @@ object Applicative {
 }
 
 trait Traverse[F[_]]:
+  type Id[A] = A
+
+  val idMonad = new Monad[Id]:
+    override def apply[A, B](fab: Id[A => B])(fa: Id[A]): Id[B] =
+      map2(fab, fa)((ab, a) => ab(a))
+    def unit[A](a: => A) = a
+    override def flatMap[A, B](a: A)(f: A => B): B = f(a)
+
   extension [A](fa: F[A])
     def traverse[G[_]: Applicative, B](f: A => G[B]): G[F[B]] =
       fa.map(f).sequence
@@ -233,7 +241,7 @@ trait Traverse[F[_]]:
 
   extension [A](fa: F[A])
     def map[B](f: A => B): F[B] =
-      fa.map(f)
+      fa.traverse[Id, B](f)(idMonad)
 
 case class Tree[+A](head: A, tail: List[Tree[A]])
 
