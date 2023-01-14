@@ -233,7 +233,7 @@ trait Traverse[F[_]]:
 
   extension [A](fa: F[A])
     def map[B](f: A => B): F[B] =
-      ???
+      fa.map(f)
 
 case class Tree[+A](head: A, tail: List[Tree[A]])
 
@@ -259,4 +259,6 @@ object Traverse:
     extension [A](treea: Tree[A])
       override def traverse[G[_]: Applicative, B](f: A => G[B]): G[Tree[B]] =
         val g = summon[Applicative[G]]
-        g.map2(f(treea.head), treea.tail.traverse(a => a.traverse(f)))(Tree(_, _))
+        g.map2(f(treea.head), treea.tail.traverse(a => a.traverse(f)))(
+          Tree(_, _)
+        )
