@@ -66,6 +66,9 @@ trait Applicative[F[_]] extends Functor[F]:
 //       override def flatMap[B](f: A => Either[E, B]) = eea match
 //         case Right(a) => f(a)
 //         case Left(b)  => Left(b)
+//   given monoidApplicative[M](using m: Monoid[M]): Applicative[Const[M, _]] with
+//     def unit[A](a: => A): M = m.empty
+//     override def apply[A, B](m1: M)(m2: M): M = m.combine(m1, m2)
 
 // これによって全てのモナドがアプリカティブファンクタであることがわかる
 trait Monad[F[_]] extends Applicative[F]:
