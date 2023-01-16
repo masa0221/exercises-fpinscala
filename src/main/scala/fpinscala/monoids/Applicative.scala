@@ -246,6 +246,11 @@ trait Traverse[F[_]]:
     def map[B](f: A => B): F[B] =
       fa.traverse[Id, B](f)(idMonad)
 
+  // TODO: 動くように
+  // https://github.com/fpinscala/fpinscala/blob/first-edition/answers/src/main/scala/fpinscala/applicative/Applicative.scala#L188
+  // def traverseS[S, A, B](fa: F[A])(f: A => State[S, B]): State[S, F[B]] =
+  //   traverse[({type f[x] = State[S, x]})#f, A, B](fa)(f)(Monad.stateMonad)
+
 case class Tree[+A](head: A, tail: List[Tree[A]])
 
 object Traverse:
