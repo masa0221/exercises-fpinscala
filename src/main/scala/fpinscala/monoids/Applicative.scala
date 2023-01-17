@@ -5,6 +5,7 @@ import monads.Functor
 import java.util.Date
 import scala.util.Try
 import scala.util.matching.Regex
+// import fpinscala.answers.State
 
 trait Applicative[F[_]] extends Functor[F]:
   self =>
@@ -245,6 +246,15 @@ trait Traverse[F[_]]:
   extension [A](fa: F[A])
     def map[B](f: A => B): F[B] =
       fa.traverse[Id, B](f)(idMonad)
+
+    // TODO: 動くように
+    // def zipWithIndex_ : F[(A, Int)] =
+    //   fa.traverse(a => 
+    //       for
+    //         i <- State.get[Int]
+    //         _ <- State.set(i + 1)
+    //       yield (a, i)
+    //     ).run(0)(0)
 
   // TODO: 動くように
   // https://github.com/fpinscala/fpinscala/blob/first-edition/answers/src/main/scala/fpinscala/applicative/Applicative.scala#L188
