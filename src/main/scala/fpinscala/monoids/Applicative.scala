@@ -260,6 +260,13 @@ trait Traverse[F[_]]:
   // https://github.com/fpinscala/fpinscala/blob/first-edition/answers/src/main/scala/fpinscala/applicative/Applicative.scala#L188
   // def traverseS[S, A, B](fa: F[A])(f: A => State[S, B]): State[S, F[B]] =
   //   traverse[({type f[x] = State[S, x]})#f, A, B](fa)(f)(Monad.stateMonad)
+  //
+  // https://github.com/fpinscala/fpinscala/blob/first-edition/answers/src/main/scala/fpinscala/applicative/Applicative.scala#L197-L202
+  // def toList_[A](fa: F[A]): List[A] =
+  //   traverseS(fa)((a: A) => (for {
+  //     as <- get[List[A]]
+  //     _  <- set(a :: as)
+  //   } yield ())).run(Nil)._2.reverse
 
 case class Tree[+A](head: A, tail: List[Tree[A]])
 
