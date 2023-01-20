@@ -1,7 +1,14 @@
 package fpinscala.iomonads
 
 case class Player(name: String, score: Int)
-trait IO { def run: Unit }
+trait IO:
+  self =>
+  def run: Unit
+  def ++(io: IO): IO = new:
+    def run = { self.run; io.run }
+
+object IO:
+  def empty: IO = new IO { def run = () }
 
 def winner(p1: Player, p2: Player): Option[Player] =
   if (p1.score > p2.score) Some(p1)
