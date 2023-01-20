@@ -18,5 +18,7 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+    - name: Check fmt
+      run: sbt scalafmtCheckAll
     - name: Run tests
       run: sbt test
