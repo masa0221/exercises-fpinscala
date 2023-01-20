@@ -230,6 +230,8 @@ class MonoidTest extends AnyFreeSpecLike with Matchers:
       }
     }
     "bag" - {
-      Monoid.bag(Vector("a", "rose", "is", "a", "rose")) should equal(Map("a" -> 2, "rose" -> 2, "is" -> 1))
+      Monoid.bag(Vector("a", "rose", "is", "a", "rose")) should equal(
+        Map("a" -> 2, "rose" -> 2, "is" -> 1)
+      )
     }
   }
