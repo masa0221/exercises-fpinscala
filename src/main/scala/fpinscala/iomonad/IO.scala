@@ -24,3 +24,12 @@ def PrintLine(msg: String): IO =
 
 def contest(p1: Player, p2: Player): IO =
   PrintLine(winnerMsg(winner(p1, p2)))
+
+def fahrrenheitToCelsius(f: Double): Double =
+  (f - 32) * 5.0 / 9.0
+
+def converter: Unit = {
+  println("Enter a temperature in degrees Fahrenheit: ")
+  val d = io.StdIn.readLine().toDouble
+  println(fahrrenheitToCelsius(d))
+}
