@@ -30,8 +30,9 @@ def winnerMsg(p: Option[Player]): String = p map { case Player(name, _) =>
   s"$name is the winner!"
 } getOrElse "It's a draw."
 
-// def PrintLine(msg: String): IO =
-//   new IO { def run = println(msg) }
+def ReadLine: IO[String] = IO { io.StdIn.readLine() }
+
+def PrintLine(msg: String): IO[Unit] = IO { println(msg) }
 
 // def contest(p1: Player, p2: Player): IO =
 //   PrintLine(winnerMsg(winner(p1, p2)))
@@ -39,8 +40,8 @@ def winnerMsg(p: Option[Player]): String = p map { case Player(name, _) =>
 def fahrrenheitToCelsius(f: Double): Double =
   (f - 32) * 5.0 / 9.0
 
-// def converter: Unit = {
-//   println("Enter a temperature in degrees Fahrenheit: ")
-//   val d = io.StdIn.readLine().toDouble
-//   println(fahrrenheitToCelsius(d))
-// }
+def converter: Unit = for {
+  _ <- PrintLine("Enter a temperature in degrees Fahrenheit: ")
+  d <- ReadLine.map(_.toDouble)
+  _ <- PrintLine(fahrrenheitToCelsius(d).toString)
+} yield ()
