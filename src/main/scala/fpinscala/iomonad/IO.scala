@@ -45,3 +45,11 @@ def converter: Unit = for {
   d <- ReadLine.map(_.toDouble)
   _ <- PrintLine(fahrrenheitToCelsius(d).toString)
 } yield ()
+
+def factorial(n: Int): IO[Int] = ???
+val factorialREPL: IO[Unit] = ???
+
+def forever[A, B](a: F[A]): F[B] = ???
+def foldM[A, B](l: Stream[A])(z: B)(f: (B, A) => F[B]): F[B] = ???
+def foldM_[A, B](l: Stream[A])(z: B)(f: (B, A) => F[B]): F[Unit] = ???
+def foreachM[A](l: Stream[A])(f: A => F[Unit]): F[Unit] = ???
