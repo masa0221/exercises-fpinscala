@@ -46,7 +46,12 @@ def converter: Unit = for {
   _ <- PrintLine(fahrrenheitToCelsius(d).toString)
 } yield ()
 
-def factorial(n: Int): IO[Int] = ???
+def factorial(n: Int): IO[Int] = for {
+  acc <- ref(1)
+  _ <- foreachM(1 to n toStream)(i => acc.modify(_ * i).skip)
+  result <- acc.get
+} yield result
+
 val factorialREPL: IO[Unit] = ???
 
 def forever[A, B](a: F[A]): F[B] = ???
