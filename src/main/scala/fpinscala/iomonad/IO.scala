@@ -52,8 +52,20 @@ def factorial(n: Int): IO[Int] = for {
   result <- acc.get
 } yield result
 
-val factorialREPL: IO[Unit] = ???
+val factorialREPL: IO[Unit] = sequence_(
+  IO { println(helpstring) },
+  doWhile { IO { readLine } } { line =>
+    val ok = line != "q"
+    when(ok) {
+      for {
+        n <- factorial(line.toInt)
+        _ <- IO { println("factorial: " + n) }
+      } yield ()
+    }
+  }
+)
 
+// def doWhile
 def forever[A, B](a: F[A]): F[B] = ???
 def foldM[A, B](l: Stream[A])(z: B)(f: (B, A) => F[B]): F[B] = ???
 def foldM_[A, B](l: Stream[A])(z: B)(f: (B, A) => F[B]): F[Unit] = ???
