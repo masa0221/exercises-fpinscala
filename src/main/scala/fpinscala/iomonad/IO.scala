@@ -65,7 +65,7 @@ val factorialREPL: IO[Unit] = sequence_(
   }
 )
 
-// def doWhile
+def doWhile[A](a: F[A])(cond: A => F[Boolean]): F[Unit] = ???
 def forever[A, B](a: F[A]): F[B] = ???
 def foldM[A, B](l: Stream[A])(z: B)(f: (B, A) => F[B]): F[B] = ???
 def foldM_[A, B](l: Stream[A])(z: B)(f: (B, A) => F[B]): F[Unit] = ???
