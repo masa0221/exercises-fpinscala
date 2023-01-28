@@ -71,7 +71,11 @@ def doWhile[A](a: F[A])(cond: A => F[Boolean]): F[Unit] = for {
   _ <- if (ok) doWhile(a)(cond) else unit(()) // unit?どこの?
 }
 
-def forever[A, B](a: F[A]): F[B] = ???
+def forever[A, B](a: F[A]): F[B] = {
+  lazy val t: F[B] = forever(a)
+  a flatMap (_ => t)
+}
+
 def foldM[A, B](l: Stream[A])(z: B)(f: (B, A) => F[B]): F[B] = ???
 def foldM_[A, B](l: Stream[A])(z: B)(f: (B, A) => F[B]): F[Unit] = ???
 def foreachM[A](l: Stream[A])(f: A => F[Unit]): F[Unit] = ???
