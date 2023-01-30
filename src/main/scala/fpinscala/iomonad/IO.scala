@@ -76,6 +76,10 @@ def forever[A, B](a: F[A]): F[B] = {
   a flatMap (_ => t)
 }
 
-def foldM[A, B](l: Stream[A])(z: B)(f: (B, A) => F[B]): F[B] = ???
+def foldM[A, B](l: Stream[A])(z: B)(f: (B, A) => F[B]): F[B] = l match
+  case h #:: t => f(z,h) flatMap(z2 => foldM(t)(z2)(f))
+  case _ => unit(z)
+
+
 def foldM_[A, B](l: Stream[A])(z: B)(f: (B, A) => F[B]): F[Unit] = ???
 def foreachM[A](l: Stream[A])(f: A => F[Unit]): F[Unit] = ???
