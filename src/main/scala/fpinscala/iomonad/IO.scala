@@ -83,4 +83,5 @@ def foldM[A, B](l: Stream[A])(z: B)(f: (B, A) => F[B]): F[B] = l match
 def foldM_[A, B](l: Stream[A])(z: B)(f: (B, A) => F[B]): F[Unit] = 
   skip { foldM(l)(z)(f) }
 
-def foreachM[A](l: Stream[A])(f: A => F[Unit]): F[Unit] = ???
+def foreachM[A](l: Stream[A])(f: A => F[Unit]): F[Unit] = 
+  foldM_(l)(())((u,a) => skip(f(a)))
