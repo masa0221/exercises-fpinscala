@@ -1,25 +1,32 @@
 package fpinscala.iomonads
 
 import fpinscala.iomonads.Monad
+import scala.language.postfixOps
 
 case class Player(name: String, score: Int)
-sealed trait IO[A]:
-  self =>
+sealed trait IO[A] { self =>
   def run: A
-  def map[B](f: A => B): IO[B] = new IO[B]:
-    def run = f(self.run)
-  def flatMap[B](f: A => IO[B]): IO[B] = new IO[B]:
-    def run = f(self.run).run
+  def map[B](f: A => B): IO[B] =
+    new IO[B] { def run = f(self.run) }
+  def flatMap[B](f: A => IO[B]): IO[B] =
+    new IO[B] { def run = f(self.run).run }
+}
 
 // def ++(io: IO): IO = new:
 //   def run = { self.run; io.run }
 
-object IO extends Monad[IO]:
-  // def empty: IO = new IO { def run = () }
-  def unit[A](a: => A): IO[A] = new IO[A]:
-    def run = a
+object IO extends Monad[IO] {
+  def unit[A](a: => A): IO[A] = new IO[A] { def run = a }
   def flatMap[A, B](fa: IO[A])(f: A => IO[B]) = fa flatMap f
-  def apply[A](a: => A): IO[A] = unit(a)
+  def apply[A](a: => A): IO[A] = unit(a) // syntax for IO { .. }
+
+  def ref[A](a: A): IO[IORef[A]] = IO { new IORef(a) }
+  sealed class IORef[A](var value: A) {
+    def set(a: A): IO[A] = IO { value = a; a }
+    def get: IO[A] = IO { value }
+    def modify(f: A => A): IO[A] = get flatMap (a => set(f(a)))
+  }
+}
 
 def winner(p1: Player, p2: Player): Option[Player] =
   if (p1.score > p2.score) Some(p1)
@@ -47,20 +54,21 @@ def converter: Unit = for {
 } yield ()
 
 def factorial(n: Int): IO[Int] = for {
-  acc <- ref(1)
-  _ <- foreachM(1 to n toStream)(i => acc.modify(_ * i).skip)
+  acc <- IO.ref(1)
+  // IO[Int]型はMonadのskipを使えない?
+  _ <- IO.foreachM(1 to n toStream)(i => acc.modify(_ * i).skip)
   result <- acc.get
 } yield result
 
-val factorialREPL: IO[Unit] = sequence_(
-  IO { println(helpstring) },
-  doWhile { IO { readLine } } { line =>
-    val ok = line != "q"
-    when(ok) {
-      for {
-        n <- factorial(line.toInt)
-        _ <- IO { println("factorial: " + n) }
-      } yield ()
-    }
-  }
-)
+// val factorialREPL: IO[Unit] = sequence_(
+//   IO { println(helpstring) },
+//   doWhile { IO { readLine } } { line =>
+//     val ok = line != "q"
+//     when(ok) {
+//       for {
+//         n <- factorial(line.toInt)
+//         _ <- IO { println("factorial: " + n) }
+//       } yield ()
+//     }
+//   }
+// )
