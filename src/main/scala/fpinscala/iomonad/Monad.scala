@@ -15,7 +15,7 @@ trait Monad[F[_]] extends Functor[F] {
 
   def foldM[A, B](l: Stream[A])(z: B)(f: (B, A) => F[B]): F[B] =
     l match {
-      case h #:: t => f(z, h) flatMap (z2 => foldM(t)(z2)(f))
+      case h #:: t => flatMap(f(z, h))(z2 => foldM(t)(z2)(f))
       case _       => unit(z)
     }
 
