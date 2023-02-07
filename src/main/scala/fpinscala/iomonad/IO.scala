@@ -56,7 +56,8 @@ def converter: Unit = for {
 def factorial(n: Int): IO[Int] = for {
   acc <- IO.ref(1)
   // IO[Int]型はMonadのskipを使えない?
-  _ <- IO.foreachM(1 to n toStream)(i => acc.modify(_ * i).skip)
+  // acc.modify(_ * i).skip の書き方はダメなのか？
+  _ <- IO.foreachM(1 to n toStream)(i => IO.skip(acc.modify(_ * i)))
   result <- acc.get
 } yield result
 
