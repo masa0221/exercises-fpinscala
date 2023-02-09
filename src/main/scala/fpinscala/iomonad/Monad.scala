@@ -26,4 +26,10 @@ trait Monad[F[_]] extends Functor[F] {
     foldM_(l)(())((u, a) => skip(f(a)))
 
   def sequence_[A](fs: Stream[F[A]]): F[Unit] = foreachM(fs)(skip)
+
+  def doWhile[A](a: F[A])(cond: A => F[Boolean]): F[Unit] = for {
+    a1 <- a // value flatMap is not a member of F[A]
+    ok <- cond(a1)
+    _ <- if (ok) doWhile(a)(cond) else unit(())
+  } yield ()
 }
