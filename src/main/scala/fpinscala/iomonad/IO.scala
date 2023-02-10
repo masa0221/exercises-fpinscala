@@ -2,6 +2,7 @@ package fpinscala.iomonads
 
 import fpinscala.iomonads.Monad
 import scala.language.postfixOps
+import io.StdIn.readLine
 
 case class Player(name: String, score: Int)
 sealed trait IO[A] { self =>
@@ -37,7 +38,7 @@ def winnerMsg(p: Option[Player]): String = p map { case Player(name, _) =>
   s"$name is the winner!"
 } getOrElse "It's a draw."
 
-def ReadLine: IO[String] = IO { io.StdIn.readLine() }
+def ReadLine: IO[String] = IO { readLine() }
 
 def PrintLine(msg: String): IO[Unit] = IO { println(msg) }
 
@@ -61,15 +62,22 @@ def factorial(n: Int): IO[Int] = for {
   result <- acc.get
 } yield result
 
-// val factorialREPL: IO[Unit] = sequence_(
-//   IO { println(helpstring) },
-//   doWhile { IO { readLine } } { line =>
-//     val ok = line != "q"
-//     when(ok) {
-//       for {
-//         n <- factorial(line.toInt)
-//         _ <- IO { println("factorial: " + n) }
-//       } yield ()
-//     }
-//   }
-// )
+val helpstring = """
+| The Amazing Factorial REPL, v2.0
+| q - quit
+| <number> - compute the factorial of the given number
+| <anything else> - bomb with horrible error
+""".trim.stripMargin
+
+val factorialREPL: IO[Unit] = IO.sequence_(
+  IO { println(helpstring) },
+  IO.doWhile { IO { readLine } } { line =>
+    val ok = line != "q"
+    IO.when(ok) {
+      for {
+        n <- factorial(line.toInt)
+        _ <- IO { println("factorial: " + n) }
+      } yield ()
+    }
+  }
+)
