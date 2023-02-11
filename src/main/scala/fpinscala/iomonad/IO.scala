@@ -6,12 +6,15 @@ import io.StdIn.readLine
 
 case class Player(name: String, score: Int)
 sealed trait IO[A] { self =>
-  def run: A
   def map[B](f: A => B): IO[B] =
-    new IO[B] { def run = f(self.run) }
+    flatMap(f andThen (Return(_)))
   def flatMap[B](f: A => IO[B]): IO[B] =
-    new IO[B] { def run = f(self.run).run }
+    FlatMap(this, f)
 }
+
+case class Return[A](a: A) extends IO[A]
+case class Suspend[A](resume: () => A) extends IO[A]
+case class FlatMap[A, B](sub: IO[A], k: A => IO[B]) extends IO[B]
 
 // def ++(io: IO): IO = new:
 //   def run = { self.run; io.run }
