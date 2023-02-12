@@ -43,7 +43,9 @@ def winnerMsg(p: Option[Player]): String = p map { case Player(name, _) =>
 
 def ReadLine: IO[String] = IO { readLine() }
 
-def PrintLine(msg: String): IO[Unit] = IO { println(msg) }
+// def PrintLine(msg: String): IO[Unit] = IO { println(msg) }
+def PrintLine(msg: String): IO[Unit] = Suspend(() => println(msg))
+val p = IO.forever(PrintLine("Still going..."))
 
 // def contest(p1: Player, p2: Player): IO =
 //   PrintLine(winnerMsg(winner(p1, p2)))
