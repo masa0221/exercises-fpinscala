@@ -32,6 +32,15 @@ object IO extends Monad[IO] {
   }
 }
 
+@annotation.tailrec def run[A](io: IO[A]): A = io match
+  case Return(a) => a
+  case Suspend(r) => r()
+  case FlatMap(x, f) => x match
+    case Return(a) => run(f(a))
+    case Suspend(r) => run(f(r()))
+    case FlatMap(y, g) => run(y flatMap (a => g(a) flatMap f))
+
+
 def winner(p1: Player, p2: Player): Option[Player] =
   if (p1.score > p2.score) Some(p1)
   else if (p1.score < p2.score) Some(p2)
