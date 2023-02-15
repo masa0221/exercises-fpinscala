@@ -108,4 +108,17 @@ object IOSample2 {
   case class Suspend[A](resume: () => A) extends TailRec[A]
   case class FlatMap[A, B](sub: TailRec[A], k: A => TailRec[B])
       extends TailRec[B]
+
+}
+
+object IOSample3 {
+  import fpinscala.answers.parallelism.*
+
+  sealed trait Async[A]:
+    def flatMap[B](f: A => Async[B]): Async[B] = FlatMap(this, f)
+    def map[B](f: A => B): Async[B] = flatMap(f andThen (Return(_)))
+
+  case class Return[A](a: A) extends Async[A]
+  case class Suspend[A](resume: Par[A]) extends Async[A]
+  case class FlatMap[A, B](sub: Async[A], k: A => Async[B]) extends Async[B]
 }
