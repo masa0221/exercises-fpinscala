@@ -128,7 +128,7 @@ object IOSample3 {
       case Suspend(r) => r
       case FlatMap(x, f) =>
         x match
-          case Suspned(r) => Par.flatMap(r)(a => run(f(a)))
+          case Suspend(r) => Par.flatMap(r)(a => run(f(a)))
           case _          => sys.error("Impossible step eliminates these cases")
 
   case class Return[A](a: A) extends Async[A]
