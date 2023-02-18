@@ -114,24 +114,27 @@ object IOSample2 {
 object IOSample3 {
   import fpinscala.answers.parallelism.*
 
-  sealed trait Async[A]:
-    def flatMap[B](f: A => Async[B]): Async[B] = FlatMap(this, f)
-    def map[B](f: A => B): Async[B] = flatMap(f andThen (Return(_)))
+  type Async[A] = Free[Par, A]
 
-    def step[A](async: Async[A]): Async[A] = async match
-      case FlatMap(FlatMap(x, f), g) => step(x flatMap (a => f(a) flatMap g))
-      case FlatMap(Return(x), f)     => step(f(x))
-      case _                         => async
+  sealed trait Free[F[_], A]:
+    def flatMap[B](f: A => Free[F, B]): Free[F, B] = FlatMap(this, f)
+    def map[B](f: A => B): Free[F, B] = flatMap(f andThen (Return(_)))
 
-    def run[A](async: Async[A]): Par[A] = step(async) match
-      case Return(a)  => Par.unit(a)
-      case Suspend(r) => r
-      case FlatMap(x, f) =>
-        x match
-          case Suspend(r) => Par.flatMap(r)(a => run(f(a)))
-          case _          => sys.error("Impossible step eliminates these cases")
+  case class Return[F[_], A](a: A) extends Free[F, A]
+  case class Suspend[F[_], A](resume: F[A]) extends Free[F, A]
+  case class FlatMap[F[_], A, B](sub: Free[F, A], k: A => Free[F, B])
+      extends Free[F, B]
 
-  case class Return[A](a: A) extends Async[A]
-  case class Suspend[A](resume: Par[A]) extends Async[A]
-  case class FlatMap[A, B](sub: Async[A], k: A => Async[B]) extends Async[B]
+  def step[A](async: Async[A]): Async[A] = async match
+    case FlatMap(FlatMap(x, f), g) => step(x flatMap (a => f(a) flatMap g))
+    case FlatMap(Return(x), f)     => step(f(x))
+    case _                         => async
+
+  def run[A](async: Async[A]): Par[A] = step(async) match
+    case Return(a)  => Par.unit(a)
+    case Suspend(r) => r
+    case FlatMap(x, f) =>
+      x match
+        case Suspend(r) => Par.flatMap(r)(a => run(f(a)))
+        case _          => sys.error("Impossible step eliminates these cases")
 }
