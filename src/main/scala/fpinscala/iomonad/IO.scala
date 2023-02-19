@@ -125,6 +125,12 @@ object IOSample3 {
   case class FlatMap[F[_], A, B](sub: Free[F, A], k: A => Free[F, B])
       extends Free[F, B]
 
+  def freeMonad[F[_]]: Monad[({ type f[a] = Free[F, a] })#f] =
+    new Monad[({ type f[a] = Free[F, a] })#f]:
+      def unit[A](a: => A): Free[F, A] = Return(a)
+      def flatMap[A, B](fa: Free[F, A])(f: A => Free[F, B]): Free[F, B] =
+        fa flatMap f
+
   def step[A](async: Async[A]): Async[A] = async match
     case FlatMap(FlatMap(x, f), g) => step(x flatMap (a => f(a) flatMap g))
     case FlatMap(Return(x), f)     => step(f(x))
