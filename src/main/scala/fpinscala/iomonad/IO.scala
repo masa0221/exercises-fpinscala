@@ -131,6 +131,8 @@ object IOSample3 {
       def flatMap[A, B](fa: Free[F, A])(f: A => Free[F, B]): Free[F, B] =
         fa flatMap f
 
+  def runTrampoline[A](a: Free[Function0, A]): A = ???
+
   def step[A](async: Async[A]): Async[A] = async match
     case FlatMap(FlatMap(x, f), g) => step(x flatMap (a => f(a) flatMap g))
     case FlatMap(Return(x), f)     => step(f(x))
