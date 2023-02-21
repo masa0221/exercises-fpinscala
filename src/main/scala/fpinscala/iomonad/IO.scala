@@ -131,7 +131,16 @@ object IOSample3 {
       def flatMap[A, B](fa: Free[F, A])(f: A => Free[F, B]): Free[F, B] =
         fa flatMap f
 
-  def runTrampoline[A](a: Free[Function0, A]): A = ???
+  @annotation.tailrec
+  def runTrampoline[A](a: Free[Function0, A]): A = a match
+    case Return(a)  => a
+    case Suspend(r) => r()
+    case FlatMap(s, k) =>
+      s match
+        case Return(aa)  => runTrampoline(k(aa))
+        case Suspend(rr) => runTrampoline(k(rr()))
+        case FlatMap(ss, kk) =>
+          runTrampoline(ss flatMap { ss => kk(ss) flatMap k })
 
   def step[A](async: Async[A]): Async[A] = async match
     case FlatMap(FlatMap(x, f), g) => step(x flatMap (a => f(a) flatMap g))
