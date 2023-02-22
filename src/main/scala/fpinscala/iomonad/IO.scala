@@ -142,6 +142,8 @@ object IOSample3 {
         case FlatMap(ss, kk) =>
           runTrampoline(ss flatMap { ss => kk(ss) flatMap k })
 
+  def run[F[_], A](a: Free[F, A])(implicit F: Monad[F]): F[A] = ???
+
   def step[A](async: Async[A]): Async[A] = async match
     case FlatMap(FlatMap(x, f), g) => step(x flatMap (a => f(a) flatMap g))
     case FlatMap(Return(x), f)     => step(f(x))
