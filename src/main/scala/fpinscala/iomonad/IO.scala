@@ -142,7 +142,12 @@ object IOSample3 {
         case FlatMap(ss, kk) =>
           runTrampoline(ss flatMap { ss => kk(ss) flatMap k })
 
-  def run[F[_], A](a: Free[F, A])(implicit F: Monad[F]): F[A] = ???
+  // https://github.com/fpinscala/fpinscala/blob/first-edition/answers/src/main/scala/fpinscala/iomonad/IO.scala#L397-L402
+  def run[F[_], A](a: Free[F, A])(implicit F: Monad[F]): F[A] = step(a) match
+    case Return(a)              => F.unit(a)
+    case Suspend(r)             => r()
+    case FlatMap(Suspend(r), f) => F.flatMap(r)(a => run(f(a)))
+    case _ => sys.error("Impossible, since `step` eliminates these cases")
 
   def step[A](async: Async[A]): Async[A] = async match
     case FlatMap(FlatMap(x, f), g) => step(x flatMap (a => f(a) flatMap g))
