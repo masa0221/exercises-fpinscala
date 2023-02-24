@@ -143,22 +143,22 @@ object IOSample3 {
           runTrampoline(ss flatMap { ss => kk(ss) flatMap k })
 
   // https://github.com/fpinscala/fpinscala/blob/first-edition/answers/src/main/scala/fpinscala/iomonad/IO.scala#L397-L402
-  def run[F[_], A](a: Free[F, A])(implicit F: Monad[F]): F[A] = step(a) match
+  def run[F[_], A](fa: Free[F, A])(implicit F: Monad[F]): F[A] = step(fa) match
     case Return(a)              => F.unit(a)
-    case Suspend(r)             => r()
+    case Suspend(r)             => r
     case FlatMap(Suspend(r), f) => F.flatMap(r)(a => run(f(a)))
     case _ => sys.error("Impossible, since `step` eliminates these cases")
 
-  def step[A](async: Async[A]): Async[A] = async match
+  def step[F[_], A](async: Free[F, A]): Free[F, A] = async match
     case FlatMap(FlatMap(x, f), g) => step(x flatMap (a => f(a) flatMap g))
     case FlatMap(Return(x), f)     => step(f(x))
     case _                         => async
 
-  def run[A](async: Async[A]): Par[A] = step(async) match
-    case Return(a)  => Par.unit(a)
-    case Suspend(r) => r
-    case FlatMap(x, f) =>
-      x match
-        case Suspend(r) => Par.flatMap(r)(a => run(f(a)))
-        case _          => sys.error("Impossible step eliminates these cases")
+  // def run[A](async: Async[A]): Par[A] = step(async) match
+  //   case Return(a)  => Par.unit(a)
+  //   case Suspend(r) => r
+  //   case FlatMap(x, f) =>
+  //     x match
+  //       case Suspend(r) => Par.flatMap(r)(a => run(f(a)))
+  //       case _          => sys.error("Impossible step eliminates these cases")
 }
