@@ -186,4 +186,9 @@ object IOSample3 {
 
     def printLn(line: String): ConsoleIO[Unit] =
       Suspend(PrintLine(line))
+
+  val f1: Free[Console, Option[String]] = for {
+    _ <- Console.printLn("I can only intaract with the console.")
+    ln <- Console.readLn
+  } yield ln
 }
