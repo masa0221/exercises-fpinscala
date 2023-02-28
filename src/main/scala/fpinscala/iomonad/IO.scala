@@ -191,4 +191,14 @@ object IOSample3 {
     _ <- Console.printLn("I can only intaract with the console.")
     ln <- Console.readLn
   } yield ln
+
+  trait Translate[F[_], G[_]]:
+    def apply[A](f: F[A]): G[A]
+
+  type ~>[F[_], G[_]] = Translate[F, G]
+
+  val consoleToFuncion0 =
+    new (Console ~> Function0) { def apply[A](a: Console[A]) = a.toThunk }
+  val consoleToPar =
+    new (Console ~> Par) { def apply[A](a: Console[A]) = a.toPar }
 }
