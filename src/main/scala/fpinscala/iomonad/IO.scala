@@ -208,6 +208,6 @@ object IOSample3 {
     step(free) match
       case Return(a)              => G.unit(a)
       case Suspend(r)             => t(r)
-      case FlatMap(Suspned(r), f) => G.flatMap(t(r))(a => runFree(f(a))(t))
+      case FlatMap(Suspend(r), f) => G.flatMap(t(r))(a => runFree(f(a))(t))
       case _ => sys.error("Impossible; step eliminates these cases")
 }
