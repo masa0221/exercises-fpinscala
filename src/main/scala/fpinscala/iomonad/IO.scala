@@ -210,4 +210,20 @@ object IOSample3 {
       case Suspend(r)             => t(r)
       case FlatMap(Suspend(r), f) => G.flatMap(t(r))(a => runFree(f(a))(t))
       case _ => sys.error("Impossible; step eliminates these cases")
+
+  given Monad[Function0] with
+    def unit[A](a: => A) = () => a
+    def flatMap[A, B](a: Function0[A])(f: A => Function0[B]) = () => f(a())()
+
+  given Monad[Par] with
+    def unit[A](a: => A) = Par.unit(a)
+    def flatMap[A, B](a: Par[A])(f: A => Par[B]) = Par.fork {
+      Par.flatMap(a)(f)
+    }
+
+  def runConsoleFunction0[A](a: Free[Console, A]): () => A =
+    runFree[Console, Function0, A](a)(consoleToFuncion0)
+
+  def runConsolePar[A](a: Free[Console, A]): Par[A] =
+    runFree[Console, Par, A](a)(consoleToPar)
 }
