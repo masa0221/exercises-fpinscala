@@ -226,4 +226,8 @@ object IOSample3 {
 
   def runConsolePar[A](a: Free[Console, A]): Par[A] =
     runFree[Console, Par, A](a)(consoleToPar)
+
+  def translate[F[_], G[_], A](f: Free[F, A])(fg: F ~> G): Free[G, A] = ???
+
+  def runConsole[A](a: Free[Console, A]): A = ???
 }
