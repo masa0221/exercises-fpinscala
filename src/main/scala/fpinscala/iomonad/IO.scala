@@ -165,6 +165,7 @@ object IOSample3 {
   sealed trait Console[A]:
     def toPar: Par[A]
     def toThunk: () => A
+    def toReader: ConsoleReader[A]
 
   case object ReadLine extends Console[Option[String]]:
     def toPar = Par.lazyUnit(run)
@@ -186,6 +187,10 @@ object IOSample3 {
 
     def printLn(line: String): ConsoleIO[Unit] =
       Suspend(PrintLine(line))
+
+  val consoleToReader = new (Console ~> ConsoleReader) {
+    def apply[A](f: Console[A]): ConsoleReader[A] = f.toReader
+  }
 
   val f1: Free[Console, Option[String]] = for {
     _ <- Console.printLn("I can only intaract with the console.")
@@ -254,4 +259,7 @@ object IOSample3 {
       def flatMap[A, B](ra: ConsoleReader[A])(f: A => ConsoleReader[B]) =
         ra flatMap f
   }
+
+  def runConsoleReader[A](io: ConsoleIO[A]): ConsoleReader[A] =
+    runFree[Console, ConsoleReader, A](io)(consoleToReader)
 }
