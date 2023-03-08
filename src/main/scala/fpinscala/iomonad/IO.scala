@@ -3,6 +3,7 @@ package fpinscala.iomonads
 import fpinscala.iomonads.Monad
 import scala.language.postfixOps
 import io.StdIn.readLine
+import parallelism
 
 object IOSample1 {
   case class Player(name: String, score: Int)
@@ -188,6 +189,9 @@ object IOSample3 {
     def printLn(line: String): ConsoleIO[Unit] =
       Suspend(PrintLine(line))
 
+    def runConsoleReader[A](io: ConsoleIO[A]): ConsoleReader[A] =
+      runFree[Console, ConsoleReader, A](io)(consoleToReader)
+
   val consoleToReader = new (Console ~> ConsoleReader) {
     def apply[A](f: Console[A]): ConsoleReader[A] = f.toReader
   }
@@ -259,7 +263,4 @@ object IOSample3 {
       def flatMap[A, B](ra: ConsoleReader[A])(f: A => ConsoleReader[B]) =
         ra flatMap f
   }
-
-  def runConsoleReader[A](io: ConsoleIO[A]): ConsoleReader[A] =
-    runFree[Console, ConsoleReader, A](io)(consoleToReader)
 }
