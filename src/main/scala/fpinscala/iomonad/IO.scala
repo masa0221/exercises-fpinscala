@@ -3,7 +3,6 @@ package fpinscala.iomonads
 import fpinscala.iomonads.Monad
 import scala.language.postfixOps
 import io.StdIn.readLine
-import parallelism
 
 object IOSample1 {
   case class Player(name: String, score: Int)
@@ -171,6 +170,7 @@ object IOSample3 {
   case object ReadLine extends Console[Option[String]]:
     def toPar = Par.lazyUnit(run)
     def toThunk = () => run
+    def toReader = ConsoleReader { in => Some(in) }
 
     def run: Option[String] =
       try Some(readLine())
@@ -179,6 +179,7 @@ object IOSample3 {
   case class PrintLine(line: String) extends Console[Unit]:
     def toPar = Par.lazyUnit(println(line))
     def toThunk = () => println(line)
+    def toReader = ConsoleReader { s => () }
 
   object Console:
     type ConsoleIO[A] = Free[Console, A]
