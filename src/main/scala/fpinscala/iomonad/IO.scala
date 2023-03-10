@@ -166,11 +166,21 @@ object IOSample3 {
     def toPar: Par[A]
     def toThunk: () => A
     def toReader: ConsoleReader[A]
+    def toState: ConsoleState[A]
+
+  case class Buffers(in: List[String], out: Vector[String])
+
+  case class ConsoleState[A](run: Buffers => (A, Buffers))
 
   case object ReadLine extends Console[Option[String]]:
     def toPar = Par.lazyUnit(run)
     def toThunk = () => run
     def toReader = ConsoleReader { in => Some(in) }
+    def toState = ConsoleState { bufs =>
+      bufs.in match
+        case List() => (None, bufs)
+        case h :: t => (Some(h), bufs.copy(in = t))
+    }
 
     def run: Option[String] =
       try Some(readLine())
@@ -180,6 +190,7 @@ object IOSample3 {
     def toPar = Par.lazyUnit(println(line))
     def toThunk = () => println(line)
     def toReader = ConsoleReader { s => () }
+    def toState = ConsoleState { buf => ((), buf.copy(out = buf.out :+ line)) }
 
   object Console:
     type ConsoleIO[A] = Free[Console, A]
@@ -192,6 +203,9 @@ object IOSample3 {
 
     def runConsoleReader[A](io: ConsoleIO[A]): ConsoleReader[A] =
       runFree[Console, ConsoleReader, A](io)(consoleToReader)
+
+    def runConsoleState[A](io: ConsoleIO[A]): ConsoleState[A] =
+      runFree[Console, ConsoleState, A](io)(consoleToState)
 
   val consoleToReader = new (Console ~> ConsoleReader) {
     def apply[A](f: Console[A]): ConsoleReader[A] = f.toReader
@@ -230,6 +244,14 @@ object IOSample3 {
     def flatMap[A, B](a: Par[A])(f: A => Par[B]) = Par.fork {
       Par.flatMap(a)(f)
     }
+
+  given Monad[ConsoleState] with
+    def unit[A](a: => A) = ConsoleState(b => (a, b))
+    def flatMap[A, B](a: ConsoleState[A])(f: A => ConsoleState[B]) = a flatMap f
+
+  val consoleToState = new (Console ~> ConsoleState) {
+    def apply[A](a: Console[A]) = a.toState
+  }
 
   def runConsoleFunction0[A](a: Free[Console, A]): () => A =
     runFree[Console, Function0, A](a)(consoleToFuncion0)
