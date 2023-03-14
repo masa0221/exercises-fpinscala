@@ -70,4 +70,8 @@ object LocalEffects {
       var cell = a
     })
   }
+
+  trait RunnableST[A] {
+    def apply[S]: ST[S, A]
+  }
 }
