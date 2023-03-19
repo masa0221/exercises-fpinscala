@@ -106,6 +106,12 @@ object LocalEffects {
     def fill(xs: Map[Int, A]): ST[S, Unit] = xs.foldRight(ST[S, Unit](())) {
       case ((k, v), st) => st flatMap (_ => write(k, v))
     }
+
+    def fromList[S, A: Manifest](xs: List[A]): ST[S, STArray[S, A]] = ST(
+      new STArray[S, A] {
+        lazy val value = xs.toArray
+      }
+    )
   }
 
   object STArray {
