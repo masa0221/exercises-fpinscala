@@ -119,6 +119,15 @@ object LocalEffects {
       _ <- write(i, y)
       _ <- write(j, x)
     } yield ()
+
+    def partition[S](
+        arr: STArray[S, Int],
+        n: Int,
+        r: Int,
+        pivot: Int
+    ): ST[S, Int] = ???
+
+    def qs[S](a: STArray[S, Int], n: Int, r: Int): ST[S, Unit] = ???
   }
 
   object STArray {
