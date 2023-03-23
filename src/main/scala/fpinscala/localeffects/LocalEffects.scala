@@ -120,6 +120,9 @@ object LocalEffects {
       _ <- write(j, x)
     } yield ()
 
+  }
+
+  object Immutable {
     def partition[S](
         arr: STArray[S, Int],
         n: Int,
