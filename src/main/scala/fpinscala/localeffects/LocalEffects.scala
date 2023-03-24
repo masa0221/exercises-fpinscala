@@ -123,12 +123,34 @@ object LocalEffects {
   }
 
   object Immutable {
+    // https://github.com/fpinscala/fpinscala/blob/second-edition/src/main/scala/fpinscala/answers/localeffects/LocalEffects.scala#L109
     def partition[S](
         arr: STArray[S, Int],
         n: Int,
         r: Int,
         pivot: Int
-    ): ST[S, Int] = ???
+    ): ST[S, Int] =
+      for {
+        vp <- arr.read(pivot)
+        _ <- arr.swap(pivot, r)
+        j <- STRef(n)
+        _ <- (n until r).foldLeft(ST[S, Unit](()))((s, i) =>
+          for {
+            _ <- s
+            vi <- arr.read(i)
+            _ <-
+              if vi < vp then
+                for {
+                  vj <- j.read
+                  _ <- arr.swap(i, vj)
+                  _ <- j.write(vj + i)
+                } yield ()
+              else ST[S, Unit](())
+          } yield ()
+        )
+        x <- j.read
+        _ <- arr.swap(x, r)
+      } yield x
 
     def qs[S](a: STArray[S, Int], n: Int, r: Int): ST[S, Unit] = ???
   }
