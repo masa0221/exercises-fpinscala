@@ -152,7 +152,14 @@ object LocalEffects {
         _ <- arr.swap(x, r)
       } yield x
 
-    def qs[S](a: STArray[S, Int], n: Int, r: Int): ST[S, Unit] = ???
+    def qs[S](a: STArray[S, Int], n: Int, r: Int): ST[S, Unit] =
+      if n < r then
+        for
+          pi <- partition(a, n, r, n + (r + n) / 2)
+          _ <- qs(a, n, pi - 1)
+          _ <- qs(a, pi + 1, r)
+        yield ()
+      else ST[S, Unit](())
   }
 
   object STArray {
