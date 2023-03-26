@@ -160,6 +160,8 @@ object LocalEffects {
           _ <- qs(a, pi + 1, r)
         yield ()
       else ST[S, Unit](())
+
+    def quicksort(xs: List[Int]): List[Int] = ???
   }
 
   object STArray {
