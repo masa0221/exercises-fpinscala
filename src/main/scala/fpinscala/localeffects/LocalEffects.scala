@@ -186,3 +186,6 @@ object LocalEffects {
       })
   }
 }
+
+sealed trait STMap[S, K, V]
+object STMap
