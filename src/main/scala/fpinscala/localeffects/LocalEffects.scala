@@ -185,7 +185,9 @@ object LocalEffects {
         lazy val value = xs.toArray
       })
   }
-}
 
-sealed trait STMap[S, K, V]
-object STMap
+  sealed trait STMap[S, K, V]
+  object STMap:
+    def empty[S, K, V]: ST[S, STMap[S, K, V]] = ???
+    def fromMap[S, K, V](m: Map[K, V]): ST[S, STMap[S, K, V]] = ???
+}
