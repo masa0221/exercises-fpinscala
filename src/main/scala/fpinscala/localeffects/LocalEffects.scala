@@ -1,5 +1,7 @@
 package fpinscala.iomonads
 
+import scala.collection.mutable.HashMap
+
 object LocalEffects {
   def quicksort(xs: List[Int]): List[Int] = if (xs.isEmpty) xs
   else {
@@ -186,7 +188,14 @@ object LocalEffects {
       })
   }
 
-  sealed trait STMap[S, K, V]
+  sealed trait STMap[S, K, V]:
+    protected def table: HashMap[K, V]
+    def size(k: K): ST[S, Int]
+    def apply(k: K): ST[S, V] = ST(table(k))
+    def get(k: K): ST[S, Option[V]]
+    def +=(kv: (K, V)): ST[S, Unit]
+    def -=(k: K): ST[S, Unit]
+
   object STMap:
     def empty[S, K, V]: ST[S, STMap[S, K, V]] = ???
     def fromMap[S, K, V](m: Map[K, V]): ST[S, STMap[S, K, V]] = ???
