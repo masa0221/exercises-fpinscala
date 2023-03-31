@@ -190,7 +190,7 @@ object LocalEffects {
 
   sealed trait STMap[S, K, V]:
     protected def table: HashMap[K, V]
-    def size(k: K): ST[S, Int]
+    def size(k: K): ST[S, Int] = ST(table.size)
     def apply(k: K): ST[S, V] = ST(table(k))
     def get(k: K): ST[S, Option[V]]
     def +=(kv: (K, V)): ST[S, Unit]
