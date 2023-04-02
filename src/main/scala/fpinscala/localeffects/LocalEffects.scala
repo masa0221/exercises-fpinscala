@@ -192,9 +192,9 @@ object LocalEffects {
     protected def table: HashMap[K, V]
     def size(k: K): ST[S, Int] = ST(table.size)
     def apply(k: K): ST[S, V] = ST(table(k))
-    def get(k: K): ST[S, Option[V]]
-    def +=(kv: (K, V)): ST[S, Unit]
-    def -=(k: K): ST[S, Unit]
+    def get(k: K): ST[S, Option[V]] = ST(table.get(k))
+    def +=(kv: (K, V)): ST[S, Unit] = ST(table += kv)
+    def -=(k: K): ST[S, Unit] = ST(table -= k)
 
   object STMap:
     def empty[S, K, V]: ST[S, STMap[S, K, V]] = ???
