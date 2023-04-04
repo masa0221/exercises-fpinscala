@@ -197,6 +197,13 @@ object LocalEffects {
     def -=(k: K): ST[S, Unit] = ST(table -= k)
 
   object STMap:
-    def empty[S, K, V]: ST[S, STMap[S, K, V]] = ???
-    def fromMap[S, K, V](m: Map[K, V]): ST[S, STMap[S, K, V]] = ???
+    def empty[S, K, V]: ST[S, STMap[S, K, V]] =
+      ST(new STMap[S, K, V] {
+        val table = HashMap.empty[K, V]
+      })
+
+    def fromMap[S, K, V](m: Map[K, V]): ST[S, STMap[S, K, V]] =
+      ST(new STMap[S, K, V] {
+        val table = (HashMap.newBuilder ++= m).result()
+      })
 }
