@@ -9,7 +9,7 @@ object MyNonblocking:
   trait Future[A]:
     private[parallelism] def apply(k: A => Unit): Unit
 
-  opaque type MyPar[+A] = ExecutorService => Future[A]
+  opaque type MyPar[A] = ExecutorService => Future[A]
 
   object MyPar:
     def run[A](es: ExecutorService)(p: MyPar[A]): A =
