@@ -1,6 +1,6 @@
 import fpinscala.iomonads.IOSample1.IO
 
-object StreamingIO {
+object StreamingIO0 {
   def lineGt40k(filename: String): IO[Boolean] = IO {
     val src = io.Source.fromFile(filename)
     try {
@@ -20,15 +20,25 @@ object StreamingIO {
   }
 }
 
-sealed trait Process[I, O]
+object Process:
+  case class Emit[I, O](
+      head: O,
+      tail: Process[I, O] = Halt[I, O]()
+  ) extends Process[I, O]
 
-case class Emit[I, O](
-    head: O,
-    tail: Process[I, O] = Halt[I, O]()
-) extends Process[I, O]
+  case class Await[I, O](
+      recv: Option[I] => Process[I, O]
+  ) extends Process[I, O]
 
-case class Await[I, O](
-    recv: Option[I] => Process[I, O]
-) extends Process[I, O]
+  case class Halt[I, O]() extends Process[I, O]
 
-class Halt[I, O]() extends Process[I, O]
+sealed trait Process[I, O]:
+  import Process.*
+
+  def apply(s: Stream[I]): Stream[O] = this match
+    case Halt() => Stream()
+    case Await(recv) =>
+      s match
+        case h #:: t => recv(Some(h))(t)
+        case xs      => recv(None)(xs)
+    case Emit(h, t) => h #:: t(s)
