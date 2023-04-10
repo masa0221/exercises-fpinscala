@@ -42,3 +42,5 @@ sealed trait Process[I, O]:
         case h #:: t => recv(Some(h))(t)
         case xs      => recv(None)(xs)
     case Emit(h, t) => h #:: t(s)
+
+  def liftOne[I, O](f: I => O): Process[I, O] = ???
