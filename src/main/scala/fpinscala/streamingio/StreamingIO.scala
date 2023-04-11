@@ -1,3 +1,5 @@
+package fpinscala.streamingio
+
 import fpinscala.iomonads.IOSample1.IO
 
 object StreamingIO0 {
@@ -32,6 +34,11 @@ object Process:
 
   case class Halt[I, O]() extends Process[I, O]
 
+  def liftOne[I, O](f: I => O): Process[I, O] = Await {
+    case None        => Halt()
+    case Some(value) => Emit(f(value))
+  }
+
 sealed trait Process[I, O]:
   import Process.*
 
@@ -42,5 +49,3 @@ sealed trait Process[I, O]:
         case h #:: t => recv(Some(h))(t)
         case xs      => recv(None)(xs)
     case Emit(h, t) => h #:: t(s)
-
-  def liftOne[I, O](f: I => O): Process[I, O] = ???
