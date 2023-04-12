@@ -49,3 +49,16 @@ sealed trait Process[I, O]:
         case h #:: t => recv(Some(h))(t)
         case xs      => recv(None)(xs)
     case Emit(h, t) => h #:: t(s)
+
+  def repeat: Process[I, O] = {
+    def go(p: Process[I, O]): Process[I, O] = p match
+      case Emit(head, tail) => Emit(head, go(tail))
+      case Await(recv) =>
+        Await {
+          case None  => recv(None)
+          case value => go(recv(value))
+        }
+      case Halt() => go(this)
+
+    go(this)
+  }
