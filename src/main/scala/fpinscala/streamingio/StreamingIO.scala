@@ -62,3 +62,5 @@ sealed trait Process[I, O]:
 
     go(this)
   }
+
+  def lift[I, O](f: I => O): Process[I, O] = liftOne(f).repeat
