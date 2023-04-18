@@ -56,6 +56,18 @@ object Process:
     go(0.0)
   }
 
+  def emit[I, O](head: O, tail: Process[I, O] = Halt[I, O]()): Process[I, O] =
+    Emit(head, tail)
+
+  def await[I, O](
+      f: I => Process[I, O],
+      fallback: Process[I, O] = Halt[I, O]()
+  ): Process[I, O] =
+    Await[I, O] {
+      case Some(i) => f(i)
+      case None    => fallback
+    }
+
   def take[I](n: Int): Process[I, I] =
     if (n <= 0) Halt()
     // TODO: await/emitを作る
