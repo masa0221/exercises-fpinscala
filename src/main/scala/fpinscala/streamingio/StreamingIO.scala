@@ -70,10 +70,12 @@ object Process:
 
   def take[I](n: Int): Process[I, I] =
     if (n <= 0) Halt()
-    // TODO: await/emitを作る
     else await(i => emit(i, take[I](n - 1)))
 
-  def drop[I](n: Int): Process[I, I] = ???
+  def drop[I](n: Int): Process[I, I] =
+    if (n <= 0) ??? // TOOD
+    else await(i => emit(i, drop[I](n - 1)))
+
   def takeWhile[I](f: I => Boolean): Process[I, I] = ???
   def dropWhile[I](f: I => Boolean): Process[I, I] = ???
 
