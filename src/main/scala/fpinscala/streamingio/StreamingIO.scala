@@ -73,8 +73,10 @@ object Process:
     else await(i => emit(i, take[I](n - 1)))
 
   def drop[I](n: Int): Process[I, I] =
-    if (n <= 0) ??? // TOOD
+    if (n <= 0) id
     else await(i => emit(i, drop[I](n - 1)))
+
+  def id[I]: Process[I, I] = lift(identity)
 
   def takeWhile[I](f: I => Boolean): Process[I, I] = ???
   def dropWhile[I](f: I => Boolean): Process[I, I] = ???
