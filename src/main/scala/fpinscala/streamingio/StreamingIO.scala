@@ -81,7 +81,8 @@ object Process:
   def takeWhile[I](f: I => Boolean): Process[I, I] =
     await(i => if (f(i)) emit(i, takeWhile[I](f)) else Halt())
 
-  def dropWhile[I](f: I => Boolean): Process[I, I] = ???
+  def dropWhile[I](f: I => Boolean): Process[I, I] =
+    await(i => if (f(i)) dropWhile[I](f) else emit(i, id))
 
 sealed trait Process[I, O]:
   import Process.*
