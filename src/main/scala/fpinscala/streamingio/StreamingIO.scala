@@ -84,6 +84,12 @@ object Process:
   def dropWhile[I](f: I => Boolean): Process[I, I] =
     await(i => if (f(i)) dropWhile[I](f) else emit(i, id))
 
+  def count[I]: Process[I, Int] = {
+    def go(n: Int): Process[I, Int] =
+      await((i: I) => emit(n + 1), go(n + 1))
+    go(0)
+  }
+
 sealed trait Process[I, O]:
   import Process.*
 
