@@ -96,6 +96,12 @@ object Process:
     go(0, 0)
   }
 
+  def loop[S, I, O](z: S)(f: (I, S) => (O, S)): Process[I, O] =
+    await((i: I) =>
+      f(i, z) match
+        case (o, s2) => emit(o, loop(s2)(f))
+    )
+
 sealed trait Process[I, O]:
   import Process.*
 
