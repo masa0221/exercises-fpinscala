@@ -90,6 +90,10 @@ object Process:
     go(0)
   }
 
+  def countWithLoop[I]: Process[I, Int] = {
+    loop(0)((_: I, n) => (n + 1, n + 1))
+  }
+
   def mean: Process[Double, Double] = {
     def go(sum: Double, n: Double): Process[Double, Double] =
       await((d: Double) => emit((sum + d) / (n + 1), go(sum + d, n + 1)))
