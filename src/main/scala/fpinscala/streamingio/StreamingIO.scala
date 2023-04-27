@@ -56,6 +56,10 @@ object Process:
     go(0.0)
   }
 
+  def sumWithLoop: Process[Double, Double] = {
+    loop(0.0)((d: Double, acc: Double) => (d + acc, d + acc))
+  }
+
   def emit[I, O](head: O, tail: Process[I, O] = Halt[I, O]()): Process[I, O] =
     Emit(head, tail)
 
