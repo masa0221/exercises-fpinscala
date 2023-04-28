@@ -133,3 +133,5 @@ sealed trait Process[I, O]:
 
     go(this)
   }
+
+  def |>[O2](p2: Process[O, O2]): Process[I, O2] = ???
