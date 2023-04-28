@@ -134,4 +134,7 @@ sealed trait Process[I, O]:
     go(this)
   }
 
-  def |>[O2](p2: Process[O, O2]): Process[I, O2] = ???
+  def |>[O2](p2: Process[O, O2]): Process[I, O2] = p2 match
+    case Halt()           => Halt()
+    case Await(recv)      => ???
+    case Emit(head, tail) => ???
