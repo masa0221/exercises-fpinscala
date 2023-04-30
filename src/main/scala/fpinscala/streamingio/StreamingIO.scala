@@ -142,3 +142,5 @@ sealed trait Process[I, O]:
         case Await(g)         => Await((i: Option[I]) => g(i) |> p2)
         case Emit(head, tail) => tail |> f(Some(head))
     case Emit(head, tail) => Emit(head, this |> tail)
+
+  def map[O2](f: O => O2): Process[I, O2] = this |> lift(f)
