@@ -135,6 +135,10 @@ sealed trait Process[I, O]:
   }
 
   def |>[O2](p2: Process[O, O2]): Process[I, O2] = p2 match
-    case Halt()           => Halt()
-    case Await(recv)      => ???
-    case Emit(head, tail) => ???
+    case Halt() => Halt()
+    case Await(f) =>
+      this match
+        case Halt()           => Halt() |> f(None)
+        case Await(g)         => Await((i: Option[I]) => g(i) |> p2)
+        case Emit(head, tail) => tail |> f(Some(head))
+    case Emit(head, tail) => Emit(head, this |> tail)
