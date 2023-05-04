@@ -154,3 +154,5 @@ sealed trait Process[I, O]:
     case Halt()      => Halt()
     case Emit(h, t)  => f(h) ++ t.flatMap(f)
     case Await(recv) => Await(recv andThen (_ flatMap f))
+
+  def monad[I]: Monad[({ type f[x] = Process[I, x] })#f] = ???
