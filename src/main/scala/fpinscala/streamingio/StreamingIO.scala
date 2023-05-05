@@ -155,4 +155,11 @@ sealed trait Process[I, O]:
     case Emit(h, t)  => f(h) ++ t.flatMap(f)
     case Await(recv) => Await(recv andThen (_ flatMap f))
 
-  def monad[I]: Monad[({ type f[x] = Process[I, x] })#f] = ???
+  import fpinscala.iomonads.Monad
+  def monad[I]: Monad[({ type f[x] = Process[I, x] })#f] =
+    new Monad[({ type f[x] = Process[I, x] })#f] {
+      def unit[O](o: => O): Process[I, O] = emit(o)
+      def flatMap[O, O2](p: Process[I, O])(
+          f: O => Process[I, O2]
+      ): Process[I, O2] = p flatMap f
+    }
