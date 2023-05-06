@@ -163,3 +163,9 @@ sealed trait Process[I, O]:
           f: O => Process[I, O2]
       ): Process[I, O2] = p flatMap f
     }
+
+  def zip[O2](p: Process[I, O2]): Process[I, (O, O2)] =
+    ???
+
+  def zipWithIndex: Process[I, (O, Int)] =
+    this zip (count map (_ - 1))
