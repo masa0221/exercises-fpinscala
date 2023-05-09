@@ -108,6 +108,8 @@ object Process:
     s / d
   }
 
+  def exists[I](f: I => Boolean): Process[I, Boolean] = ???
+
   def loop[S, I, O](z: S)(f: (I, S) => (O, S)): Process[I, O] =
     await((i: I) =>
       f(i, z) match
