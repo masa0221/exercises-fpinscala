@@ -108,7 +108,20 @@ object Process:
     s / d
   }
 
+  // TODO: lift / any を使う
   def exists[I](f: I => Boolean): Process[I, Boolean] = ???
+
+  // TODO: loop を使う
+  def any: Process[Boolean, Boolean] = ???
+
+  // TODO: exists / takeThrough / dropWhile / echo を使う
+  def existsResult[I](f: I => Boolean) = ???
+
+  // TODO: echo を使う
+  def takeThrough[I](f: I => Boolean): Process[I, I] = ???
+
+  // TODO: emitを使う
+  def echo[I]: Process[I, I] = ???
 
   def loop[S, I, O](z: S)(f: (I, S) => (O, S)): Process[I, O] =
     await((i: I) =>
