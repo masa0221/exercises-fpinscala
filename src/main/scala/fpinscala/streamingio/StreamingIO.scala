@@ -120,8 +120,7 @@ object Process:
   // TODO: echo を使う
   def takeThrough[I](f: I => Boolean): Process[I, I] = ???
 
-  // TODO: emitを使う
-  def echo[I]: Process[I, I] = ???
+  def echo[I]: Process[I, I] = await(i => emit(i))
 
   def loop[S, I, O](z: S)(f: (I, S) => (O, S)): Process[I, O] =
     await((i: I) =>
