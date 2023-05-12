@@ -117,8 +117,7 @@ object Process:
   // TODO: exists / takeThrough / dropWhile / echo を使う
   def existsResult[I](f: I => Boolean) = ???
 
-  // TODO: echo を使う
-  def takeThrough[I](f: I => Boolean): Process[I, I] = ???
+  def takeThrough[I](f: I => Boolean): Process[I, I] = takeWhile(f) ++ echo
 
   def echo[I]: Process[I, I] = await(i => emit(i))
 
