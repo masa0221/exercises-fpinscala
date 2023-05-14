@@ -108,10 +108,8 @@ object Process:
     s / d
   }
 
-  // TODO: lift / any を使う
-  def exists[I](f: I => Boolean): Process[I, Boolean] = ???
+  def exists[I](f: I => Boolean): Process[I, Boolean] = lift(f) |> any
 
-  // TODO: loop を使う
   def any: Process[Boolean, Boolean] = loop(false)((i, s) => (i || s, i || s))
 
   // TODO: exists / takeThrough / dropWhile / echo を使う
