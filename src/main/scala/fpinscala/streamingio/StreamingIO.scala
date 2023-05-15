@@ -112,8 +112,8 @@ object Process:
 
   def any: Process[Boolean, Boolean] = loop(false)((i, s) => (i || s, i || s))
 
-  // TODO: exists / takeThrough / dropWhile / echo を使う
-  def existsResult[I](f: I => Boolean) = ???
+  def existsResult[I](f: I => Boolean) =
+    exists(f) |> takeThrough(!_) |> dropWhile(!_) |> echo.orElse(emit(false))
 
   def takeThrough[I](f: I => Boolean): Process[I, I] = takeWhile(f) ++ echo
 
@@ -200,3 +200,6 @@ sealed trait Process[I, O]:
 
   def zipWithIndex: Process[I, (O, Int)] =
     this zip (count map (_ - 1))
+
+  // TODO: existsResultの実装で必要
+  def orElse(p: Process[I, O]): Process[I, O] = ???
