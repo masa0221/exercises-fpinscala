@@ -201,5 +201,11 @@ sealed trait Process[I, O]:
   def zipWithIndex: Process[I, (O, Int)] =
     this zip (count map (_ - 1))
 
-  // TODO: existsResultの実装で必要
-  def orElse(p: Process[I, O]): Process[I, O] = ???
+  def orElse(p: Process[I, O]): Process[I, O] = this match
+    case Halt() => p
+    case Await(recv) =>
+      Await {
+        case None => p
+        case x    => recv(x)
+      }
+    case _ => this
