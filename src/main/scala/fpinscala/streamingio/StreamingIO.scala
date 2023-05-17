@@ -141,6 +141,10 @@ object Process:
       case Emit(h, t)  => Emit(h, feed(oa)(t))
       case Await(recv) => recv(oa)
 
+  def processFile[A, B](f: java.io.File, p: Process[String, A], z: B)(
+      g: (B, A) => B
+  ): IO[B] = ???
+
 sealed trait Process[I, O]:
   import Process.*
 
