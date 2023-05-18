@@ -143,7 +143,19 @@ object Process:
 
   def processFile[A, B](f: java.io.File, p: Process[String, A], z: B)(
       g: (B, A) => B
-  ): IO[B] = ???
+  ): IO[B] = IO {
+    def go(ss: Iterator[String], cur: Process[String, A], acc: B): B =
+      cur match
+        case Emit(head, tail) => go(ss, tail, g(acc, head))
+        case Await(recv) =>
+          val next = if (ss.hasNext) recv(Some(ss.next())) else recv(None)
+          go(ss, next, acc)
+        case Halt() => acc
+
+    val s = io.Source.fromFile(f)
+    try go(s.getLines, p, z)
+    finally s.close
+  }
 
 sealed trait Process[I, O]:
   import Process.*
