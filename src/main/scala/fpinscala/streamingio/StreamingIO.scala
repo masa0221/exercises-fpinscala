@@ -225,3 +225,8 @@ sealed trait Process[I, O]:
         case x    => recv(x)
       }
     case _ => this
+
+  def convertFahrenheit: Process[String, String] = ???
+
+  def toCelsius(fahrenheit: Double): Double =
+    (5.0 / 9.0) * (fahrenheit - 32.0)
