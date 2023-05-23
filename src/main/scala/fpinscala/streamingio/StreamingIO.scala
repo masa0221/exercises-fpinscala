@@ -236,8 +236,14 @@ object SimpleStreamTransducers:
     def toCelsius(fahrenheit: Double): Double =
       (5.0 / 9.0) * (fahrenheit - 32.0)
 
+// https://github.com/fpinscala/fpinscala/blob/first-edition/answers/src/main/scala/fpinscala/streamingio/StreamingIO.scala#L514
 object GeneralizedStreamTransducers:
-  trait Process[F[_], O]
+  trait Process[F[_], O]:
+    import Process._
+    def map[O2](f: O => O2): Process[F, O2] = this match
+      case Await(req, recv) => Await(req, recv andThen (_ map f))
+      case Emit(h, t)       => Try { Emit(f(h), t map f) }
+      case Halt(err)        => Halt(err)
 
   object Process:
     case class Await[F[_], A, O](
@@ -251,3 +257,7 @@ object GeneralizedStreamTransducers:
 
     case object End extends Exception
     case object Kill extends Exception
+
+    def Try[F[_], O](p: => Process[F, O]): Process[F, O] =
+      try p
+      catch { case e: Throwable => Halt(e) }
