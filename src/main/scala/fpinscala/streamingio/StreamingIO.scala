@@ -245,6 +245,18 @@ object GeneralizedStreamTransducers:
       case Emit(h, t)       => Try { Emit(f(h), t map f) }
       case Halt(err)        => Halt(err)
 
+    def ++(p: Process[F, O]): Process[F, O] = ???
+
+    def |>[O2](p2: Process[O, O2]): Process[F, O2] = ???
+
+    def filter(f: O => Boolean): Process[F, O] = ???
+
+    def take(n: Int): Process[F, O] = ???
+
+    def once: Process[F, O] = ???
+
+    def onComplete(p: => Process[F, O]): Process[F, O] = ???
+
   object Process:
     case class Await[F[_], A, O](
         req: F[A],
