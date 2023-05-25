@@ -247,7 +247,7 @@ object GeneralizedStreamTransducers:
 
     def ++(p: Process[F, O]): Process[F, O] = ???
 
-    def |>[O2](p2: Process[O, O2]): Process[F, O2] = ???
+    def |>[O2](p2: Process1[O, O2]): Process[F, O2] = ???
 
     def filter(f: O => Boolean): Process[F, O] = ???
 
@@ -273,3 +273,11 @@ object GeneralizedStreamTransducers:
     def Try[F[_], O](p: => Process[F, O]): Process[F, O] =
       try p
       catch { case e: Throwable => Halt(e) }
+
+    case class Is[I]() {
+      sealed trait f[X]
+      val Get = new f[I] {}
+    }
+    def Get[I] = Is[I]().Get
+
+    type Process1[I, O] = Process[Is[I]#f, O]
