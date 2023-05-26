@@ -281,3 +281,5 @@ object GeneralizedStreamTransducers:
     def Get[I] = Is[I]().Get
 
     type Process1[I, O] = Process[Is[I]#f, O]
+
+    def emit[F[_], O](head: O, tail: Process[F,O] = Halt[F,O](End)): Process[F,O] = Emit(head,tail)
