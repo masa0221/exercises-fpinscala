@@ -270,6 +270,16 @@ object GeneralizedStreamTransducers:
     case object End extends Exception
     case object Kill extends Exception
 
+    def emit[F[_], O](
+        head: O,
+        tail: Process[F, O] = Halt[F, O](End)
+    ): Process[F, O] = Emit(head, tail)
+
+    def await[F[_], A, O](
+        req: F[A],
+        recv: Either[Throwable, A] => Process[F, O]
+    ): Process[F, O] = Await(req, recv)
+
     def Try[F[_], O](p: => Process[F, O]): Process[F, O] =
       try p
       catch { case e: Throwable => Halt(e) }
@@ -281,5 +291,3 @@ object GeneralizedStreamTransducers:
     def Get[I] = Is[I]().Get
 
     type Process1[I, O] = Process[Is[I]#f, O]
-
-    def emit[F[_], O](head: O, tail: Process[F,O] = Halt[F,O](End)): Process[F,O] = Emit(head,tail)
