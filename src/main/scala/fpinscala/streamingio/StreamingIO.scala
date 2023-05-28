@@ -291,3 +291,13 @@ object GeneralizedStreamTransducers:
     def Get[I] = Is[I]().Get
 
     type Process1[I, O] = Process[Is[I]#f, O]
+
+    def await1[I, O](
+        recv: I => Process1[I, O],
+        fallback: => Process1[I, O] = halt1[I, O]
+    ): Process1[I, O] = ???
+
+    def emit1[I, O](h: O, tl: Process1[I, O] = halt1[I, O]): Process1[I, O] =
+      emit(h, tl)
+
+    def halt1[I, O]: Process1[I, O] = Halt[Is[I]#f, O](End)
