@@ -245,11 +245,13 @@ object GeneralizedStreamTransducers:
       case Emit(h, t)       => Try { Emit(f(h), t map f) }
       case Halt(err)        => Halt(err)
 
+    def repeat: Process[F, O] = this ++ this.repeat
+
     def ++(p: Process[F, O]): Process[F, O] = ???
 
     def |>[O2](p2: Process1[O, O2]): Process[F, O2] = ???
 
-    def filter(f: O => Boolean): Process[F, O] = ???
+    def filter(f: O => Boolean): Process[F, O] = this |> Process.filter(f)
 
     def take(n: Int): Process[F, O] = ???
 
@@ -308,3 +310,6 @@ object GeneralizedStreamTransducers:
       emit(h, tl)
 
     def halt1[I, O]: Process1[I, O] = Halt[Is[I]#f, O](End)
+
+    def filter[I](f: I => Boolean): Process1[I, I] =
+      await1[I, I](i => if (f(i)) emit(i) else halt1).repeat
