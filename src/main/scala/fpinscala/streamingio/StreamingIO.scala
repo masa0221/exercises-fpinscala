@@ -253,7 +253,7 @@ object GeneralizedStreamTransducers:
 
     def filter(f: O => Boolean): Process[F, O] = this |> Process.filter(f)
 
-    def take(n: Int): Process[F, O] = ???
+    def take(n: Int): Process[F, O] = this |> Process.take(n)
 
     def once: Process[F, O] = ???
 
@@ -313,3 +313,7 @@ object GeneralizedStreamTransducers:
 
     def filter[I](f: I => Boolean): Process1[I, I] =
       await1[I, I](i => if (f(i)) emit(i) else halt1).repeat
+
+    def take[I](n: Int): Process1[I, I] =
+      if (n < 0) halt1
+      else await1(i => emit(i, take(n - 1)))
