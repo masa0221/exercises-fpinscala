@@ -255,7 +255,7 @@ object GeneralizedStreamTransducers:
 
     def take(n: Int): Process[F, O] = this |> Process.take(n)
 
-    def once: Process[F, O] = ???
+    def once: Process[F, O] = take(1)
 
     def onComplete(p: => Process[F, O]): Process[F, O] = ???
 
