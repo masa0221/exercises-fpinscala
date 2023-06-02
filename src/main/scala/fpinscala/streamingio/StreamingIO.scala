@@ -245,6 +245,11 @@ object GeneralizedStreamTransducers:
       case Emit(h, t)       => Try { Emit(f(h), t map f) }
       case Halt(err)        => Halt(err)
 
+    def flatMap[O2](f: O => Process[F, O2]): Process[F, O2] = this match
+      case Await(req, recv) => Await(req, recv andThen (_ flatMap f))
+      case Emit(h, t)       => Try(f(h)) ++ t.flatMap(f)
+      case Halt(err)        => Halt(err)
+
     def repeat: Process[F, O] = this ++ this.repeat
 
     def ++(p: Process[F, O]): Process[F, O] = ???
