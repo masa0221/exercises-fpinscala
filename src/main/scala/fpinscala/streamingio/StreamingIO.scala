@@ -263,7 +263,10 @@ object GeneralizedStreamTransducers:
 
     def once: Process[F, O] = take(1)
 
-    def onHalt(f: Throwable => Process[F,O]): Process[F,O] = ???
+    def onHalt(f: Throwable => Process[F, O]): Process[F, O] = this match
+      case Halt(e)          => Try(f(e))
+      case Emit(h, t)       => Emit(h, t.onHalt(f))
+      case Await(req, recv) => Await(req, recv andThen (_.onHalt(f)))
 
     def onComplete(p: => Process[F, O]): Process[F, O] = ???
 
