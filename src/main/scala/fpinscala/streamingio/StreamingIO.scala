@@ -253,7 +253,10 @@ object GeneralizedStreamTransducers:
     def repeat: Process[F, O] = this ++ this.repeat
 
     // onHaltを使用
-    def ++(p: Process[F, O]): Process[F, O] = ???
+    def ++(p: Process[F, O]): Process[F, O] = this.onHalt {
+      case End => Try(p)
+      case err => Halt(err)
+    }
 
     def |>[O2](p2: Process1[O, O2]): Process[F, O2] = ???
 
