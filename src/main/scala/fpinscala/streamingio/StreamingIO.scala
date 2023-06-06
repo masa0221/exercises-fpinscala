@@ -331,3 +331,11 @@ object GeneralizedStreamTransducers:
     def take[I](n: Int): Process1[I, I] =
       if (n < 0) halt1
       else await1(i => emit(i, take(n - 1)))
+
+    def runLog[O](src: Process[IO, O]): IO[IndexedSeq[O]] = IO {
+      val E = java.util.concurrent.Executors.newFixedThreadPool(4)
+      // @annotation.tailrec
+      def go(cur: Process[IO, O], acc: IndexedSeq[O]): IndexedSeq[O] = ???
+      try go(src, IndexedSeq())
+      finally E.shutdown
+    }
