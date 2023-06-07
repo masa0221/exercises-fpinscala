@@ -335,7 +335,12 @@ object GeneralizedStreamTransducers:
     def runLog[O](src: Process[IO, O]): IO[IndexedSeq[O]] = IO {
       val E = java.util.concurrent.Executors.newFixedThreadPool(4)
       // @annotation.tailrec
-      def go(cur: Process[IO, O], acc: IndexedSeq[O]): IndexedSeq[O] = ???
+      def go(cur: Process[IO, O], acc: IndexedSeq[O]): IndexedSeq[O] = cur match
+        case Emit(head, tail) => go(tail, acc :+ head)
+        case Await(req, recv) => ???
+        case Halt(End)        => acc
+        case Halt(err)        => throw err
+
       try go(src, IndexedSeq())
       finally E.shutdown
     }
