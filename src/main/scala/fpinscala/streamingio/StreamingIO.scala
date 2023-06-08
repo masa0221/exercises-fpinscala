@@ -338,8 +338,13 @@ object GeneralizedStreamTransducers:
       def go(cur: Process[IO, O], acc: IndexedSeq[O]): IndexedSeq[O] = cur match
         case Emit(head, tail) => go(tail, acc :+ head)
         case Await(req, recv) => ???
-        case Halt(End)        => acc
-        case Halt(err)        => throw err
+        // val next =
+        //   // unsafePerformIOが、、
+        //   try recv(Right(fpinscala.iomonads.unsafePerformIO(req)(E)))
+        //   catch { case err: Throwable => recv(Left(err)) }
+        // go(next)
+        case Halt(End) => acc
+        case Halt(err) => throw err
 
       try go(src, IndexedSeq())
       finally E.shutdown
