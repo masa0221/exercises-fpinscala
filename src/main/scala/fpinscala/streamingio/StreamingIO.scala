@@ -349,6 +349,9 @@ object GeneralizedStreamTransducers:
       (this zipWith sink)((o, f) => f(o))
     }
 
+    def through[O2](p2: Process[F, O => Process[F, O2]]): Process[F, O2] =
+      join { (this zipWith p2)((o, f) => f(o)) }
+
   object Process:
     case class Await[F[_], A, O](
         req: F[A],
