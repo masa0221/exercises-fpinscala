@@ -273,6 +273,17 @@ object GeneralizedStreamTransducers:
 
     def onComplete(p: => Process[F, O]): Process[F, O] = ???
 
+    def runLog(implicit F: MonadCatch[F]): F[IndexedSeq[O]] = {
+      def go(cur: Process[F, O], acc: IndexedSeq[O]): F[IndexedSeq[O]] =
+        cur match
+          case Emit(h, t) => go(t, acc :+ h)
+          case Halt(End)  => F.unit(acc)
+          case Halt(err)  => F.fail(err)
+          case Await(req, recv) =>
+            F.flatMap(F.attempt(req)) { e => go(Try(recv(e)), acc) }
+      go(this, IndexedSeq())
+    }
+
   object Process:
     case class Await[F[_], A, O](
         req: F[A],
