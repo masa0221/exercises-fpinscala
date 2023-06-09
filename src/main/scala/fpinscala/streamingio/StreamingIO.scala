@@ -1,6 +1,7 @@
 package fpinscala.streamingio
 
 import fpinscala.iomonads.IOSample1.IO
+import java.io.FileWriter
 
 object StreamingIO0 {
   def lineGt40k(filename: String): IO[Boolean] = IO {
@@ -342,6 +343,12 @@ object GeneralizedStreamTransducers:
                 case Await(reqR, recvR) =>
                   await(reqR)(recvR andThen (p3 => this.tee(p3)(t)))
 
+    def zipWith[O2, O3](p2: Process[F, O2])(f: (O, O2) => O3): Process[F, O3] =
+      (this tee p2)(Process.zipWith(f))
+    def to[O2](sink: Sink[F, O]): Process[F, Unit] = join {
+      (this zipWith sink)((o, f) => f(o))
+    }
+
   object Process:
     case class Await[F[_], A, O](
         req: F[A],
@@ -483,3 +490,17 @@ object GeneralizedStreamTransducers:
       awaitL[I, I2, O](i => awaitR(i2 => emitT(f(i, i2)))).repeat
 
     def zip[I, I2]: Tee[I, I2, (I, I2)] = zipWith((_, _))
+
+    type Sink[F[_], O] = Process[F, O => Process[F, Unit]]
+    def fileW(file: String, append: Boolean = false): Sink[IO, String] =
+      resource[FileWriter, String => Process[IO, Unit]] {
+        IO { new FileWriter(file, append) }
+      } { w => constant { (s: String) => eval[IO, Unit](IO(w.write(s))) } } {
+        w => eval_(IO(w.close))
+      }
+
+    def constant[A](a: A): Process[IO, A] =
+      eval(IO(a)).flatMap { a => Emit(a, constant(a)) }
+
+    def join[F[_], O](p: Process[F, Process[F, O]]): Process[F, O] =
+      p.flatMap(pa => pa)
