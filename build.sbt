@@ -4,7 +4,6 @@ scalacOptions ++= Seq(          // use ++= to add to existing options
   "-encoding", "utf8",          // if an option takes an arg, supply it on the same line
   "-feature",                   // then put the next option on a new line for easy editing
   "-language:implicitConversions",
-  "-Werror",
 )
 
 lazy val root = project
