@@ -295,6 +295,10 @@ object GeneralizedStreamTransducers:
           case Left(Kill) => this.asFinalizer
           case x          => recv(x)
         }
+    def drain[O2]: Process[F, O2] = this match
+      case Halt(e)          => Halt(e)
+      case Emit(h, t)       => t.drain
+      case Await(req, recv) => Await(req, recv andThen (_.drain))
 
   object Process:
     case class Await[F[_], A, O](
@@ -373,5 +377,10 @@ object GeneralizedStreamTransducers:
       finally E.shutdown
     }
 
-    def eval[F[_], A](a: F[A]): Process[F, A] = ???
-    def eval_[F[_], A, B](a: F[A]): Process[F, B] = ???
+    def eval[F[_], A](a: F[A]): Process[F, A] = await[F, A, A](a) {
+      case Left(err) => Halt(err)
+      case Right(a)  => Emit(a, Halt(End))
+    }
+
+    def eval_[F[_], A, B](a: F[A]): Process[F, B] =
+      eval[F, A](a).drain[B]
