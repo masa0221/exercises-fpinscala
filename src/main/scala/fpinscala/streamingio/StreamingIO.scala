@@ -377,6 +377,12 @@ object GeneralizedStreamTransducers:
       finally E.shutdown
     }
 
+    def resource[R, O](acquire: IO[R])(use: R => Process[IO, O])(
+        release: R => Process[IO, O]
+    ): Process[IO, O] = ???
+    // // 二つ目の引数はRが欲しいが、rはEither・・・
+    // await[IO, R, O](acquire)(r => use(r).onComplete(release(r)))
+
     def eval[F[_], A](a: F[A]): Process[F, A] = await[F, A, A](a) {
       case Left(err) => Halt(err)
       case Right(a)  => Emit(a, Halt(End))
