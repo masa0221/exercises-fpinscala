@@ -5,7 +5,6 @@ scalacOptions ++= Seq(          // use ++= to add to existing options
   "-feature",                   // then put the next option on a new line for easy editing
   "-language:implicitConversions",
   "-Werror",
-  "-explain",
 )
 
 lazy val root = project
