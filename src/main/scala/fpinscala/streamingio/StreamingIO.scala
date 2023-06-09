@@ -507,3 +507,10 @@ object GeneralizedStreamTransducers:
 
     def join[F[_], O](p: Process[F, Process[F, O]]): Process[F, O] =
       p.flatMap(pa => pa)
+
+    type Channel[F[_], I, O] = Process[F, I => Process[F, O]]
+
+    import java.sql.{Connection, PreparedStatement, ResultSet}
+    def query(
+        conn: IO[Connection]
+    ): Channel[IO, Connection => PreparedStatement, Map[String, Any]] = ???
