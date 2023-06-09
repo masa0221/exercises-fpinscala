@@ -258,7 +258,30 @@ object GeneralizedStreamTransducers:
       case err => Halt(err)
     }
 
-    def |>[O2](p2: Process1[O, O2]): Process[F, O2] = ???
+    final def kill[O2]: Process[F, O2] = this match
+      case Await(req, recv) =>
+        recv(Left(Kill)).drain.onHalt {
+          case Kill => Halt(End)
+          case e    => Halt(e)
+        }
+      case Halt(e)    => Halt(e)
+      case Emit(h, t) => t.kill
+
+    def drain[O2]: Process[F, O2] = this match
+      case Halt(e)          => Halt(e)
+      case Emit(h, t)       => t.drain
+      case Await(req, recv) => Await(req, recv andThen (_.drain))
+
+    def |>[O2](p2: Process1[O, O2]): Process[F, O2] = p2 match
+      case Halt(e)          => this.kill onHalt { e2 => Halt(e) ++ Halt(e2) }
+      case Emit(head, tail) => Emit(head, this |> tail)
+      case Await(req, recv) =>
+        this match
+          case Halt(err)        => Halt(err) |> recv(Left(err))
+          case Emit(head, tail) => ???
+          // headがOだとえらーになる
+          // case Emit(head, tail)   => tail |> Try(recv(Right(head)))
+          case Await(req1, recv1) => await(req1)(recv1 andThen (_ |> p2))
 
     def filter(f: O => Boolean): Process[F, O] = this |> Process.filter(f)
 
@@ -295,10 +318,6 @@ object GeneralizedStreamTransducers:
           case Left(Kill) => this.asFinalizer
           case x          => recv(x)
         }
-    def drain[O2]: Process[F, O2] = this match
-      case Halt(e)          => Halt(e)
-      case Emit(h, t)       => t.drain
-      case Await(req, recv) => Await(req, recv andThen (_.drain))
 
   object Process:
     case class Await[F[_], A, O](
@@ -351,6 +370,9 @@ object GeneralizedStreamTransducers:
       emit(h, tl)
 
     def halt1[I, O]: Process1[I, O] = Halt[Is[I]#f, O](End)
+
+    def lift[I, O](f: I => O): Process1[I, O] =
+      await1[I, O](i => emit(f(i))).repeat
 
     def filter[I](f: I => Boolean): Process1[I, I] =
       await1[I, I](i => if (f(i)) emit(i) else halt1).repeat
