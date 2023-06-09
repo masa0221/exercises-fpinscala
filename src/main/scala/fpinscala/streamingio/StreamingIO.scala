@@ -455,3 +455,8 @@ object GeneralizedStreamTransducers:
         h: O,
         tl: Tee[I, I2, O] = haltT[I, I2, O]
     ): Tee[I, I2, O] = emit(h, tl)
+
+    def zipWith[I, I2, O](f: (I, I2) => O): Tee[I, I2, O] =
+      awaitL[I, I2, O](i => awaitR(i2 => emitT(f(i, i2)))).repeat
+
+    def zip[I, I2]: Tee[I, I2, (I, I2)] = zipWith((_, _))
