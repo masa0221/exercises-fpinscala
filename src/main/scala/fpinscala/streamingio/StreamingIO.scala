@@ -271,7 +271,10 @@ object GeneralizedStreamTransducers:
       case Emit(h, t)       => Emit(h, t.onHalt(f))
       case Await(req, recv) => Await(req, recv andThen (_.onHalt(f)))
 
-    def onComplete(p: => Process[F, O]): Process[F, O] = ???
+    def onComplete(p: => Process[F, O]): Process[F, O] = this.onHalt {
+      case End => p.asFinalizer
+      case err => p.asFinalizer ++ Halt(err)
+    }
 
     def runLog(implicit F: MonadCatch[F]): F[IndexedSeq[O]] = {
       def go(cur: Process[F, O], acc: IndexedSeq[O]): F[IndexedSeq[O]] =
@@ -283,6 +286,17 @@ object GeneralizedStreamTransducers:
             F.flatMap(F.attempt(req)) { e => go(Try(recv(e)), acc) }
       go(this, IndexedSeq())
     }
+
+    def asFinalizer: Process[F, O] = ???
+  // this match
+  //   case Emit(h, t)       => Emit(h, t.asFinalizer)
+  //   case Halt(e)          => Halt(e)
+  //   case Await(req, recv) =>
+  //     // await 引数二つだが・・・？
+  //     await(req) {
+  //       case Left(Kill) => this.asFinalizer
+  //       case x          => recv(x)
+  //     }
 
   object Process:
     case class Await[F[_], A, O](
