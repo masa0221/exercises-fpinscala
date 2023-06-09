@@ -287,16 +287,14 @@ object GeneralizedStreamTransducers:
       go(this, IndexedSeq())
     }
 
-    def asFinalizer: Process[F, O] = ???
-  // this match
-  //   case Emit(h, t)       => Emit(h, t.asFinalizer)
-  //   case Halt(e)          => Halt(e)
-  //   case Await(req, recv) =>
-  //     // await 引数二つだが・・・？
-  //     await(req) {
-  //       case Left(Kill) => this.asFinalizer
-  //       case x          => recv(x)
-  //     }
+    def asFinalizer: Process[F, O] = this match
+      case Emit(h, t) => Emit(h, t.asFinalizer)
+      case Halt(e)    => Halt(e)
+      case Await(req, recv) =>
+        await(req) {
+          case Left(Kill) => this.asFinalizer
+          case x          => recv(x)
+        }
 
   object Process:
     case class Await[F[_], A, O](
@@ -316,10 +314,10 @@ object GeneralizedStreamTransducers:
         tail: Process[F, O] = Halt[F, O](End)
     ): Process[F, O] = Emit(head, tail)
 
-    def await[F[_], A, O](
-        req: F[A],
+    def await[F[_], A, O](req: F[A])(
         recv: Either[Throwable, A] => Process[F, O]
-    ): Process[F, O] = Await(req, recv)
+    ): Process[F, O] =
+      Await(req, recv)
 
     def Try[F[_], O](p: => Process[F, O]): Process[F, O] =
       try p
@@ -374,3 +372,6 @@ object GeneralizedStreamTransducers:
       try go(src, IndexedSeq())
       finally E.shutdown
     }
+
+    def eval[F[_], A](a: F[A]): Process[F, A] = ???
+    def eval_[F[_], A, B](a: F[A]): Process[F, B] = ???
